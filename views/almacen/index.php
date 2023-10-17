@@ -18,6 +18,8 @@
                 <div class="col">
                     <label for="alma_unidad">Dependencia</label>
                     <input type="text" id="alma_unidad" class="form-control" readonly>
+                    <input type="text" id="alma_unidad_id" class="form-control" readonly>
+
                 </div>
             </div>
 
