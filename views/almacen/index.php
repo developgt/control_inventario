@@ -13,16 +13,14 @@
                 <input type="text" name="alma_descripcion" id="alma_descripcion" class="form-control">
             </div>
         </div>
-        <div class="row mb-3">
-            <div class="col">
-                <label for="alma_unidad">Dependencia</label>
-                <select name="alma_unidad" id="alma_unidad" class="form-control">
-                    <option value="">Seleccione una dependencia</option>
-                    <?php foreach ($dependencias as $dependencia) : ?>
-                        <option value="<?php echo $dependencia->dep_llave; ?>"><?php echo $dependencia->dep_nombre; ?></option>
-                    <?php endforeach; ?>
-                </select>
+ 
+            <div class="row mb-3">
+                <div class="col">
+                    <label for="alma_unidad">Dependencia</label>
+                    <input type="text" id="alma_unidad" class="form-control" readonly>
+                </div>
             </div>
+
 
         </div>
         <div class="row mb-3">
