@@ -29,16 +29,27 @@
   
                     <div class="nav-item dropdown " >
                         <a class="nav-link dropdown-toggle" href="/control_inventario/" data-bs-toggle="dropdown">
-                            <i class="bi bi-gear me-2"></i>Dropdown
+                            <i class="bi bi-gear me-2"></i>Almacen
                         </a>
                         <ul class="dropdown-menu  dropdown-menu-dark "id="dropwdownRevision" style="margin: 0;">
                             <!-- <h6 class="dropdown-header">Información</h6> -->
                             <li>
                                 <a class="dropdown-item nav-link text-white " href="/control_inventario/almacen"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Almacen</a>
                             </li>
-                        
-                    
-                        
+                            <li>
+                                <a class="dropdown-item nav-link text-white " href="/control_inventario/unimedida"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>UNIDADES DE MEDIDA</a>
+                            </li>
+                        </ul>
+                    </div> 
+                    <div class="nav-item dropdown " >
+                        <a class="nav-link dropdown-toggle" href="/control_inventario/" data-bs-toggle="dropdown">
+                            <i class="bi bi-gear me-2"></i>Productos
+                        </a>
+                        <ul class="dropdown-menu  dropdown-menu-dark "id="dropwdownRevision" style="margin: 0;">
+                            <!-- <h6 class="dropdown-header">Información</h6> -->
+                            <li>
+                                <a class="dropdown-item nav-link text-white " href="/control_inventario/estado"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Ingresar Estado de los productos</a>
+                            </li>
                         </ul>
                     </div> 
 
