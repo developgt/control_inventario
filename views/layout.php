@@ -37,7 +37,7 @@
                                 <a class="dropdown-item nav-link text-white " href="/control_inventario/almacen"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Almacen</a>
                             </li>
                             <li>
-                                <a class="dropdown-item nav-link text-white " href="/control_inventario/unimedida"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>UNIDADES DE MEDIDA</a>
+                                <a class="dropdown-item nav-link text-white " href="/control_inventario/medida"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>UNIDADES DE MEDIDA</a>
                             </li>
                         </ul>
                     </div> 

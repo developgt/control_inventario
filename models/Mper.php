@@ -2,11 +2,11 @@
 
 namespace Model;
 
-class Persona extends ActiveRecord
+class Mper extends ActiveRecord
 {
     protected static $tabla = 'mper';
     protected static $columnasDB = [
-        'per_catalogo', 'per_serie', 'per_grado', 'per_arma', 'per_nom1', 'per_nom2', 'per_ape1', 'per_ape2', 
+        'per_serie', 'per_grado', 'per_arma', 'per_nom1', 'per_nom2', 'per_ape1', 'per_ape2', 
         'per_ape3', 'per_ced_ord', 'per_ced_reg', 'per_fec_ext_ced', 'per_ext_ced_lugar', 'per_est_civil', 
         'per_direccion', 'per_zona', 'per_dir_lugar', 'per_telefono', 'per_sexo', 'per_fec_nac', 'per_nac_lugar', 
         'per_promocion', 'per_afil_ipm', 'per_sangre', 'per_antiguedad', 'per_bienal', 'per_plaza', 'per_desc_empleo', 
@@ -48,7 +48,7 @@ class Persona extends ActiveRecord
     public function __construct($args = [])
     {
 
-        $this->per_catalogo = $args['per_catalogo'] ?? null;
+        $this->per_catalogo = $args['per_catalogo'] ?? null ;
         $this->per_serie = $args['per_serie'] ?? '';
         $this->per_grado = $args['per_grado'] ?? null;
         $this->per_arma = $args['per_arma'] ?? null;

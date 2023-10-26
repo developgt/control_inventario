@@ -11,6 +11,8 @@ const btnBuscar = document.getElementById('btnBuscar');
 const btnModificar = document.getElementById('btnModificar');
 const btnCancelar = document.getElementById('btnCancelar');
 const alma_id = document.getElementById('alma_id');
+const asignarOficialModal = document.getElementById('asignarOficialModal');
+
 
 
 btnModificar.disabled = true
@@ -23,6 +25,121 @@ btnCancelar.parentElement.style.display = 'none'
 
 const almaUnidad = document.getElementById('alma_unidad');
 const almaUnidadId = document.getElementById('alma_unidad_id');
+
+
+const tablaAlmacen = document.getElementById('tablaAlmacen');
+
+document.addEventListener('DOMContentLoaded', function() {
+    tablaAlmacen.addEventListener('click', function(event) {
+        if (event.target.classList.contains('btn-asignar-oficial')) {
+            // Obtener el ID del botón clickeado
+            const almaId = event.target.dataset.id;
+
+            // Obtener el cuerpo del modal
+            const modalBody = document.querySelector('#asignarOficialModal .modal-body');
+
+            // Crear un enlace con el href correspondiente
+            const enlace = document.createElement('a');
+            enlace.href = `/control_inventario/guarda`;
+            enlace.innerText = 'Abrir Vista';
+
+            // Limpiar el contenido previo del modal
+            modalBody.innerHTML = '';
+
+            // Agregar el enlace al cuerpo del modal
+            modalBody.appendChild(enlace);
+
+            // Abrir el modal
+            asignarOficialModal.style.display = 'block';
+            document.body.classList.add('modal-open');
+            console.log(data);
+
+        } else {
+            console.error('El botón "btn-asignar-oficial" no se encontró en el DOM.');
+        }
+    });
+});
+
+
+// document.addEventListener('DOMContentLoaded', function() {
+// tablaAlmacen.addEventListener('click', async function(event) {
+//     if (event.target.classList.contains('btn-asignar-oficial')) {
+//         // Obtener el ID del botón clickeado
+//         const almaId = event.target.dataset.id;
+
+//         // Obtener el cuerpo del modal
+//         const modalBody = document.querySelector('#asignarOficialModal .modal-body');
+
+//         try {
+//             // Realizar una solicitud para obtener el contenido de la vista
+//             const response = await fetch(`/control_inventario/guarda`);
+//             const vistaHTML = await response.text();
+
+//             // Insertar el contenido de la vista en el cuerpo del modal
+//             modalBody.innerHTML = vistaHTML;
+
+//             // Abrir el modal
+//             const modal = new bootstrap.Modal(document.getElementById('asignarOficialModal'));
+//             modal.show();
+//         } catch (error) {
+//             console.error('Error al cargar la vista: ', error);
+//             modalBody.innerHTML = 'Error al cargar la vista'; // Muestra un mensaje de error en el modalBody si falla la carga
+//         }
+//     } else {
+//         console.error('El botón "btn-asignar-oficial" no se encontró en el DOM.');
+//     }
+// });
+// });
+
+// document.addEventListener('DOMContentLoaded', function() {
+//     tablaAlmacen.addEventListener('click', async function(event) {
+//         if (event.target.classList.contains('btn-asignar-oficial')) {
+//             // Obtener el ID del botón clickeado
+//             const almaId = event.target.dataset.id;
+
+//             // Obtener el cuerpo del modal
+//             const modalBody = document.querySelector('#asignarOficialModal .modal-body');
+
+//             try {
+//                 // Realizar una solicitud para obtener el contenido de la vista
+//                 const response = await fetch(`/control_inventario/guarda/${almaId}`);
+//                 const vistaHTML = await response.text();
+//                 console.log(data);
+
+//                 // Insertar el contenido de la vista en el cuerpo del modal
+//                 modalBody.innerHTML = vistaHTML;
+
+//                 // Abrir el modal
+//                 asignarOficialModal.style.display = 'block';
+//                 document.body.classList.add('modal-open');
+//             } catch (error) {
+//                 console.error('Error al cargar la vista: ', error);
+//                 modalBody.innerHTML = 'Error al cargar la vista'; // Muestra un mensaje de error en el modalBody si falla la carga
+//             }
+//         } else {
+//             console.error('El botón "btn-asignar-oficial" no se encontró en el DOM.');
+//         }
+//     });
+// });
+
+// // Agregar un manejador de eventos al contenedor de la tabla
+// tablaAlmacen.addEventListener('click', function(event) {
+//     // Verificar si el clic se hizo en un botón "Asignar Oficial"
+//     if (event.target.classList.contains('btn-asignar-oficial')) {
+//         // Obtener el ID del botón clickeado
+//         const almaId = event.target.dataset.id;
+
+
+//         // Abrir el modal aquí y hacer lo que necesitas con el ID (almaId)
+//         asignarOficialModal.classList.add('show');
+//         asignarOficialModal.style.display = 'block';
+//         document.body.classList.add('modal-open');
+    
+//         } else {
+//             console.error('El botón "btn-asignar-oficial" no se encontró en el DOM.');
+//         }
+//     });
+
 
 //////////DATATABLE//////////////////////////////////////////////////////
 
@@ -65,6 +182,13 @@ const datatable = new Datatable('#tablaAlmacen', {
             searchable: false,
             orderable: false,
             render: (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Eliminar</button>`
+        },
+        {
+            title: 'ASIGNAR ENCARGADO A ESTE ALMACEN',
+            data: 'alma_id',
+            searchable: false,
+            orderable: false,
+            render: (data, type, row, meta) => `<button class="btn btn-info btn-asignar-oficial" data-id='${data}' data-target='asignarOficial'>Asignar Oficial</button>`
         }
     ]
 });
@@ -234,7 +358,7 @@ const guardar = async (evento) => {
     } catch (error) {
         console.log(error);
     }
-    buscarDependencia();
+    //buscarDependencia();
     buscar();
 }
 
@@ -383,6 +507,13 @@ let valor = alma_id.value
     buscar();
 };
 
+
+
+
+
+
+
+
 buscar();
 
 formulario.addEventListener('submit', guardar);
@@ -397,36 +528,3 @@ datatable.on('click', '.btn-danger', eliminar);
 
 
 
-// const almaUnidad = document.getElementById('alma_unidad');
-
-// document.addEventListener('DOMContentLoaded', function() {
-//     buscarDependencia();
-// // });
-
-// const buscarDependencia = async () => {
-//     const url = `/control_inventario/API/almacen/buscarDependencia`;
-//     const config = {
-//         method: 'GET'
-//     };
-
-//     try {
-//         const respuesta = await fetch(url, config);
-//         const data = await respuesta.json();
-
-//         if (data && data.dep_desc_md) {
-//             almaUnidad.value = data.dep_desc_md;
-//         } else {
-//             almaUnidad.value = ''; // Otra acción para manejar el caso donde no se encuentra la dependencia
-//             Toast.fire({
-//                 title: 'No se encontraron registros',
-//                 icon: 'info'
-//             });
-//         }
-//     } catch (error) {
-//         console.error(error);
-//         Toast.fire({
-//             title: 'Error al obtener los datos',
-//             icon: 'error'
-//         });
-//     }
-// };

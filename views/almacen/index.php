@@ -47,4 +47,22 @@
         </div>
     </div>
 </div>
+
+
+<!-- <-- modal para mostrar la vista de guarda/index.php --> 
+<div class="modal fade" id="asignarOficialModal" name="asignarOficialModal"tabindex="-1" role="dialog" aria-labelledby="asignarOficialModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="asignarOficialModalLabel">Asignar Oficial</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="asignarOficialModalBody">
+                <!-- Contenido de la vista de guarda/index.php se cargará aquí -->
+            </div>
+        </div>
+    </div>
+</div>
     <script src="<?= asset('./build/js/almacen/index.js') ?>"></script>

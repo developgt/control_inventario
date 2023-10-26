@@ -13,10 +13,6 @@
                 <label for="uni_almacen">ALMACEN</label>
                 <select name="uni_almacen" id="uni_almacen" class="form-control">
                     <option value="">SELECCIONE...</option>
-                    <?php foreach ($almacenes as $almacen) : ?>
-                        <option value="<?= $almacen['alma_id'] ?>">
-                            <?= $almacen['alma_nombre'] ?></option>
-                    <?php endforeach ?>
                 </select>
             </div>
             </div>
@@ -46,4 +42,4 @@
         </div>
     </div>
 </div>
-    <script src="<?= asset('./build/js/unimedida/index.js') ?>"></script>
+    <script src="<?= asset('./build/js/medida/index.js') ?>"></script>

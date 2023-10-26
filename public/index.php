@@ -6,7 +6,8 @@ use MVC\Router;
 use Controllers\AppController;
 use Controllers\AlmacenController;
 use Controllers\EstadoController;
-use Controllers\UnimedidaController;
+use Controllers\GuardaController;
+use Controllers\MedidaController;
 
 $router = new Router();
 $router->setBaseURL('/' . $_ENV['APP_NAME']);
@@ -32,8 +33,21 @@ $router->post('/API/estado/eliminar', [EstadoController::class,'eliminarAPI'] );
 
 
 //rutas para manejar la vista y funciones de la tabla inv_uni_med, (unidades de medida)
-$router->get('/unimedida', [UnimedidaController::class,'index']);
-$router->get('/API/unimedida/buscarAlmacen', [UnimedidaController::class, 'buscarAlmacenAPI']);
+$router->get('/medida', [MedidaController::class,'index']);
+$router->post('/API/medida/guardar', [MedidaController::class,'guardarAPI'] );
+$router->get('/API/medida/buscar', [MedidaController::class, 'buscarAPI']);
+$router->post('/API/medida/modificar', [MedidaController::class,'modificarAPI'] );
+$router->post('/API/medida/eliminar', [MedidaController::class,'eliminarAPI'] );
+$router->get('/API/medida/buscarAlmacenes', [MedidaController::class, 'buscarAlmacenesAPI']);
+
+//rutas para manejar la vista y funciones de la tabla inv_guarda_almacen (asignar guarda almacen)
+$router->get('/guarda', [GuardaController::class,'index']);
+$router->get('/API/guarda/buscarAlmacenes', [GuardaController::class, 'buscarAlmacenesAPI']);
+$router->get('/API/guarda/buscarOficiales', [GuardaController::class, 'buscarOficialesAPI']);
+$router->post('/API/guarda/guardar', [GuardaController::class,'guardarAPI'] );
+
+
+
 
 
 

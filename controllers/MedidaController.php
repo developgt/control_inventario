@@ -9,26 +9,40 @@ use Model\Mper;
 use Model\Morg;
 use Model\Mdep;
 use MVC\Router;
-use Model\Unimedida;
+use Model\Medida;
 
-class UnimedidaController
+
+class MedidaController
 {
 
-    public static function index(Router $router)
-    {
-        $almacen = static::buscarAlmacenAPI();
+    public static function index(Router $router){
+        //$almacen = static::buscarAlmacen();
 
-        $router->render('unimedida/index', [
-       
-            'unimedida' => $almacen,
-
+        $router->render('medida/index', [
+            //'almacen' => $almacen
         ]);
     }
+
+ 
+    
     
 
-    public static function buscarAlmacenAPI()
+    public static function buscarAlmacen()
     {
         $sql = "select alma_nombre, alma_unidad, alma_descripcion, alma_id from inv_almacenes, mper, morg, mdep where per_plaza = org_plaza and org_dependencia= dep_llave and alma_unidad = dep_llave and per_catalogo = 657585
+        and alma_situacion = 1";
+        try {
+            $almacen = Almacen::fetchArray($sql);
+            //print_r($almacen); 
+            return $almacen;
+        } catch (Exception $e) {
+            return[];
+        }
+    }
+
+    public static function buscarAlmacenesAPI()
+    {
+        $sql = "select alma_nombre, alma_id from inv_almacenes, mper, morg, mdep where per_plaza = org_plaza and org_dependencia= dep_llave and alma_unidad = dep_llave and per_catalogo = 657585
         and alma_situacion = 1";
         try {
             $almacen = Almacen::fetchArray($sql);
@@ -49,8 +63,8 @@ public static function guardarAPI()
 {
     try {
 
-        $estado = new Unimedida($_POST);
-        $resultado = $estado->crear();
+        $medida = new Medida($_POST);
+        $resultado = $medida->crear();
 
         if ($resultado['resultado'] == 1) {
             echo json_encode([
@@ -79,24 +93,45 @@ public static function guardarAPI()
 public static function buscarAPI(){
 
     
-    $est_descripcion = $_GET['est_descripcion'] ?? '';
+    $uni_nombre = $_GET['uni_nombre'] ?? '';
+    $uni_almacen = $_GET['uni_almacen'] ?? '';
+    $alma_nombre = $_GET['alma_nombre'] ?? '';
+    $alma_id = $_GET['alma_id'] ?? '';
 
 
 
-    $sql = "select est_descripcion, est_id from inv_estado, mper, morg, mdep where per_plaza = org_plaza and org_dependencia= dep_llave and per_catalogo = 657585
-    and est_situacion = 1";
 
-    if ($est_descripcion != '') {
-        $est_descripcion = strtolower($est_descripcion);
-        $sql .= " AND LOWER(est_descripcion) LIKE '%$est_descripcion%' ";
+
+
+
+    $sql = "SELECT uni_nombre, uni_id, inv_almacenes.alma_id, inv_almacenes.alma_nombre as uni_almacen 
+    FROM inv_uni_med
+    JOIN mper ON per_plaza = per_plaza 
+    JOIN morg ON org_plaza = per_plaza
+    JOIN mdep ON org_dependencia = dep_llave 
+    JOIN inv_almacenes ON uni_almacen = inv_almacenes.alma_id
+    WHERE per_catalogo = 657585 AND uni_situacion = 1;";
+
+    if ($uni_nombre != '') {
+        $uni_nombre = strtolower($uni_nombre);
+        $sql .= " AND LOWER(uni_nombre) LIKE '%$uni_nombre%' ";
 
     }
+    if ($uni_almacen != '' ) {
+        $uni_almacen = strtolower($uni_almacen);
+        $sql .= " AND LOWER(uni_almacen) LIKE '%$uni_almacen%' ";
+     }
+     if ($alma_nombre != '' ) {
+        $alma_nombre = strtolower($alma_nombre);
+        $sql .= " AND LOWER(inv_almacenes.alma_nombre) LIKE '%$alma_nombre
+        %' ";
+        }
 
     try {
 
-        $estado = Estado::fetchArray($sql);
+        $medida = Medida::fetchArray($sql);
 
-        echo json_encode($estado);
+        echo json_encode($medida);
     } catch (Exception $e) {
         echo json_encode([
             'detalle' => $e->getMessage(),
@@ -108,18 +143,21 @@ public static function buscarAPI(){
 
 public static function modificarAPI() {
     try {
-        $est_id = $_POST['est_id'];
-        $est_descripcion = $_POST['est_descripcion'];
+        $uni_id = $_POST['uni_id'];
+        $uni_nombre = $_POST['uni_nombre'];
+        $uni_almacen = $_POST['uni_almacen'];
+
       
 
         // echo json_encode($_POST);
         // exit;
-        $estado = new Estado([
-            'est_id' => $est_id, 
-            'est_descripcion' => $est_descripcion
+        $medida = new Medida([
+            'uni_id' => $uni_id, 
+            'uni_nombre' => $uni_nombre,
+            'uni_almacen' => $uni_almacen
         ]);
 
-        $resultado = $estado->actualizar();
+        $resultado = $medida->actualizar();
 
         if ($resultado['resultado'] == 1) {
             echo json_encode([
@@ -143,10 +181,10 @@ public static function modificarAPI() {
 
 public static function eliminarAPI() {
     try {
-        $est_id = $_POST['est_id'];
-        $estado = Estado::find($est_id);
-        $estado->est_situacion = 0;
-        $resultado = $estado->actualizar();
+        $uni_id = $_POST['uni_id'];
+        $medida = Medida::find($uni_id);
+        $medida->uni_situacion = 0;
+        $resultado = $medida->actualizar();
 
         if ($resultado['resultado'] == 1) {
             echo json_encode([

@@ -2,7 +2,7 @@
 
 namespace Model;
 
-class Unimedida extends ActiveRecord
+class Medida extends ActiveRecord
 {
     protected static $tabla = 'inv_uni_med';
     protected static $columnasDB = ['uni_nombre', 'uni_almacen', 'uni_situacion'];
