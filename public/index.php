@@ -17,10 +17,17 @@ $router->get('/', [AppController::class,'index']);
 ////rutas para manejar la vista y funciones del almacen
 $router->get('/almacen', [AlmacenController::class,'index']);
 $router->get('/API/almacen/buscarDependencia', [AlmacenController::class, 'buscarDependenciaAPI']);
+$router->get('/API/almacen/obtenerNombreAlmacen', [AlmacenController::class, 'obtenerNombreAlmacenAPI']);
 $router->post('/API/almacen/guardar', [AlmacenController::class,'guardarAPI'] );
 $router->get('/API/almacen/buscar', [AlmacenController::class, 'buscarAPI']);
 $router->post('/API/almacen/modificar', [AlmacenController::class,'modificarAPI'] );
 $router->post('/API/almacen/eliminar', [AlmacenController::class,'eliminarAPI'] );
+$router->post('/API/almacen/guardarAsignar', [AlmacenController::class,'guardarAsignarAPI'] );
+$router->get('/API/almacen/buscarOficiales', [AlmacenController::class, 'buscarOficialesAPI']);
+$router->get('/API/almacen/buscarAsignar', [AlmacenController::class, 'buscarAsignarAPI']);
+
+
+
 
 
 ////rutas para manejar la vista y funciones de la tabla estado, pertenecientes a la tabla productos. 
