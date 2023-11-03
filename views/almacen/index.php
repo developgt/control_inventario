@@ -41,7 +41,7 @@
 <div class="container border rounded bg-white mt-5">
     <h1 class="text-center mt-4 mb-4 bg-light p-3 border rounded">Almacenes registrados</h1>
     <div class="row justify-content-center">
-        <div class="col table-responsive">
+        <div class="table-responsive">
             <table id="tablaAlmacen" class="table table-striped table-bordered table-hover table-light">
             </table>
         </div>
@@ -49,7 +49,7 @@
 </div>
 
 
-<!-- <-- modal para mostrar la vista de guarda/index.php -->
+<!-- <-- modal para mostrar la vista para asignar guarda almacén -->
 <div class="modal fade" id="asignarOficialModal" name="asignarOficialModal" tabindex="-1" role="dialog" aria-labelledby="asignarOficialModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -74,7 +74,7 @@
                         <div class="row mb-3">
                             <div class="col">
                                 <label for="guarda_almacen">ALMACEN AL QUE SE ASIGNARÁ</label>
-                                <input type="text" name="guarda_almacen" id="guarda_almacen">
+                                <input type="hidden" name="guarda_almacen" id="guarda_almacen">
                                 <input type="text" name="guarda_almacen_nombre" id="guarda_almacen_nombre" class="form-control" style="background-color: #f2f2f2;" readonly>
                             </div>
                         </div>
@@ -101,16 +101,16 @@
                         </div>
                     </form>
                 </div>
-                <div class="container border rounded bg-white mt-5">
+                <!-- <div class="container border rounded bg-white mt-5"> -->
+                <div class="container d-flex flex-column align-items-center justify-content-center border rounded bg-white mt-5">
                     <h3 class="text-center mt-4 mb-4 bg-light p-3 border rounded">Oficiales asignados...</h3>
                     <div class="row justify-content-center">
-                        <div class="col table-responsive">
-                            <table id="tablaGuarda" class="table table-striped table-bordered table-hover table-light">
+                        <div class="table-responsive">
+                            <table id="tablaGuarda" class="table table-striped table-bordered table-hover table-light w-auto">
                             </table>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>

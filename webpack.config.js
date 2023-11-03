@@ -10,6 +10,8 @@ module.exports = {
     'js/estado/index' : './src/js/estado/index.js',
     'js/medida/index' : './src/js/medida/index.js',
     'js/guarda/index' : './src/js/guarda/index.js',
+    'js/producto/index' : './src/js/producto/index.js',
+
 
 
 

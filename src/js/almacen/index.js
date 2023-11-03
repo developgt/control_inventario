@@ -111,6 +111,7 @@ const datatable = new Datatable('#tablaAlmacen', {
         {
             title: 'ELIMINAR',
             data: 'alma_id',
+            width: 'auto',
             searchable: false,
             orderable: false,
             render: (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Eliminar</button>`
@@ -118,11 +119,20 @@ const datatable = new Datatable('#tablaAlmacen', {
         {
             title: 'ASIGNAR ENCARGADO A ESTE ALMACEN',
             data: 'alma_id',
+            width: 'auto',
             searchable: false,
             orderable: false,
             render: (data, type, row, meta) => `<button class="btn btn-info btn-asignar-oficial" data-id='${data}' data-target='asignarOficial'>Asignar Oficial</button>`
         }
-    ]
+    ],
+    // columnDefs: [
+
+    //     {
+    //         targets: 5, 
+    //         className: 'col-1'
+    //         //width: "400%"
+    //     }
+    // ],
 });
 
 
@@ -170,7 +180,7 @@ const cancelarAccion = () => {
     btnModificar.parentElement.style.display = 'none';
     btnCancelar.disabled = true;
     btnCancelar.parentElement.style.display = 'none';
-    buscarDependencia();
+    actualizarDependencia();
 };
 
 //// Función para buscar las dependencias y colocarlas en el input alma_unidad
@@ -377,7 +387,7 @@ const buscar = async () => {
         console.log(error);
     }
     formulario.reset();
-    //actualizarDependencia();
+    actualizarDependencia();
 };
 
 ////funcion para cambiar de situacion un almacen
@@ -601,6 +611,9 @@ botonCerrarModal.addEventListener('click', function () {
     asignarOficialModal.style.display = 'none';
     document.body.classList.remove('modal-open');
     formularioGuarda.reset();
+    cancelarAccionAsignar();
+    actualizarDependencia();
+
 });
 
 ////cerrar el modal cuando se hace clic fuera del modal...
@@ -609,112 +622,193 @@ asignarOficialModal.addEventListener('click', function (event) {
         asignarOficialModal.style.display = 'none';
         document.body.classList.remove('modal-open');
         formularioGuarda.reset();
+        cancelarAccionAsignar();
+        actualizarDependencia();
+        //buscarDependencia();
     }
 });
 //////////DATATABLE//////////////////////////
 
 let contadorAsignar = 1;
-btnModificar.disabled = true;
-btnModificar.parentElement.style.display = 'none';
-btnCancelar.disabled = true;
-btnCancelar.parentElement.style.display = 'none';
+btnModificarAsignar.disabled = true;
+btnModificarAsignar.parentElement.style.display = 'none';
+btnCancelarAsignar.disabled = true;
+btnCancelarAsignar.parentElement.style.display = 'none';
 
 const datatableAsignar = new Datatable('#tablaGuarda', {
     language: lenguaje,
     data: null,
+    autoWidth: true,
     columns: [
         {
             title: 'NO',
-            render: () => contador++
+            render: () => contadorAsignar++
+        },
+        { 
+            title: 'ID',
+            data: 'guarda_id'
+        },
+        { 
+            title: 'catalogo',
+            data: 'guarda_catalogo'
+        },
+        { 
+            title: 'ID ALMACEN',
+            data: 'guarda_almacen'
         },
         {
             title: 'NOMBRE',
-            data: 'guarda_nombre'
+            data: 'guarda_nombre',
+            width: 120,
+
         },
         {
             title: 'ALMACÉN ASIGNADO',
             data: 'guarda_almacen_nombre'
         },
         {
-            title: 'MODIFICAR',
-            data: 'guarda_catalogo',
+            title: 'MODIFICAR CATÁLOGO',
+            data: 'guarda_id',
             searchable: false,
             orderable: false,
-            render: (data, type, row, meta) => `<button class="btn btn-warning" data-id='${row["guarda_catalogo"]}' data-nombre='${row["alma_nombre"]}' data-descripcion='${row["alma_descripcion"]}' data-unidad='${row["alma_unidad"]}'>Modificar</button>`
+            render: (data, type, row, meta) => `<button class="btn btn-warning border border-dark" data-idguarda='${row["guarda_id"]}' data-catalogo='${row["guarda_catalogo"]}' data-almacen='${row["guarda_almacen"]}' data-nombre='${row["guarda_nombre"]}' data-almanom='${row["guarda_almacen_nombre"]}'>Modificar</button>`
         },
         {
             title: 'ELIMINAR',
-            data: 'guarda_catalogo',
+            data: 'guarda_id',
             searchable: false,
             orderable: false,
-            render: (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Eliminar</button>`
-        },
-        {
-            title: 'ASIGNAR ENCARGADO A ESTE ALMACEN',
-            data: 'guarda_catalogo',
-            searchable: false,
-            orderable: false,
-            render: (data, type, row, meta) => `<button class="btn btn-info btn-asignar-oficial" data-id='${data}' data-target='asignarOficial'>Asignar Oficial</button>`
+            render: (data, type, row, meta) => `<button class="btn btn-danger border border-dark" data-id='${data}'>Eliminar</button>`
         }
+    ],
+    columnDefs: [
+        {
+            targets: [1, 2, 3],
+            visible: false, 
+            width: 0,
+            searchable: false,
+            
+        }
+      
     ]
+    
 });
 
 //// PARA TRAER LOS DATOS 
 const traeDatosAsignar = (e) => {
     const button = e.target;
-    const id = button.dataset.id;
+    const idguarda = button.dataset.idguarda;
+    const catalogo= button.dataset.catalogo;
     const nombre = button.dataset.nombre;
-    const descripcion = button.dataset.descripcion;
-    const unidad = button.dataset.unidad;
+    const almacen = button.dataset.almacen;
+    const almanom = button.dataset.almanom;
 
-    const dataset = {
-        guarda_catalogo: id,
-        alma_nombre: nombre,
-        alma_descripcion: descripcion,
-        alma_unidad: unidad,
+
+    const datasetAsignar = {
+        guarda_id: idguarda,
+        guarda_catalogo: catalogo,
+        guarda_nombre: nombre,
+        guarda_almacen: almacen,
+        guarda_almacen_nombre : almanom,
+       
     };
 
-    colocarDatosAsignar(dataset);
+    colocarDatosAsignar(datasetAsignar);
 };
 
-const colocarDatosAsignar = (dataset) => {
-    formulario.alma_nombre.value = dataset.alma_nombre;
-    formulario.alma_descripcion.value = dataset.alma_descripcion;
-    formulario.alma_unidad.value = dataset.alma_unidad;
-    formulario.guarda_catalogo.value = dataset.guarda_catalogo;
+const colocarDatosAsignar = (datasetAsignar) => {
+    formularioGuarda.guarda_id.value = datasetAsignar.guarda_id;
+    formularioGuarda.guarda_catalogo.value = datasetAsignar.guarda_catalogo;
+    formularioGuarda.guarda_nombre.value = datasetAsignar.guarda_nombre;
+    formularioGuarda.guarda_almacen.value = datasetAsignar.guarda_almacen;
+    formularioGuarda.guarda_almacen_nombre.value = datasetAsignar.guarda_almacen_nombre;
+    console.log(datasetAsignar)
+    
 
-    btnGuardar.disabled = true;
-    btnGuardar.parentElement.style.display = 'none';
-    btnBuscar.disabled = true;
-    btnBuscar.parentElement.style.display = 'none';
-    btnModificar.disabled = false;
-    btnModificar.parentElement.style.display = '';
-    btnCancelar.disabled = false;
-    btnCancelar.parentElement.style.display = '';
+    btnGuardarAsignar.disabled = true;
+    btnGuardarAsignar.parentElement.style.display = 'none';
+    btnBuscarAsignar.disabled = true;
+    btnBuscarAsignar.parentElement.style.display = 'none';
+    btnModificarAsignar.disabled = false;
+    btnModificarAsignar.parentElement.style.display = '';
+    btnCancelarAsignar.disabled = false;
+    btnCancelarAsignar.parentElement.style.display = '';
 };
 
 const cancelarAccionAsignar = () => {
-    formulario.reset();
-    btnGuardar.disabled = false;
-    btnGuardar.parentElement.style.display = '';
-    btnBuscar.disabled = false;
-    btnBuscar.parentElement.style.display = '';
-    btnModificar.disabled = true;
-    btnModificar.parentElement.style.display = 'none';
-    btnCancelar.disabled = true;
-    btnCancelar.parentElement.style.display = 'none';
-    buscarDependencia();
+    formularioGuarda.reset();
+    btnGuardarAsignar.disabled = false;
+    btnGuardarAsignar.parentElement.style.display = '';
+    btnBuscarAsignar.disabled = false;
+    btnBuscarAsignar.parentElement.style.display = '';
+    btnModificarAsignar.disabled = true;
+    btnModificarAsignar.parentElement.style.display = 'none';
+    btnCancelarAsignar.disabled = true;
+    btnCancelarAsignar.parentElement.style.display = 'none';
 };
 
+////////////////////////// funcion para modificar un guarda almacen/////////////////////////////////////////
 
+const ModificarAsignar = async () => {
+ 
+    if (!formularioGuarda.checkValidity()) {
+        Toast.fire({
+            icon: 'info',
+            text: 'Debe llenar todos los campos'
+        });
+        return;
+    }
+
+    const body = new FormData(formularioGuarda);
+    body.append('guarda_id', guarda_id.value);
+    //body.append('guarda_catalogo', guarda_catalogo.value);
+
+    const url = '/control_inventario/API/almacen/modificarAsignar';
+    const config = {
+        method: 'POST',
+        body
+    
+    };
+    try {
+
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+        console.log(data)
+        const { codigo, mensaje, detalle } = data;
+        let icon = 'info';
+        switch (codigo) {
+            case 1:
+                formularioGuarda.reset();
+                icon = 'success';
+                BuscarAsignar();
+                cancelarAccionAsignar();
+                break;
+            case 0:
+                icon = 'error';
+                console.log(detalle);
+                break;
+            default:
+                break;
+        }
+        Toast.fire({
+            icon,
+            text: mensaje
+        });
+    } catch (error) {
+        console.log(error);
+    }
+    formularioGuarda.reset();
+};
+
+////////////////////////funcion para buscar los oficiales asignados como guarda almacen////////////////////////////////////////
 const BuscarAsignar= async () => {
 
-    let guarda_nombre = formularioGuarda.guarda_nombre.value;
-    let guarda_almacen = formularioGuarda.guarda_almacen.value;
-    let guarda_catalogo = formularioGuarda.guarda_catalogo.value;
+    // let guarda_nombre = formularioGuarda.guarda_nombre.value;
+    // let guarda_almacen = formularioGuarda.guarda_almacen.value;
+    // let guarda_catalogo = formularioGuarda.guarda_catalogo.value;
 
 
-    const url = `/control_inventario/API/almacen/buscarAsignar?guarda_nombre=${guarda_nombre}&guarda_almacen=${guarda_almacen}&guarda_catalogo=${guarda_catalogo}`;
+    const url = `/control_inventario/API/almacen/buscarAsignar?`;
     const config = {
         method: 'GET'
     };
@@ -722,6 +816,7 @@ const BuscarAsignar= async () => {
     try {
         const respuesta = await fetch(url, config);
         const data = await respuesta.json();
+        console.log(data);
 
         datatableAsignar.clear().draw();
         if (data) {
@@ -737,12 +832,16 @@ const BuscarAsignar= async () => {
     } catch (error) {
         console.log(error);
     }
-    formulario.reset();
+    formularioGuarda.reset();
     //actualizarDependencia();
 };
 
-buscar();
+
+
+
+
 actualizarDependencia();
+buscar();
 //BuscarAsignar();
 //eventos de la vista general
 formulario.addEventListener('submit', guardar);
@@ -757,7 +856,11 @@ datatable.on('click', '.btn-danger', eliminar);
 guarda_catalogo.addEventListener('input', buscarOficiales);
 formularioGuarda.addEventListener('submit', GuardarAsignar);
 btnBuscarAsignar.addEventListener('click', BuscarAsignar);
+btnModificarAsignar.addEventListener('click', ModificarAsignar);
+datatableAsignar.on('click', '.btn-warning', traeDatosAsignar);
+btnCancelarAsignar.addEventListener('click', cancelarAccionAsignar);
 
+//datatable.on('click', '.btn-danger', eliminar);
 
 
 

@@ -21,15 +21,37 @@ class EstadoController
         ]);
     }
     
+    public static function buscarDependenciaAPI()
+{
+    $sql = "SELECT dep_llave, dep_desc_md FROM mper, morg, mdep WHERE per_plaza = org_plaza AND org_dependencia = dep_llave AND per_catalogo = 665133";
+    try {
+        $almacen = Almacen::fetchArray($sql);
+
+        // Establece el tipo de contenido de la respuesta a JSON
+        header('Content-Type: application/json');
+
+        // Convierte el array a JSON y envíalo como respuesta
+        echo json_encode($almacen);
+    } catch (Exception $e) {
+        // En caso de error, envía una respuesta vacía
+        echo json_encode([]);
+    }
+}
 
 //funcion para guardar almacen
 
 public static function guardarAPI()
 {
     try {
+           // Convertir datos a mayúsculas
+           foreach ($_POST as $key => $value) {
+            $_POST[$key] = strtoupper($value);
+        }
 
         $estado = new Estado($_POST);
         $resultado = $estado->crear();
+
+        header('Content-Type: text/html; charset=utf-8');
 
         if ($resultado['resultado'] == 1) {
             echo json_encode([
@@ -62,8 +84,12 @@ public static function buscarAPI(){
 
 
 
-    $sql = "select est_descripcion, est_id from inv_estado, mper, morg, mdep where per_plaza = org_plaza and org_dependencia= dep_llave and per_catalogo = 657585
-    and est_situacion = 1";
+    $sql = "SELECT est_descripcion, est_id, est_dependencia
+    FROM inv_estado
+    JOIN mdep ON inv_estado.est_dependencia = mdep.dep_llave
+    JOIN morg ON mdep.dep_llave = morg.org_dependencia
+    JOIN mper ON morg.org_plaza = mper.per_plaza
+    WHERE mper.per_catalogo = 665133 AND inv_estado.est_situacion = 1";
 
     if ($est_descripcion != '') {
         $est_descripcion = strtolower($est_descripcion);
@@ -76,6 +102,7 @@ public static function buscarAPI(){
         $estado = Estado::fetchArray($sql);
 
         echo json_encode($estado);
+        
     } catch (Exception $e) {
         echo json_encode([
             'detalle' => $e->getMessage(),
@@ -87,18 +114,27 @@ public static function buscarAPI(){
 
 public static function modificarAPI() {
     try {
+
+
         $est_id = $_POST['est_id'];
-        $est_descripcion = $_POST['est_descripcion'];
+        $est_descripcion = strtoupper($_POST['est_descripcion']);
+        $est_dependencia = ($_POST['est_dependencia']);
+
       
 
         // echo json_encode($_POST);
         // exit;
         $estado = new Estado([
             'est_id' => $est_id, 
-            'est_descripcion' => $est_descripcion
+            'est_descripcion' => $est_descripcion,
+            'est_dependencia'=> $est_dependencia
+
         ]);
 
         $resultado = $estado->actualizar();
+
+        header('Content-Type: text/html; charset=utf-8');
+
 
         if ($resultado['resultado'] == 1) {
             echo json_encode([

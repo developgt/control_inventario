@@ -42,7 +42,7 @@ class MedidaController
 
     public static function buscarAlmacenesAPI()
     {
-        $sql = "select alma_nombre, alma_id from inv_almacenes, mper, morg, mdep where per_plaza = org_plaza and org_dependencia= dep_llave and alma_unidad = dep_llave and per_catalogo = 657585
+        $sql = "select alma_nombre, alma_id from inv_almacenes, mper, morg, mdep where per_plaza = org_plaza and org_dependencia= dep_llave and alma_unidad = dep_llave and per_catalogo = 665133
         and alma_situacion = 1";
         try {
             $almacen = Almacen::fetchArray($sql);
@@ -104,13 +104,15 @@ public static function buscarAPI(){
 
 
 
-    $sql = "SELECT uni_nombre, uni_id, inv_almacenes.alma_id, inv_almacenes.alma_nombre as uni_almacen 
+    $sql = "
+    SELECT uni_nombre, uni_id, inv_almacenes.alma_id, inv_almacenes.alma_nombre as uni_almacen 
     FROM inv_uni_med
-    JOIN mper ON per_plaza = per_plaza 
-    JOIN morg ON org_plaza = per_plaza
-    JOIN mdep ON org_dependencia = dep_llave 
-    JOIN inv_almacenes ON uni_almacen = inv_almacenes.alma_id
-    WHERE per_catalogo = 657585 AND uni_situacion = 1;";
+    JOIN inv_almacenes ON inv_uni_med.uni_almacen = inv_almacenes.alma_id
+    JOIN mdep ON inv_almacenes.alma_unidad = mdep.dep_llave
+    JOIN morg ON mdep.dep_llave = morg.org_dependencia
+    JOIN mper ON morg.org_plaza = mper.per_plaza
+    WHERE mper.per_catalogo = 665133 AND inv_uni_med.uni_situacion = 1
+    ";
 
     if ($uni_nombre != '') {
         $uni_nombre = strtolower($uni_nombre);

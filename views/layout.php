@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -49,6 +49,9 @@
                             <!-- <h6 class="dropdown-header">Información</h6> -->
                             <li>
                                 <a class="dropdown-item nav-link text-white " href="/control_inventario/estado"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Ingresar Estado de los productos</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item nav-link text-white " href="/control_inventario/producto"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Formulario de productos</a>
                             </li>
                         </ul>
                     </div> 

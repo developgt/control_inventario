@@ -24,7 +24,7 @@ class AlmacenController
     }
     public static function buscarDependenciaAPI()
 {
-    $sql = "SELECT dep_llave, dep_desc_md FROM mper, morg, mdep WHERE per_plaza = org_plaza AND org_dependencia = dep_llave AND per_catalogo = 657585";
+    $sql = "SELECT dep_llave, dep_desc_md FROM mper, morg, mdep WHERE per_plaza = org_plaza AND org_dependencia = dep_llave AND per_catalogo = 665133";
     try {
         $almacen = Almacen::fetchArray($sql);
 
@@ -83,7 +83,7 @@ class AlmacenController
  
 
 
-        $sql = "select alma_nombre, alma_unidad, alma_descripcion, alma_id from inv_almacenes, mper, morg, mdep where per_plaza = org_plaza and org_dependencia= dep_llave and alma_unidad = dep_llave and per_catalogo = 657585
+        $sql = "select alma_nombre, alma_unidad, alma_descripcion, alma_id from inv_almacenes, mper, morg, mdep where per_plaza = org_plaza and org_dependencia= dep_llave and alma_unidad = dep_llave and per_catalogo = 665133
         and alma_situacion = 1";
 
         if ($alma_nombre != '') {
@@ -268,80 +268,44 @@ class AlmacenController
             }
         }
 
-    //     public static function buscarAsignarAPI(){
-
-    //         $guarda_catalogo = $_GET['guarda_catalogo'] ?? '';
-    //         $guarda_almacen = $_GET['guarda_almacen'] ?? '';
-    //         //$alma_unidad = $_GET['alma_unidad'] ?? '';
-     
-
-
-    //     $sql = "SELECT 
-    //     inv_guarda_almacen.guarda_id,
-    //     inv_guarda_almacen.guarda_catalogo,
-    //     inv_guarda_almacen.guarda_almacen,
-    //     inv_almacenes.alma_nombre AS guarda_almacen_nombre
-    // FROM 
-    //     inv_guarda_almacen
-    // JOIN 
-    //     inv_almacenes ON inv_guarda_almacen.guarda_almacen = inv_almacenes.alma_id
-    // JOIN 
-    //     mdep ON inv_almacenes.alma_unidad = mdep.dep_llave
-    // WHERE 
-    //     inv_guarda_almacen.guarda_situacion = 1
-    //     AND inv_almacenes.alma_unidad = mdep.dep_llave;
-    // ";
-    
-    //         // if ($alma_nombre != '') {
-    //         //     $alma_nombre = strtolower($alma_nombre);
-    //         //     $sql .= " AND LOWER(alma_nombre) LIKE '%$alma_nombre%' ";
-    
-    //         //     if ($alma_descripcion != '') {
-    //         //         $sql .= " AND alma_descripcion LIKE '%$alma_descripcion%'";
-    //         //     }
-        
-    //         //    // if ($alma_unidad != '') {
-    //         //       //  $sql .= " AND alma_unidad LIKE '%$alma_unidad%'";
-    //         //     //}
-      
-    //         // }
-    
-    //         try {
-    
-    //             $almacen = Mper::fetchArray($sql);
-    
-    //             echo json_encode($almacen);
-    //         } catch (Exception $e) {
-    //             echo json_encode([
-    //                 'detalle' => $e->getMessage(),
-    //                 'mensaje' => 'Ocurrió un error',
-    //                 'codigo' => 0
-    //             ]);
-    //         }
-    //     }
-    
 
 
         public static function buscarAsignarAPI(){
-            $guarda_catalogo = $_GET['guarda_catalogo'] ?? null;
-            $guarda_almacen = $_GET['guarda_almacen'] ?? null;
+            // $guarda_catalogo = $_GET['guarda_catalogo'] ?? null;
+            // $guarda_almacen = $_GET['guarda_almacen'] ?? null;
         
-            $sql = "
-            SELECT alma_nombre, guarda_id, guarda_catalogo, guarda_almacen FROM inv_almacenes, inv_guarda_almacen, mper, morg, mdep 
-            WHERE GUARDA_ALMACEN = ALMA_ID AND per_plaza = org_plaza and org_dependencia= dep_llave and alma_unidad = dep_llave and per_catalogo = 657585 AND GUARDA_CATALOGO = 657585 AND guarda_situcion = 1
+            $sql = "SELECT 
+            a.alma_nombre AS guarda_almacen_nombre, 
+            g.guarda_id, 
+            g.guarda_catalogo, 
+            g.guarda_almacen,  
+            TRIM(gr.gra_desc_ct) || ' DE ' || TRIM(ar.arm_desc_md) || ' ' || TRIM(mper.per_ape1) || ' ' || TRIM(mper.per_ape2) || ', ' || TRIM(mper.per_nom1) || ', ' || TRIM(mper.per_nom2) AS guarda_nombre
+        FROM 
+            inv_almacenes a
+        JOIN 
+            inv_guarda_almacen g ON a.alma_id = g.GUARDA_ALMACEN
+        JOIN 
+            mper ON mper.per_catalogo = g.guarda_catalogo
+        JOIN 
+            morg ON morg.org_plaza = mper.per_plaza
+        JOIN 
+            mdep ON mdep.dep_llave = morg.org_dependencia
+        JOIN 
+            grados gr ON mper.per_grado = gr.gra_codigo
+        JOIN 
+            armas ar ON mper.per_arma = ar.arm_codigo
+        WHERE 
+            g.GUARDA_ALMACEN = a.alma_id 
+            AND mper.per_catalogo = g.guarda_catalogo 
+            AND mper.per_plaza = morg.org_plaza 
+            AND morg.org_dependencia = mdep.dep_llave 
+            AND a.alma_unidad = mdep.dep_llave 
+            AND mper.per_catalogo = 665133
+            AND g.guarda_situacion = 1
             ";
-        
-            // Si se proporcionan valores, añadir las condiciones a la consulta
-            if ($guarda_catalogo !== null) {
-                $sql .= " AND inv_guarda_almacen.guarda_catalogo = $guarda_catalogo";
-            }
-        
-            if ($guarda_almacen !== null) {
-                $sql .= " AND inv_guarda_almacen.guarda_almacen = $guarda_almacen";
-            }
-        
+
             try {
-                $almacen = Mper::fetchArray($sql);
+                $almacen = Almacen::fetchArray($sql);
                 echo json_encode($almacen);
             } catch (Exception $e) {
                 echo json_encode([
@@ -351,36 +315,47 @@ class AlmacenController
                 ]);
             }
         }
+
+
+        public static function modificarAsignarAPI() {
+            try {
+                $guarda_id = $_POST['guarda_id'];
+                $guarda_catalogo = $_POST['guarda_catalogo'];
+                $guarda_almacen = $_POST['guarda_almacen'];
+                //$alma_unidad = $_POST['alma_unidad'];
+    
+                //echo json_encode($_POST);
+                // exit;
+                $guarda = new Guarda([
+                    'guarda_id' => $guarda_id, 
+                    'guarda_catalogo' => $guarda_catalogo,
+                    'guarda_almacen' => $guarda_almacen
+                ]);
+        
+                $resultado = $guarda->actualizar();
+        
+                if ($resultado['resultado'] == 1) {
+                    echo json_encode([
+                        'mensaje' => 'Registro modificado correctamente',
+                        'codigo' => 1
+                    ]);
+                } else {
+                    echo json_encode([
+                        'mensaje' => 'No se encontraron registros a actualizar',
+                        'codigo' => 0
+                    ]);
+                }
+            } catch (Exception $e) {
+                echo json_encode([
+                    'detalle' => $e->getMessage(),
+                    'mensaje' => "Error al realizar la operación",
+                    'codigo' => 0
+                ]);
+            }
+        }
         
 }
     
-    
-// $sql = "  SELECT 
-// trim(gra_desc_ct) || ' DE ' || trim(arm_desc_md) || ' ' || trim(per_ape1) || ' ' || trim(per_ape2) || ', ' || trim(per_nom1) || ', ' || trim(per_nom2) as guarda_nombre,
-// inv_guarda_almacen.guarda_almacen AS guarda_almacen_id,
-// inv_almacenes.alma_nombre AS guarda_almacen_nombre,
-// mdep.dep_llave,
-// mdep.dep_desc_md
-// FROM 
-// mper
-// JOIN 
-// grados ON per_grado = gra_codigo
-// JOIN 
-// armas ON per_arma = arm_codigo
-// LEFT JOIN 
-// inv_guarda_almacen ON mper.per_catalogo = inv_guarda_almacen.guarda_catalogo
-// LEFT JOIN 
-// inv_almacenes ON inv_guarda_almacen.guarda_almacen = inv_almacenes.alma_id
-// JOIN 
-// morg ON mper.per_plaza = morg.org_plaza
-// JOIN 
-// mdep ON morg.org_dependencia = mdep.dep_llave
-// WHERE 
-// per_catalogo = $guarda_catalogo;
 
-//";
-    
-
-    
 
 
