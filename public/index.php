@@ -9,6 +9,7 @@ use Controllers\EstadoController;
 use Controllers\GuardaController;
 use Controllers\MedidaController;
 use Controllers\ProductoController;
+use Controllers\MovimientoController;
 
 $router = new Router();
 $router->setBaseURL('/' . $_ENV['APP_NAME']);
@@ -28,11 +29,6 @@ $router->get('/API/almacen/buscarOficiales', [AlmacenController::class, 'buscarO
 $router->get('/API/almacen/buscarAsignar', [AlmacenController::class, 'buscarAsignarAPI']);
 $router->post('/API/almacen/modificarAsignar', [AlmacenController::class,'modificarAsignarAPI'] );
 
-
-
-
-
-
 ////rutas para manejar la vista y funciones de la tabla estado, pertenecientes a la tabla productos. 
 
 $router->get('/estado', [EstadoController::class,'index']);
@@ -41,7 +37,6 @@ $router->get('/API/estado/buscar', [EstadoController::class, 'buscarAPI']);
 $router->post('/API/estado/modificar', [EstadoController::class,'modificarAPI'] );
 $router->post('/API/estado/eliminar', [EstadoController::class,'eliminarAPI'] );
 $router->get('/API/estado/buscarDependencia', [EstadoController::class, 'buscarDependenciaAPI']);
-
 
 //rutas para manejar la vista y funciones de la tabla inv_uni_med, (unidades de medida)
 $router->get('/medida', [MedidaController::class,'index']);
@@ -63,6 +58,9 @@ $router->get('/API/producto/buscarAlmacenes', [ProductoController::class, 'busca
 $router->get('/API/producto/buscarUnidades', [ProductoController::class, 'buscarUnidadesAPI']);
 $router->get('/API/producto/buscarEstados', [ProductoController::class, 'buscarEstadosAPI']);
 $router->post('/API/producto/guardar', [ProductoController::class,'guardarAPI'] );
+
+//rutas para manejar la vista de movimiento de la tabla INV_MOVIMIENTOS
+$router->get('/movimiento', [MovimientoController::class,'index']);
 
 
 
