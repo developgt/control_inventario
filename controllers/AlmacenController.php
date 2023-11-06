@@ -23,6 +23,7 @@ class AlmacenController
         ]);
     }
     public static function buscarDependenciaAPI()
+    
 {
     $sql = "SELECT dep_llave, dep_desc_md FROM mper, morg, mdep WHERE per_plaza = org_plaza AND org_dependencia = dep_llave AND per_catalogo = 665133";
     try {
