@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-lg-8 mb-4">
             <div class="card" id="mov_movimiento">
-                <h2 class="card-title text-center mb-4 bg-primary text-white p-3 rounded">Formulario para el ingreso al Almacén</h2>
+                <h2 class="card-title text-center mb-4 bg-primary text-white p-3 rounded">Formulario para el egreso del Almacén</h2>
                 <div class="card-body">
 
                     <form id="formularioMovimiento">
@@ -140,7 +140,7 @@
                 </form>
             </div>
         </div>
-    </div>  <!-- aqui empieza la siguiente div para el formulario de detalle -->
+    </div>
     <div class="col-lg-6">
         <div class="card" id="mov_detalle">
             <h2 class="card-header bg-primary text-white text-center p-3 rounded">Detalle del Ingreso del Almacén</h2>
@@ -219,4 +219,4 @@
         </div>
     </div>
 </div>
-<script src="<?= asset('./build/js/movimiento/index.js') ?>"></script>
+<script src="<?= asset('./build/js/movegreso/index.js') ?>"></script>

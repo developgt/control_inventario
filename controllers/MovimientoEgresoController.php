@@ -13,14 +13,14 @@ use Model\Guarda;
 use Model\Medida;
 use Model\Producto;
 
-class MovimientoController
+class MovimientoEgresoController
 {
 
     public static function index(Router $router)
     {
 
 
-        $router->render('movimiento/index', []);
+        $router->render('movegreso/index', []);
     }
 
 

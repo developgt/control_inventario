@@ -2,7 +2,7 @@
 
 namespace Model;
 
-class Almacen extends ActiveRecord
+class Mdep extends ActiveRecord
 {
     protected static $tabla = 'mdep';
     protected static $columnasDB = ['dep_llave', 'dep_desc_lg', 'dep_desc_md', 'dep_desc_ct', 'dep_clase', 'dep_precio', 'dep_ejto'];

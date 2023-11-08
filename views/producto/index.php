@@ -23,44 +23,6 @@
                     <label for="pro_nom_articulo" class="form-label">Nombre del Producto</label>
                     <input type="text" name="pro_nom_articulo" id="pro_nom_articulo" class="form-control">
                 </div>
-                <div class="col">
-                    <label for="pro_estado" class="form-label">Seleccione el Estado del Producto</label>
-                    <select name="pro_estado" id="pro_estado" class="form-select">
-                        <option value="">SELECCIONE...</option>
-                    </select>
-                </div>
-            </div>
-            <div class="row mb-3">
-                <div class="col">
-                    <label for="tiene_lote" class="form-label">¿El producto tiene No. de lote o serie?</label>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="tiene_lote_si">
-                        <label class="form-check-label" for="tiene_lote_si">Sí</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="tiene_lote_no">
-                        <label class="form-check-label" for="tiene_lote_no">No</label>
-                    </div>
-                </div>
-                <div class="col" id="campo_lote">
-                    <label for="pro_no_serie" class="form-label">Número de serie o Lote del Producto</label>
-                    <input type="text" name="pro_no_serie" id="pro_no_serie" class="form-control">
-                </div>
-                <div class="col">
-                    <label for="tiene_fecha_vencimiento" class="form-label">¿El producto tiene fecha de vencimiento?</label>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="tiene_fecha_si">
-                        <label class="form-check-label" for="tiene_fecha_si">Sí</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="tiene_fecha_no">
-                        <label class="form-check-label" for="tiene_fecha_no">No</label>
-                    </div>
-                </div>
-                <div class="col" id="campo_fecha_vencimiento">
-                    <label for="pro_vencimiento" class="form-label">Fecha de Vencimiento</label>
-                    <input type="date" name="pro_vencimiento" id="pro_vencimiento" class="form-control">
-                </div>
             </div>
             <div class="mb-3">
                 <label for="pro_descripcion" class="form-label">Descripción del Producto</label>

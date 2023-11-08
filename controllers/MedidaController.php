@@ -100,10 +100,6 @@ public static function buscarAPI(){
 
 
 
-
-
-
-
     $sql = "
     SELECT uni_nombre, uni_id, inv_almacenes.alma_id, inv_almacenes.alma_nombre as uni_almacen 
     FROM inv_uni_med

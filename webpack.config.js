@@ -12,6 +12,8 @@ module.exports = {
     'js/guarda/index' : './src/js/guarda/index.js',
     'js/producto/index' : './src/js/producto/index.js',
     'js/movimiento/index' : './src/js/movimiento/index.js',
+    'js/movegreso/index' : './src/js/movegreso/index.js',
+
 
 
 

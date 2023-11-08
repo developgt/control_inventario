@@ -46,7 +46,7 @@ const movDetalleDiv = document.getElementById('mov_detalle');
 
 
 // Oculta el elemento div card formulario detalle
-movDetalleDiv.style.display = "none";
+//movDetalleDiv.style.display = "none";
 
 btnModificarDetalle.disabled = true
 btnModificarDetalle.parentElement.style.display = 'none'
@@ -73,7 +73,7 @@ const buscarOficiales = async () => {
 
     // Función que se ejecutará después del retraso
     const fetchData = async () => {
-        const url = `/control_inventario/API/movimiento/buscarOficiales?mov_perso_entrega=${mov_perso_entrega}`;
+        const url = `/control_inventario/API/movegreso/buscarOficiales?mov_perso_entrega=${mov_perso_entrega}`;
         const config = {
             method: 'GET'
         };
@@ -119,7 +119,7 @@ const buscarOficialesRecibe = async () => {
 
     // Función que se ejecutará después del retraso
     const fetchData = async () => {
-        const url = `/control_inventario/API/movimiento/buscarOficialesRecibe?mov_perso_recibe=${mov_perso_recibe}`;
+        const url = `/control_inventario/API/movegreso/buscarOficialesRecibe?mov_perso_recibe=${mov_perso_recibe}`;
         const config = {
             method: 'GET'
         };
@@ -165,7 +165,7 @@ const buscarOficialesResponsable = async () => {
 
     // Función que se ejecutará después del retraso
     const fetchData = async () => {
-        const url = `/control_inventario/API/movimiento/buscarOficialesResponsable?mov_perso_respon=${mov_perso_respon}`;
+        const url = `/control_inventario/API/movegreso/buscarOficialesResponsable?mov_perso_respon=${mov_perso_respon}`;
         const config = {
             method: 'GET'
         };
@@ -210,7 +210,7 @@ const buscarAlmacenes = async () => {
         let alma_nombre = formulario.alma_nombre.value;
         let alma_id = formulario.alma_id.value;
     }
-    const url = `/control_inventario/API/movimiento/buscarAlmacenes`;
+    const url = `/control_inventario/API/movegreso/buscarAlmacenes`;
     const config = {
         method: 'GET'
     };
@@ -255,7 +255,7 @@ const buscarDependencia = async () => {
         let dep_desc_md = formulario.dep_desc_md.value;
         let dep_llave = formulario.dep_llave.value;
     }
-    const url = `/control_inventario/API/movimiento/buscarDependencia`;
+    const url = `/control_inventario/API/movegreso/buscarDependencia`;
     const config = {
         method: 'GET'
     };

@@ -125,14 +125,14 @@ const datatable = new Datatable('#tablaAlmacen', {
             render: (data, type, row, meta) => `<button class="btn btn-info btn-asignar-oficial" data-id='${data}' data-target='asignarOficial'>Asignar Oficial</button>`
         }
     ],
-    // columnDefs: [
+    columnDefs: [
 
-    //     {
-    //         targets: 5, 
-    //         className: 'col-1'
-    //         //width: "400%"
-    //     }
-    // ],
+        {
+            targets: 5, 
+            className: 'col-1'
+            //width: "400%"
+        }
+    ],
 });
 
 

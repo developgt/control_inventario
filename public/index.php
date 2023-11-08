@@ -10,6 +10,7 @@ use Controllers\GuardaController;
 use Controllers\MedidaController;
 use Controllers\ProductoController;
 use Controllers\MovimientoController;
+use Controllers\MovimientoEgresoController;
 
 $router = new Router();
 $router->setBaseURL('/' . $_ENV['APP_NAME']);
@@ -56,11 +57,30 @@ $router->post('/API/guarda/guardar', [GuardaController::class,'guardarAPI'] );
 $router->get('/producto', [ProductoController::class,'index']);
 $router->get('/API/producto/buscarAlmacenes', [ProductoController::class, 'buscarAlmacenesAPI']);
 $router->get('/API/producto/buscarUnidades', [ProductoController::class, 'buscarUnidadesAPI']);
-$router->get('/API/producto/buscarEstados', [ProductoController::class, 'buscarEstadosAPI']);
+$router->get('/API/producto/buscar', [ProductoController::class, 'buscarAPI']);
 $router->post('/API/producto/guardar', [ProductoController::class,'guardarAPI'] );
 
 //rutas para manejar la vista de movimiento de la tabla INV_MOVIMIENTOS
 $router->get('/movimiento', [MovimientoController::class,'index']);
+$router->get('/API/movimiento/buscarOficiales', [MovimientoController::class, 'buscarOficialesAPI']);
+$router->get('/API/movimiento/buscarOficialesRecibe', [MovimientoController::class, 'buscarOficialesRecibeAPI']);
+$router->get('/API/movimiento/buscarOficialesResponsable', [MovimientoController::class, 'buscarOficialesResponsableAPI']);
+$router->get('/API/movimiento/buscarAlmacenes', [MovimientoController::class, 'buscarAlmacenesAPI']);
+$router->get('/API/movimiento/buscarDependencia', [MovimientoController::class, 'buscarDependenciaAPI']);
+
+
+
+$router->get('/movegreso', [MovimientoEgresoController::class,'index']);
+$router->get('/API/movegreso/buscarOficiales', [MovimientoEgresoController::class, 'buscarOficialesAPI']);
+$router->get('/API/movegreso/buscarOficialesRecibe', [MovimientoEgresoController::class, 'buscarOficialesRecibeAPI']);
+$router->get('/API/movegreso/buscarOficialesResponsable', [MovimientoEgresoController::class, 'buscarOficialesResponsableAPI']);
+$router->get('/API/movegreso/buscarAlmacenes', [MovimientoEgresoController::class, 'buscarAlmacenesAPI']);
+$router->get('/API/movegreso/buscarDependencia', [MovimientoEgresoController::class, 'buscarDependenciaAPI']);
+
+
+
+
+
 
 
 

@@ -20,23 +20,7 @@ class EstadoController
        
         ]);
     }
-    
-    public static function buscarDependenciaAPI()
-{
-    $sql = "SELECT dep_llave, dep_desc_md FROM mper, morg, mdep WHERE per_plaza = org_plaza AND org_dependencia = dep_llave AND per_catalogo = 665133";
-    try {
-        $almacen = Almacen::fetchArray($sql);
 
-        // Establece el tipo de contenido de la respuesta a JSON
-        header('Content-Type: application/json');
-
-        // Convierte el array a JSON y envíalo como respuesta
-        echo json_encode($almacen);
-    } catch (Exception $e) {
-        // En caso de error, envía una respuesta vacía
-        echo json_encode([]);
-    }
-}
 
 //funcion para guardar almacen
 
@@ -84,12 +68,9 @@ public static function buscarAPI(){
 
 
 
-    $sql = "SELECT est_descripcion, est_id, est_dependencia
+    $sql = "SELECT est_descripcion, est_id
     FROM inv_estado
-    JOIN mdep ON inv_estado.est_dependencia = mdep.dep_llave
-    JOIN morg ON mdep.dep_llave = morg.org_dependencia
-    JOIN mper ON morg.org_plaza = mper.per_plaza
-    WHERE mper.per_catalogo = 665133 AND inv_estado.est_situacion = 1";
+    WHERE est_situacion = 1";
 
     if ($est_descripcion != '') {
         $est_descripcion = strtolower($est_descripcion);
@@ -118,7 +99,7 @@ public static function modificarAPI() {
 
         $est_id = $_POST['est_id'];
         $est_descripcion = strtoupper($_POST['est_descripcion']);
-        $est_dependencia = ($_POST['est_dependencia']);
+
 
       
 
@@ -127,7 +108,6 @@ public static function modificarAPI() {
         $estado = new Estado([
             'est_id' => $est_id, 
             'est_descripcion' => $est_descripcion,
-            'est_dependencia'=> $est_dependencia
 
         ]);
 

@@ -15,15 +15,7 @@ const alma_nombre = document.getElementById('alma_nombre');
 const alma_id = document.getElementById('alma_id');
 const nombreAlmacen = document.getElementById('pro_almacen_id')
 let almaIdSeleccionado = null;
-////PARA MANEJAR EL CKECK BOX DE SI Y NO DE FECHA
-const checkboxSi = document.getElementById('tiene_fecha_si');
-const checkboxNo = document.getElementById('tiene_fecha_no');
-const campoFechaVencimiento = document.getElementById('campo_fecha_vencimiento');
 
-////PARA MANEJAR EL CKECK BOX DE SI Y NO DE LOTE 
-const checkboxLoteSi = document.getElementById('tiene_lote_si');
-const checkboxLoteNo = document.getElementById('tiene_lote_no');
-const campoLote = document.getElementById('campo_lote');
 
 
 let almacenes = [];
@@ -37,9 +29,6 @@ btnModificar.parentElement.style.display = 'none'
 btnCancelar.disabled = true
 btnCancelar.parentElement.style.display = 'none'
 
-//OCULTAR EL CAMPOD DE FECHA DE VENCIMIENTO
-campoFechaVencimiento.style.display = 'none';
-campoLote.style.display = 'none';
 
 
 //////////DATATABLE//////////////////////////////////////////////////////
@@ -50,7 +39,7 @@ btnModificar.parentElement.style.display = 'none';
 btnCancelar.disabled = true;
 btnCancelar.parentElement.style.display = 'none';
 
-const datatable = new Datatable('#tablaMedida', {
+const datatable = new Datatable('#tablaProducto', {
     language: lenguaje,
     data: null,
     columns: [
@@ -59,16 +48,20 @@ const datatable = new Datatable('#tablaMedida', {
             render: () => contador++
         },
         {
-            title: 'ID',
-            data: 'alma_id'
+            title: 'Nombre del Producto',
+            data: 'pro_nom_articulo'
         },
         {
-            title: 'Medidas de las unidades',
-            data: 'uni_nombre'
+            title: 'Descripcion del producto',
+            data: 'pro_descripcion'
         },
         {
-            title: 'Almacen al que pertenecen las unidades',
-            data: 'uni_almacen'
+            title: 'Medida del almacén',
+            data: 'pro_medida'
+        },
+        {
+            title: 'Almacén al que pertenecen los productos',
+            data: 'pro_almacen_id'
         },
         {
             title: 'MODIFICAR',
@@ -155,7 +148,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         const selectAlmacen = formulario.pro_almacen_id;
         const selectMedida = formulario.pro_medida;
-        const selectEstado = formulario.pro_estado;
+    
 
         selectAlmacen.addEventListener('change', () => {
             const almacenSeleccionado = selectAlmacen.value;
@@ -175,7 +168,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         });
 
 
-        buscar();
+        //buscar();
     } catch (error) {
         console.error(error);
         // Manejar el error, si es necesario.
@@ -270,103 +263,58 @@ const buscarUnidades = async () => {
 };
 
 
-const buscarEstados = async () => {
-    // Verificar si los elementos del formulario existen antes de acceder a sus propiedades
-    if (formulario.est_descripcion && formulario.est_id) {
-        let est_descripcion = formulario.est_descripcion.value;
-        let est_id = formulario.est_id.value;
-    }
-    const url = `/control_inventario/API/producto/buscarEstados`;
-    const config = {
-        method: 'GET'
-    };
+// const buscarEstados = async () => {
+//     // Verificar si los elementos del formulario existen antes de acceder a sus propiedades
+//     if (formulario.est_descripcion && formulario.est_id) {
+//         let est_descripcion = formulario.est_descripcion.value;
+//         let est_id = formulario.est_id.value;
+//     }
+//     const url = `/control_inventario/API/producto/buscarEstados`;
+//     const config = {
+//         method: 'GET'
+//     };
 
-    try {
-        const respuesta = await fetch(url, config);
-        const data = await respuesta.json();
-        console.log('data de estados', data); // Imprimir datos en la consola
+//     try {
+//         const respuesta = await fetch(url, config);
+//         const data = await respuesta.json();
+//         console.log('data de estados', data); // Imprimir datos en la consola
 
-        estado = data;
-        // Limpiar el contenido del select
-        formulario.pro_estado.innerHTML = '';
+//         estado = data;
+//         // Limpiar el contenido del select
+//         formulario.pro_estado.innerHTML = '';
 
-        // Agregar opción predeterminada
-        const defaultOption = document.createElement('option');
-        defaultOption.value = '';
-        defaultOption.textContent = 'SELECCIONE...';
-        formulario.pro_estado.appendChild(defaultOption);
-        // Iterar sobre cada objeto en el arreglo y crear opciones para el select
-        data.forEach(estado => {
-            const option = document.createElement('option');
-            option.value = estado.est_id;
-            option.textContent = estado.est_descripcion;
-            formulario.pro_estado.appendChild(option);
-        });
+//         // Agregar opción predeterminada
+//         const defaultOption = document.createElement('option');
+//         defaultOption.value = '';
+//         defaultOption.textContent = 'SELECCIONE...';
+//         formulario.pro_estado.appendChild(defaultOption);
+//         // Iterar sobre cada objeto en el arreglo y crear opciones para el select
+//         data.forEach(estado => {
+//             const option = document.createElement('option');
+//             option.value = estado.est_id;
+//             option.textContent = estado.est_descripcion;
+//             formulario.pro_estado.appendChild(option);
+//         });
 
 
 
-        //contador = 1;
-        //datatable.clear().draw();
-    } catch (error) {
-        console.log(error);
-    }
-    formulario.reset();
-}
+//         //contador = 1;
+//         //datatable.clear().draw();
+//     } catch (error) {
+//         console.log(error);
+//     }
+//     formulario.reset();
+// }
 
 
 const guardar = async (evento) => {
     evento.preventDefault();
 
-   
-     // Obtener los valores de los checkboxes "Sí" para No. de serie y Fecha de vencimiento
-     const tieneNoSerie = checkboxLoteSi.checked;
-     const tieneFechaVencimiento = checkboxSi.checked;
- 
-
-    // Obtener los valores de los campos pro_no_serie y pro_vencimiento
-    const noSerie = formulario.pro_no_serie.value;
-    const vencimiento = formulario.pro_vencimiento.value;
-
     // Validar campos comunes a todos los casos
-    if (!validarFormulario(formulario, ['pro_id', 'pro_no_serie', 'pro_vencimiento'])) {
+    if (!validarFormulario(formulario, ['pro_id'])) {
         Toast.fire({
             icon: 'info',
             text: 'Debe llenar todos los datos obligatorios'
-        });
-        return;
-    }
-
-    // Validar campos adicionales si el checkbox "Sí" está marcado para No. de serie
-    if (tieneNoSerie && !noSerie) {
-        Toast.fire({
-            icon: 'info',
-            text: 'Debe llenar el campo No. de serie'
-        });
-        return;
-    }
-
-    // Validar campos adicionales si el checkbox "Sí" está marcado para Fecha de vencimiento
-    if (tieneFechaVencimiento && !vencimiento) {
-        Toast.fire({
-            icon: 'info',
-            text: 'Debe llenar el campo Fecha de vencimiento'
-        });
-        return;
-    }
-
-    // Validar si ningún checkbox está seleccionado
-    if (!checkboxLoteSi.checked && !checkboxLoteNo.checked) {
-        Toast.fire({
-            icon: 'info',
-            text: 'Debe seleccionar si tiene o no tiene No. de lote o serie'
-        });
-        return;
-    }
-    
-    if(!checkboxSi.checked && !checkboxNo.checked) {
-        Toast.fire({
-            icon: 'info',
-            text: 'Debe seleccionar si tiene o no tiene fecha de vencimiento'
         });
         return;
     }
@@ -416,46 +364,50 @@ const guardar = async (evento) => {
 
 }
 
+const buscar = async () => {
+    
 
-buscarEstados();
-////////PARA MOSTRAR EL INPUT DE FECHA DE VENCIMIENTO SI DAN CLIC EN SI 
-checkboxSi.addEventListener('click', function () {
-    if (checkboxSi.checked) {
-        checkboxNo.checked = false; // Desmarcar el checkbox "No"
-        campoFechaVencimiento.style.display = 'block';
-    } else {
-        campoFechaVencimiento.style.display = 'none';
-    }
-});
+    let pro_almacen_id = formulario.pro_almacen_id.value;
+    let pro_medida = formulario.pro_medida.value;
+    let pro_nom_articulo = formulario.pro_nom_articulo.value;
+    let pro_descripcion = formulario.pro_descripcion.value;
 
-checkboxNo.addEventListener('click', function () {
-    if (checkboxNo.checked) {
-        checkboxSi.checked = false; // Desmarcar el checkbox "Sí"
-        campoFechaVencimiento.style.display = 'none';
-    } else {
-        campoFechaVencimiento.style.display = 'block';
-    }
-});
-//////////////////////////////////////////////////////////
+    const url = `/control_inventario/API/producto/buscar?pro_almacen_id=${pro_almacen_id}&pro_medida=${pro_medida}&pro_nom_articulo=${pro_nom_articulo}&pro_descripcion=${pro_descripcion}`;
 
-////////PARA MOSTRAR EL INPUT DE LOTE SI DAN CLIC EN SI 
-checkboxLoteSi.addEventListener('click', function () {
-    if (checkboxLoteSi.checked) {
-        checkboxLoteNo.checked = false; // Desmarcar el checkbox "No"
-        campoLote.style.display = 'block';
-    } else {
-        campoLote.style.display = 'none';
-    }
-});
+    const config = {
+        method: 'GET'
+    };
 
-checkboxLoteNo.addEventListener('click', function () {
-    if (checkboxLoteNo.checked) {
-        checkboxLoteSi.checked = false; // Desmarcar el checkbox "Sí"
-        campoLote.style.display = 'none';
-    } else {
-        campoLote.style.display = 'block';
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+        console.log(data);
+
+        datatable.clear().draw();
+        if (data) {
+            contador = 1;
+            datatable.rows.add(data).draw();
+        } else {
+            Toast.fire({
+                title: 'No se encontraron registros',
+                icon: 'info'
+            });
+        }
+
+    } catch (error) {
+        console.log(error);
     }
-});
+    formulario.reset();
+   
+    //actualizarDependencia();
+};
+
+buscar();
+
+
+
+
+
 
 ////////////////////////////////////////////////////////////////
 

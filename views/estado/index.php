@@ -9,11 +9,6 @@
                     <label for="est_descripcion"> <i class="bi bi-file-earmark-text me-2"></i> Descripción</label>
                     <input type="text" name="est_descripcion" id="est_descripcion" class="form-control">
                 </div>
-                <div class="col">
-                    <label for="est_dependencia"><i class="bi bi-shield-check me-2""></i>Dependencia</label>
-                    <input type="text" id="est_dependencia" name="est_dependencia" class="form-control" readonly>
-                            <input type="text" id="est_dependencia_id" class="form-control" readonly>
-                </div>
             </div>
             <div class="row mb-3">
                 <div class="col">

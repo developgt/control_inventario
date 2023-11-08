@@ -20,10 +20,7 @@ btnCancelar.parentElement.style.display = 'none'
 
 
 
-///para que se autocomplete el campo de dependencia en automatico. 
 
-const almaEstado = document.getElementById('est_dependencia');
-const almaEstadoId = document.getElementById('est_dependencia_id');
 
 
 //////////DATATABLE//////////////////////////////////////////////////////
@@ -47,15 +44,11 @@ const datatable = new Datatable('#tablaEstado', {
             data: 'est_descripcion'
         },
         {
-            title: 'DESCRIPCION',
-            data: 'est_dependencia'
-        },
-        {
             title: 'MODIFICAR',
             data: 'est_id',
             searchable: false,
             orderable: false,
-            render: (data, type, row, meta) => `<button class="btn btn-warning" data-id='${row["est_id"]}' data-descripcion='${row["est_descripcion"]}' data-dependencia='${row["est_dependencia"]}'>Modificar</button>`
+            render: (data, type, row, meta) => `<button class="btn btn-warning" data-id='${row["est_id"]}' data-descripcion='${row["est_descripcion"]}'>Modificar</button>`
         },
         {
             title: 'ELIMINAR',
@@ -73,21 +66,20 @@ const traeDatos = (e) => {
     const button = e.target;
     const id = button.dataset.id;
     const descripcion = button.dataset.descripcion;
-    const dependencia = button.dataset.dependencia;
+
 
 
 
     const dataset = {
         est_id: id,
         est_descripcion: descripcion,
-        est_dependencia: dependencia
+
     };
 
     colocarDatos(dataset);
 };
 
 const colocarDatos = (dataset) => {
-    formulario.est_dependencia.value = dataset.est_dependencia;
     formulario.est_descripcion.value = dataset.est_descripcion;
     formulario.est_id.value = dataset.est_id;
 
@@ -115,42 +107,6 @@ const cancelarAccion = () => {
 
 
 //// Función para buscar las dependencias y colocarlas en el input alma_unidad
-
-const buscarDependencia = async () => {
-    //return new Promise(async (resolve, reject) => {
-    const url = `/control_inventario/API/estado/buscarDependencia?`;
-    const config = {
-        method: 'GET'
-    };
-
-    try {
-        const respuesta = await fetch(url, config);
-        const data = await respuesta.json();
-        //console.log(data);
-
-        if (data && data.length > 0 && data[0].dep_desc_md && data[0].dep_llave) {
-            // Mostrar el nombre de la dependencia en el campo dep_desc_md
-            almaEstado.value = data[0].dep_llave;
-            // Almacenar dep_llave en alma_unidad_id 
-            almaEstadoId.value = data[0].dep_desc_md;
-
-            // if (data && data.dep_desc_md) {
-            //     almaUnidad.value = data.dep_desc_md;
-            //     resolve(data);
-        } else {
-            Toast.fire({
-                title: 'No se encontraron registros',
-                icon: 'info'
-            });
-        }
-
-    } catch (error) {
-        console.log(error);
-    }
-
-
-};
-
 
 // Función para buscar la dependencia y actualizar el campo alma_unidad
 // const actualizarDependencia = async () => {
@@ -216,8 +172,6 @@ const guardar = async (evento) => {
         console.log(error);
     }
     buscar();
-    buscarDependencia();
-    //actualizarDependencia();
 }
 
 
@@ -256,7 +210,7 @@ const buscar = async () => {
         console.log(error);
     }
     formulario.reset();
-    buscarDependencia();
+
     //actualizarDependencia();
 };
 
@@ -362,9 +316,8 @@ let valor = est_id.value
     buscar();
 };
 
-//buscar();
-buscarDependencia();
-//actualizarDependencia();
+buscar();
+
 
 formulario.addEventListener('submit', guardar);
 btnBuscar.addEventListener('click', buscar);
