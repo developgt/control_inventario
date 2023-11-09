@@ -67,6 +67,8 @@ $router->get('/API/movimiento/buscarOficialesRecibe', [MovimientoController::cla
 $router->get('/API/movimiento/buscarOficialesResponsable', [MovimientoController::class, 'buscarOficialesResponsableAPI']);
 $router->get('/API/movimiento/buscarAlmacenes', [MovimientoController::class, 'buscarAlmacenesAPI']);
 $router->get('/API/movimiento/buscarDependencia', [MovimientoController::class, 'buscarDependenciaAPI']);
+$router->post('/API/movimiento/guardar', [MovimientoController::class,'guardarAPI'] );
+
 
 
 

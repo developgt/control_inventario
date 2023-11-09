@@ -292,6 +292,66 @@ const buscarDependencia = async () => {
     formularioMovimiento.reset();
 };
 
+
+
+////// GUARDAR CAMPOS DEL FORMULARIO
+
+const guardar = async (evento) => {
+    evento.preventDefault();
+
+    if (!validarFormulario(formularioMovimiento, ['mov_id', 'mov_tipo_mov'])) {
+        Toast.fire({
+            icon: 'info',
+            text: 'Debe llenar todos los datos'
+        })
+        return
+    }
+    const body = new FormData(formularioMovimiento)
+    body.delete('mov_id')
+    const url = '/control_inventario/API/movimiento/guardar';
+    const config = {
+        method: 'POST',
+        body
+    }
+
+    try {
+        const respuesta = await fetch(url, config)
+        const data = await respuesta.json();
+
+        console.log(data);
+        // return
+
+        const { codigo, mensaje, detalle } = data;
+        let icon = 'info'
+        switch (codigo) {
+            case 1:
+                formularioMovimiento.reset();
+                icon = 'success'
+                //buscar();
+                break;
+
+            case 0:
+                icon = 'error'
+                console.log(detalle)
+                break;
+
+            default:
+                break;
+        }
+
+        Toast.fire({
+            icon,
+            text: mensaje
+        })
+
+    } catch (error) {
+        console.log(error);
+    }
+    //buscar();
+}
+
+
+
 buscarAlmacenes();
 buscarDependencia();
 mov_perso_entrega.addEventListener('input', buscarOficiales);
@@ -300,18 +360,19 @@ mov_perso_respon.addEventListener('input', buscarOficialesResponsable);
 
 
   
-    btnSiguiente.addEventListener('click', function(event) {
+    formularioMovimiento.addEventListener('submit', function(event) {
         // Prevenir el envío normal del formulario
         event.preventDefault();
+        guardar();
 
-        // Validar el formulario de movimiento
-        if (!validarFormulario(formularioMovimiento, ['mov_id', 'mov_tipo_mov'])) {
-            Toast.fire({
-                icon: 'info',
-                text: 'Debe llenar todos los datos'
-            })
-            return
-        }
+        // // Validar el formulario de movimiento
+        // if (!validarFormulario(formularioMovimiento, ['mov_id', 'mov_tipo_mov'])) {
+        //     Toast.fire({
+        //         icon: 'info',
+        //         text: 'Debe llenar todos los datos'
+        //     })
+        //     return
+        // }
 
         // Ocultar el formulario de movimiento
         movMovimientoDiv.style.display = 'none';

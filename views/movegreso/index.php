@@ -165,6 +165,47 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col">
+                            <label for="det_lote">Ingrese el lote</label>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-box"></i></span>
+                                <input type="text" name="det_lote" id="det_lote" class="form-control" placeholder="Lote" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="det_fecha_vence">Seleccione la fecha de vencimiento</label>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-box"></i></span>
+                                <input type="date" name="det_fecha_vence" id="det_fecha_vence" class="form-control"  required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="det_estado">Seleccione el estado</label>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-box"></i></span>
+                                <select name="det_estado" id="det_estado" class="form-select" required>
+                                    <option value="">SELECCIONE...</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
                             <label for="det_cantidad">Ingrese la Cantidad</label>
                         </div>
                     </div>
@@ -172,6 +213,17 @@
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-card-text"></i></span>
                             <input type="number" name="det_cantidad" id="det_cantidad" class="form-control" placeholder="Cantidad" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="det_cantidad">Cantidad Existente</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-card-text"></i></span>
+                            <input type="number" name="det_cantidad_existente" id="det_cantidad_existente" class="form-control" placeholder="Cantidad" readonly>
                         </div>
                     </div>
                     <div class="row mb-3">

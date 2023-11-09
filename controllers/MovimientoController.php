@@ -11,6 +11,7 @@ use Model\Mdep;
 use MVC\Router;
 use Model\Guarda;
 use Model\Medida;
+use Model\Movimiento;
 use Model\Producto;
 
 class MovimientoController
@@ -143,5 +144,33 @@ class MovimientoController
         }
     }
 
+
+    public static function guardarAPI()
+{
+    try {
+
+        $movimiento = new Movimiento($_POST);
+        $resultado = $movimiento->crear();
+
+        if ($resultado['resultado'] == 1) {
+            echo json_encode([
+                'mensaje' => 'Registro guardado correctamente',
+                'codigo' => 1
+            ]);
+        } else {
+            echo json_encode([
+                'mensaje' => 'Ocurrió un error',
+                'codigo' => 0
+            ]);
+        }
+
+    } catch (Exception $e) {
+        echo json_encode([
+            'detalle' => $e->getMessage(),
+            'mensaje' => 'Ocurrió un error',
+            'codigo' => 0
+        ]);
+    }
+}
 
 }

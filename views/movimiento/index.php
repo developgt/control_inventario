@@ -125,7 +125,7 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        <button form="formularioMovimiento" id="btnGuardar" class="btn btn-primary w-100">Guardar</button>
+                        <button form="formularioMovimiento" type="submit" id="btnGuardar" class="btn btn-primary w-100">Guardar</button>
                     </div>
                     <div class="col">
                         <button type="button" id="btnModificar" class="btn btn-warning w-100">Modificar</button>
@@ -165,7 +165,48 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col">
-                            <label for="det_cantidad">Ingrese la Cantidad</label>
+                            <label for="det_lote">Ingrese el lote</label>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-box"></i></span>
+                                <input type="text" name="det_lote" id="det_lote" class="form-control" placeholder="Lote" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="det_fecha_vence">Seleccione la fecha de vencimiento</label>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-box"></i></span>
+                                <input type="date" name="det_fecha_vence" id="det_fecha_vence" class="form-control"  required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="det_estado">Seleccione el estado</label>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-box"></i></span>
+                                <select name="det_estado" id="det_estado" class="form-select" required>
+                                    <option value="">SELECCIONE...</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="det_cantidad_existente">Ingrese la Cantidad</label>
                         </div>
                     </div>
                     <div class="mb-3">
@@ -176,7 +217,18 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col">
-                            <label for="det_cantidad">Escriba observaciones</label>
+                            <label for="det_cantidad">Cantidad Existente</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-card-text"></i></span>
+                            <input type="number" name="det_cantidad_existente" id="det_cantidad_existente" class="form-control" placeholder="Cantidad" readonly>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="det_cantidad_existente">Escriba observaciones</label>
                         </div>
                     </div>
                     <div class="mb-3">
