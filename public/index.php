@@ -60,17 +60,19 @@ $router->get('/API/producto/buscarUnidades', [ProductoController::class, 'buscar
 $router->get('/API/producto/buscar', [ProductoController::class, 'buscarAPI']);
 $router->post('/API/producto/guardar', [ProductoController::class,'guardarAPI'] );
 
-//rutas para manejar la vista de movimiento de la tabla INV_MOVIMIENTOS
+//rutas para manejar la vista de movimiento de la tabla INV_MOVIMIENTOS (ingresos)
 $router->get('/movimiento', [MovimientoController::class,'index']);
 $router->get('/API/movimiento/buscarOficiales', [MovimientoController::class, 'buscarOficialesAPI']);
 $router->get('/API/movimiento/buscarOficialesRecibe', [MovimientoController::class, 'buscarOficialesRecibeAPI']);
 $router->get('/API/movimiento/buscarOficialesResponsable', [MovimientoController::class, 'buscarOficialesResponsableAPI']);
 $router->get('/API/movimiento/buscarAlmacenes', [MovimientoController::class, 'buscarAlmacenesAPI']);
+$router->get('/API/movimiento/buscarEstados', [MovimientoController::class, 'buscarEstadosAPI']);
+$router->get('/API/movimiento/buscarProducto', [MovimientoController::class, 'buscarProductoAPI']);
 $router->get('/API/movimiento/buscarDependencia', [MovimientoController::class, 'buscarDependenciaAPI']);
 $router->post('/API/movimiento/guardar', [MovimientoController::class,'guardarAPI'] );
 
 
-
+//rutas para manejar la vista de movimiento de la tabla INV_MOVIMIENTOS (egresos)
 
 $router->get('/movegreso', [MovimientoEgresoController::class,'index']);
 $router->get('/API/movegreso/buscarOficiales', [MovimientoEgresoController::class, 'buscarOficialesAPI']);

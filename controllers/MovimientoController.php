@@ -144,6 +144,54 @@ class MovimientoController
         }
     }
 
+        public static function buscarEstadosAPI()
+    {
+        $sql = "SELECT est_descripcion, est_id 
+        FROM inv_estado
+        WHERE est_situacion = 1
+        ";
+        try {
+            $estado = Estado::fetchArray($sql);
+
+            // Establece el tipo de contenido de la respuesta a JSON
+            header('Content-Type: application/json');
+            //return;
+            // Convierte el array a JSON 
+            echo json_encode($estado);
+        } catch (Exception $e) {
+            // En caso de error, envía una respuesta vacía
+            echo json_encode([]);
+        }
+    }
+
+    public static function buscarProductoAPI()
+    {
+
+        $sql = "SELECT pro_id, pro_nom_articulo, inv_uni_med.uni_nombre AS pro_medida, 
+        inv_almacenes.alma_nombre AS pro_almacen_id
+        FROM inv_producto
+        JOIN inv_uni_med ON inv_producto.pro_medida = inv_uni_med.uni_id
+        JOIN inv_almacenes ON inv_producto.pro_almacen_id = inv_almacenes.alma_id
+        JOIN mdep ON inv_almacenes.alma_unidad = mdep.dep_llave
+        JOIN morg ON mdep.dep_llave = morg.org_dependencia
+        JOIN mper ON morg.org_plaza = mper.per_plaza
+        WHERE mper.per_catalogo = 665133 AND inv_producto.pro_situacion = 1";
+
+
+        try {
+
+            $producto = Producto::fetchArray($sql);
+
+            echo json_encode($producto);
+        } catch (Exception $e) {
+            echo json_encode([
+                'detalle' => $e->getMessage(),
+                'mensaje' => 'Ocurrió un error',
+                'codigo' => 0
+            ]);
+        }
+    }
+
 
     public static function guardarAPI()
 {
@@ -155,7 +203,8 @@ class MovimientoController
         if ($resultado['resultado'] == 1) {
             echo json_encode([
                 'mensaje' => 'Registro guardado correctamente',
-                'codigo' => 1
+                'codigo' => 1,
+                'id' => $resultado['id'] // Devuelve el ID del registro recién insertado
             ]);
         } else {
             echo json_encode([

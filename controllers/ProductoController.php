@@ -71,29 +71,6 @@ class ProductoController
     }
 
 
-    // public static function buscarEstadosAPI()
-    // {
-    //     $sql = "SELECT est_descripcion, est_id, est_dependencia
-    //     FROM inv_estado
-    //     JOIN mdep ON inv_estado.est_dependencia = mdep.dep_llave
-    //     JOIN morg ON mdep.dep_llave = morg.org_dependencia
-    //     JOIN mper ON morg.org_plaza = mper.per_plaza
-    //     WHERE mper.per_catalogo = 665133 AND inv_estado.est_situacion = 1
-    //     ";
-    //     try {
-    //         $estado = Estado::fetchArray($sql);
-
-    //         // Establece el tipo de contenido de la respuesta a JSON
-    //         header('Content-Type: application/json');
-    //         //return;
-    //         // Convierte el array a JSON 
-    //         echo json_encode($estado);
-    //     } catch (Exception $e) {
-    //         // En caso de error, envía una respuesta vacía
-    //         echo json_encode([]);
-    //     }
-    // }
-
 
 
 

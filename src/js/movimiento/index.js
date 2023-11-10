@@ -42,6 +42,8 @@ const btnModificarDetalle = document.getElementById('btnModificarDetalle');
 const btnCancelarDetalle = document.getElementById('btnCancelarDetalle');
 const movDetalleDiv = document.getElementById('mov_detalle');
 
+let estado = [];// se define estado como un array vacio...
+let producto = [];
 
 
 
@@ -293,6 +295,90 @@ const buscarDependencia = async () => {
 };
 
 
+const buscarEstados = async () => {
+    // Verificar si los elementos del formulario existen antes de acceder a sus propiedades
+    if (formularioDetalle.est_descripcion && formularioDetalle.est_id) {
+        let est_descripcion = formularioDetalle.est_descripcion.value;
+        let est_id = formularioDetalle.est_id.value;
+    }
+    const url = `/control_inventario/API/movimiento/buscarEstados`;
+    const config = {
+        method: 'GET'
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+        console.log('data de estados', data); // Imprimir datos en la consola
+
+        estado = data;
+        // Limpiar el contenido del select
+        formularioDetalle.det_estado.innerHTML = '';
+
+        // Agregar opción predeterminada
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = 'SELECCIONE...';
+        formularioDetalle.det_estado.appendChild(defaultOption);
+        // Iterar sobre cada objeto en el arreglo y crear opciones para el select
+        data.forEach(estado => {
+            const option = document.createElement('option');
+            option.value = estado.est_id;
+            option.textContent = estado.est_descripcion;
+            formularioDetalle.det_estado.appendChild(option);
+        });
+        //contador = 1;
+        //datatable.clear().draw();
+    } catch (error) {
+        console.log(error);
+    }
+    formularioDetalle.reset();
+}
+
+
+const buscarProducto = async () => {
+    // Verificar si los elementos del formulario existen antes de acceder a sus propiedades
+    if (formularioDetalle.pro_nom_articulo && formularioDetalle.pro_id) {
+        let pro_nom_articulo = formularioDetalle.pro_nom_articulo.value;
+        let pro_id = formularioDetalle.pro_id.value;
+    }
+    const url = `/control_inventario/API/movimiento/buscarProducto`;
+    const config = {
+        method: 'GET'
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+        console.log('data de productos', data); // Imprimir datos en la consola
+
+        producto = data;
+        // Limpiar el contenido del select
+        formularioDetalle.det_pro_id.innerHTML = '';
+
+        // Agregar opción predeterminada
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = 'SELECCIONE...';
+        formularioDetalle.det_pro_id.appendChild(defaultOption);
+        // Iterar sobre cada objeto en el arreglo y crear opciones para el select
+        data.forEach(producto => {
+            const option = document.createElement('option');
+            option.value = producto.pro_id;
+            option.textContent = producto.pro_nom_articulo;
+            formularioDetalle.det_pro_id.appendChild(option);
+        });
+
+
+
+        //contador = 1;
+        //datatable.clear().draw();
+    } catch (error) {
+        console.log(error);
+    }
+    formularioDetalle.reset();
+}
+
 
 ////// GUARDAR CAMPOS DEL FORMULARIO
 
@@ -321,12 +407,21 @@ const guardar = async (evento) => {
         console.log(data);
         // return
 
-        const { codigo, mensaje, detalle } = data;
+        const { codigo, mensaje, id, detalle} = data;
         let icon = 'info'
         switch (codigo) {
             case 1:
+                const movimientoId = id;
                 formularioMovimiento.reset();
                 icon = 'success'
+            
+
+                document.getElementById('det_mov_id').value = movimientoId;
+                     // Ocultar el formulario de movimiento
+                 movMovimientoDiv.style.display = 'none';
+
+                // Mostrar el formulario de detalle
+                 movDetalleDiv.style.display = 'block';
                 //buscar();
                 break;
 
@@ -354,25 +449,22 @@ const guardar = async (evento) => {
 
 buscarAlmacenes();
 buscarDependencia();
+buscarEstados();
+buscarProducto();
+
 mov_perso_entrega.addEventListener('input', buscarOficiales);
 mov_perso_recibe.addEventListener('input', buscarOficialesRecibe);
 mov_perso_respon.addEventListener('input', buscarOficialesResponsable);
-
+formularioMovimiento.addEventListener('submit', guardar)
 
   
-    formularioMovimiento.addEventListener('submit', function(event) {
-        // Prevenir el envío normal del formulario
-        event.preventDefault();
-        guardar();
+    btnSiguiente.addEventListener('click', function(event) {
+    //     // Prevenir el envío normal del formulario
 
-        // // Validar el formulario de movimiento
-        // if (!validarFormulario(formularioMovimiento, ['mov_id', 'mov_tipo_mov'])) {
-        //     Toast.fire({
-        //         icon: 'info',
-        //         text: 'Debe llenar todos los datos'
-        //     })
-        //     return
-        // }
+        event.preventDefault();
+    //     guardar();
+
+     
 
         // Ocultar el formulario de movimiento
         movMovimientoDiv.style.display = 'none';
@@ -380,6 +472,11 @@ mov_perso_respon.addEventListener('input', buscarOficialesResponsable);
         // Mostrar el formulario de detalle
         movDetalleDiv.style.display = 'block';
     });
+
+
+
+
+
 
     // Agrega un oyente de eventos al botón "Anterior" del formulario de detalle
     btnAnterior.addEventListener('click', function(event) {
