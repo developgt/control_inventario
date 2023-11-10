@@ -42,6 +42,14 @@ const btnModificarDetalle = document.getElementById('btnModificarDetalle');
 const btnCancelarDetalle = document.getElementById('btnCancelarDetalle');
 const movDetalleDiv = document.getElementById('mov_detalle');
 
+//CONST PARA LOS INPUTS 
+const detProIdSelect = document.getElementById('det_pro_id');
+const detLoteInput = document.getElementById('det_lote');
+const detEstadoSelect = document.getElementById('det_estado');
+const detCantidadInput = document.getElementById('det_cantidad');
+const detCantidadExistenteInput = document.getElementById('det_cantidad_existente');
+const detCantidadLoteInput = document.getElementById('det_cantidad_lote');
+
 let estado = [];// se define estado como un array vacio...
 let producto = [];
 
@@ -380,7 +388,7 @@ const buscarProducto = async () => {
 }
 
 
-////// GUARDAR CAMPOS DEL FORMULARIO
+////// GUARDAR CAMPOS DEL FORMULARIO MOVIMIENTO
 
 const guardar = async (evento) => {
     evento.preventDefault();
@@ -445,13 +453,132 @@ const guardar = async (evento) => {
     //buscar();
 }
 
+///////////////////////////////
 
 
+////// GUARDAR CAMPOS DEL FORMULARIO DETALLE
+
+const GuardarDetalle = async (evento) => {
+    evento.preventDefault();
+
+    if (!validarFormulario(formularioDetalle, ['det_id', 'det_mov_id'])) {
+        Toast.fire({
+            icon: 'info',
+            text: 'Debe llenar todos los datos'
+        })
+        return
+    }
+    const body = new FormData(formularioDetalle)
+    body.delete('det_id')
+    const url = '/control_inventario/API/movimiento/guardarDetalle';
+    const config = {
+        method: 'POST',
+        body
+    }
+
+    try {
+        const respuesta = await fetch(url, config)
+        const data = await respuesta.json();
+
+        console.log(data);
+        // return
+
+        const { codigo, mensaje, detalle} = data;
+        let icon = 'info'
+        switch (codigo) {
+            case 1:
+                formularioDetalle.reset();
+                icon = 'success'
+                //buscar();
+                break;
+
+            case 0:
+                icon = 'error'
+                console.log(detalle)
+                break;
+
+            default:
+                break;
+        }
+
+        Toast.fire({
+            icon,
+            text: mensaje
+        })
+
+    } catch (error) {
+        console.log(error);
+    }
+    //buscar();
+}
+
+//////////////////////////////////////////////
+////buscar cantidad existentes por lotes y cantidad existentes del formulario detalle//////
+
+
+const buscarCantidad = async () => {
+
+    
+    let det_pro_id = detProIdSelect.value;
+    let det_lote = detLoteInput.value;
+    let det_estado = detEstadoSelect.value;
+
+    //if (det_pro_id && det_lote && det_estado) {
+        if (det_pro_id && det_estado) {
+            // Comprobar si el campo de lote está lleno (ignorar si es nulo)
+            if (det_lote !== null && det_lote.trim() === '') {
+                //return;
+            }
+
+    const url = `/control_inventario/API/movimiento/buscarCantidad?det_pro_id=${det_pro_id}&det_lote=${det_lote}&det_estado=${det_estado}`;
+
+
+    const config = {
+        method: 'GET'
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+        console.log(data);
+
+         // Verificar si se encontraron registros
+         if (data && data.length > 0) {
+            // Asignar los valores a los inputs
+            formularioDetalle.det_cantidad_existente.value = data[0].det_cantidad_existente || 0;
+            formularioDetalle.det_cantidad_lote.value = data[0].det_cantidad_lote || 0;
+        } else {
+            // Si no se encontraron registros, establecer los inputs en 0
+            formularioDetalle.det_cantidad_existente.value = 0;
+            formularioDetalle.det_cantidad_lote.value = 0;
+
+            Toast.fire({
+                title: 'No se encontraron registros',
+                icon: 'info'
+            });
+        }
+
+    } catch (error) {
+        console.log(error);
+    }
+  } else {
+
+  }
+
+};
+
+//////////////////
+///////////////LLAMAR A LAS FUNCIONES///////////
 buscarAlmacenes();
 buscarDependencia();
 buscarEstados();
 buscarProducto();
 
+
+
+///////////////
+
+///////////// EVENTOS///////////////////////////////////
 mov_perso_entrega.addEventListener('input', buscarOficiales);
 mov_perso_recibe.addEventListener('input', buscarOficialesRecibe);
 mov_perso_respon.addEventListener('input', buscarOficialesResponsable);
@@ -474,10 +601,6 @@ formularioMovimiento.addEventListener('submit', guardar)
     });
 
 
-
-
-
-
     // Agrega un oyente de eventos al botón "Anterior" del formulario de detalle
     btnAnterior.addEventListener('click', function(event) {
         // Prevenir el envío normal del formulario
@@ -492,3 +615,569 @@ formularioMovimiento.addEventListener('submit', guardar)
         movMovimientoDiv.style.display = 'block';
     });
 
+//EVENTOS PARA BUSCAR LA CANTIDAD EXISTENTE
+
+detProIdSelect.addEventListener('input', buscarCantidad);
+detLoteInput.addEventListener('input', buscarCantidad);
+detEstadoSelect.addEventListener('input', buscarCantidad);
+
+
+// // Almacenar los valores originales cuando la página se carga
+// let valorInicialCantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
+// let valorInicialCantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
+
+// // Escuchador de eventos 'change' al campo det_cantidad
+// detCantidadInput.addEventListener('change', () => {
+//     // Obtener el valor actual del campo det_cantidad
+//     const cantidad = parseFloat(detCantidadInput.value) || 0;
+
+//     // Verificar si el campo det_lote está vacío
+//     if (detLoteInput.value.trim() === '') {
+//         // Si está vacío, solo hacer la suma en det_cantidad_existente
+//         const nuevaCantidadExistente = cantidad + valorInicialCantidadExistente;
+//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
+
+//         // Restablecer el valor de det_cantidad_lote a su valor inicial
+//         detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
+//     } else {
+//         // Si no está vacío, hacer la suma en ambos campos
+//         const cantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
+//         const cantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
+
+//         const nuevaCantidadExistente = cantidad + cantidadExistente;
+//         const nuevaCantidadLote = cantidad + cantidadLote;
+
+//         // Actualizar los campos con las nuevas sumas
+//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
+//         detCantidadLoteInput.value = nuevaCantidadLote.toFixed(2);
+//     }
+
+//     // Actualizar los valores iniciales después de realizar un cambio
+//     valorInicialCantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
+//     valorInicialCantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
+// });
+
+// // Agregar un escuchador de eventos 'input' para detectar cambios en det_cantidad
+// detCantidadInput.addEventListener('input', () => {
+//     // Verificar si el campo det_cantidad está vacío
+//     if (detCantidadInput.value.trim() === '') {
+//         // Si está vacío, restablecer los valores a sus valores iniciales
+//         valorInicialCantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
+//         valorInicialCantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
+//     }
+// });
+
+
+// // Almacenar los valores originales cuando la página se carga
+// let valorInicialCantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
+// let valorInicialCantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
+
+// // Escuchador de eventos 'input' al campo det_cantidad
+// detCantidadInput.addEventListener('input', () => {
+//     // Obtener el valor actual del campo det_cantidad
+//     const cantidad = parseFloat(detCantidadInput.value) || 0;
+
+//     // Verificar si el campo det_lote está vacío
+//     if (detLoteInput.value.trim() === '') {
+//         // Si está vacío, solo hacer la suma en det_cantidad_existente
+//         const nuevaCantidadExistente = cantidad + valorInicialCantidadExistente;
+//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
+
+//         // Restablecer el valor de det_cantidad_lote a su valor inicial
+//         detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
+//     } else {
+//         // Si no está vacío, hacer la suma en ambos campos
+//         const cantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
+//         const cantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
+
+//         const nuevaCantidadExistente = cantidad + cantidadExistente;
+//         const nuevaCantidadLote = cantidad + cantidadLote;
+
+//         // Actualizar los campos con las nuevas sumas
+//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
+//         detCantidadLoteInput.value = nuevaCantidadLote.toFixed(2);
+//     }
+// });
+
+// // Agregar un escuchador de eventos 'change' para detectar cambios en det_cantidad
+// detCantidadInput.addEventListener('change', () => {
+//     // Actualizar los valores iniciales después de realizar un cambio
+//     valorInicialCantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
+//     valorInicialCantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
+// });
+
+// Agregar un escuchador de eventos 'input' para detectar cambios en det_lote
+// detLoteInput.addEventListener('input', () => {
+//     // Verificar si el campo det_lote está vacío
+//     if (detLoteInput.value.trim() === '') {
+//         // Si está vacío, restablecer los valores a sus valores iniciales
+//         valorInicialCantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
+//         valorInicialCantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
+//     }
+// });
+
+
+
+// // Almacenar los valores originales cuando la página se carga
+// const valorInicialCantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
+// const valorInicialCantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
+
+// // Escuchador de eventos 'change' al campo det_cantidad
+// detCantidadInput.addEventListener('change', () => {
+//     // Obtener el valor actual del campo det_cantidad
+//     const cantidad = parseFloat(detCantidadInput.value) || 0;
+
+//     // Verificar si el campo det_lote está vacío
+//     if (detLoteInput.value.trim() === '') {
+//         // Si está vacío, solo hacer la suma en det_cantidad_existente
+//         const nuevaCantidadExistente = cantidad + valorInicialCantidadExistente;
+//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
+
+//         // Restablecer el valor de det_cantidad_lote a su valor inicial
+//         detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
+//     } else {
+//         // Si no está vacío, hacer la suma en ambos campos
+//         const cantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
+//         const cantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
+
+//         const nuevaCantidadExistente = cantidad + cantidadExistente;
+//         const nuevaCantidadLote = cantidad + cantidadLote;
+
+//         // Actualizar los campos con las nuevas sumas
+//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
+//         detCantidadLoteInput.value = nuevaCantidadLote.toFixed(2);
+//     }
+// });
+
+
+
+// ///evento para realizar la sumatoria de los campos det_cantidad
+
+// //  escuchador de eventos 'change' al campo det_cantidad
+// detCantidadInput.addEventListener('change', () => {
+//     // Obtener los valores actuales de los campos
+//     const cantidad = parseFloat(detCantidadInput.value) || 0;
+//     const cantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
+//     const cantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
+
+//     // Verificar si el campo det_lote está vacío
+//     if (detLoteInput.value.trim() === '') {
+//         // Si está vacío, solo hacer la suma en det_cantidad_existente
+//         const nuevaCantidadExistente = cantidad + cantidadExistente;
+//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
+//     } else {
+//         // Si no está vacío, hacer la suma en ambos campos
+//         const nuevaCantidadExistente = cantidad + cantidadExistente;
+//         const nuevaCantidadLote = cantidad + cantidadLote;
+
+//         // Actualizar los campos con las nuevas sumas
+//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
+//         detCantidadLoteInput.value = nuevaCantidadLote.toFixed(2);
+//     }
+// });
+
+
+// // Función para actualizar la sumatoria
+// const actualizarSumatoria = () => {
+//     // Obtener los valores actuales
+//     const cantidad = parseFloat(detCantidadInput.value) || 0; // Convertir a número o establecer a 0 si no se puede convertir
+
+//     // Actualizar los campos
+//     detCantidadExistenteInput.value = cantidad + parseFloat(detCantidadExistenteInput.value) || 0;
+
+//     // Solo actualizar det_cantidad_lote si det_lote no está vacío
+//     if (detLoteInput.value.trim() !== '') {
+//         detCantidadLoteInput.value = cantidad + parseFloat(detCantidadLoteInput.value) || 0;
+//     }
+// };
+
+// // Agregar escuchador de eventos 'input' al campo det_cantidad
+// detCantidadInput.addEventListener('change', () => {
+//     // Actualizar sumatoria
+//     actualizarSumatoria();
+// });
+
+// // Agregar escuchador de eventos 'input' al campo det_lote
+// detLoteInput.addEventListener('input', () => {
+//     // Actualizar sumatoria solo si det_lote no está vacío
+//     if (detLoteInput.value.trim() !== '') {
+//         actualizarSumatoria();
+//     }
+// });
+
+
+
+
+
+// // Almacenar los valores originales cuando la página se carga
+// const valorInicialCantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
+// const valorInicialCantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
+
+// // Escuchador de eventos 'change' al campo det_cantidad
+// detCantidadInput.addEventListener('change', () => {
+//     // Obtener el valor actual del campo det_cantidad
+//     const cantidad = parseFloat(detCantidadInput.value) || 0;
+
+//     // Verificar si el campo det_lote está vacío
+//     if (detLoteInput.value.trim() === '') {
+//         // Si está vacío, solo hacer la suma en det_cantidad_existente
+//         const nuevaCantidadExistente = cantidad + valorInicialCantidadExistente;
+//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
+
+//         // Restablecer el valor de det_cantidad_lote a su valor inicial
+//         detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
+//     } else {
+//         // Si no está vacío, hacer la suma en ambos campos
+//         const cantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
+//         const cantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
+
+//         const nuevaCantidadExistente = cantidad + cantidadExistente;
+//         const nuevaCantidadLote = cantidad + cantidadLote;
+
+//         // Actualizar los campos con las nuevas sumas
+//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
+//         detCantidadLoteInput.value = nuevaCantidadLote.toFixed(2);
+//     }
+// });
+
+// // Agregar un escuchador de eventos 'input' para detectar cambios en det_cantidad
+// detCantidadInput.addEventListener('input', () => {
+//     // Verificar si el campo det_cantidad está vacío
+//     if (detCantidadInput.value.trim() === '') {
+//         // Si está vacío, restablecer los valores a sus valores iniciales
+//         detCantidadExistenteInput.value = valorInicialCantidadExistente.toFixed(2);
+//         detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
+//     }
+// });
+
+
+
+// // Almacenar los valores originales cuando la página se carga
+// let valorInicialCantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
+// let valorInicialCantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
+
+// // Escuchador de eventos 'change' al campo det_cantidad
+// detCantidadInput.addEventListener('change', () => {
+//     // Obtener el valor actual del campo det_cantidad
+//     const cantidad = parseFloat(detCantidadInput.value) || 0;
+
+//     // Verificar si el campo det_lote está vacío
+//     if (detLoteInput.value.trim() === '') {
+//         // Si está vacío, solo hacer la suma en det_cantidad_existente
+//         const nuevaCantidadExistente = cantidad + valorInicialCantidadExistente;
+//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
+
+//         // Restablecer el valor de det_cantidad_lote a su valor inicial
+//         detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
+//     } else {
+//         // Si no está vacío, hacer la suma en ambos campos
+//         const cantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
+//         const cantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
+
+//         const nuevaCantidadExistente = cantidad + cantidadExistente;
+//         const nuevaCantidadLote = cantidad + cantidadLote;
+
+//         // Actualizar los campos con las nuevas sumas
+//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
+//         detCantidadLoteInput.value = nuevaCantidadLote.toFixed(2);
+//     }
+
+//     // Actualizar los valores iniciales después de realizar un cambio
+//     valorInicialCantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
+//     valorInicialCantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
+// });
+
+// // Agregar un escuchador de eventos 'input' para detectar cambios en det_cantidad
+// detCantidadInput.addEventListener('input', () => {
+//     // Verificar si el campo det_cantidad está vacío
+//     if (detCantidadInput.value.trim() === '') {
+//         // Si está vacío, restablecer los valores a sus valores iniciales
+//         detCantidadExistenteInput.value = valorInicialCantidadExistente.toFixed(2);
+//         detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
+//     }
+// });
+
+
+
+// // Almacenar los valores originales cuando la página se carga
+// let valorInicialCantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
+// let valorInicialCantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
+
+// // Escuchador de eventos 'input' al campo det_cantidad
+// detCantidadInput.addEventListener('input', () => {
+//     // Obtener el valor actual del campo det_cantidad
+//     const cantidad = parseFloat(detCantidadInput.value) || 0;
+
+//     // Verificar si el campo det_lote está vacío
+//     if (detLoteInput.value.trim() === '') {
+//         // Si está vacío, solo hacer la suma en det_cantidad_existente
+//         const nuevaCantidadExistente = cantidad + valorInicialCantidadExistente;
+//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
+
+//         // Restablecer el valor de det_cantidad_lote a su valor inicial
+//         detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
+//     } else {
+//         // Si no está vacío, hacer la suma solo en det_cantidad_existente
+//         const cantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
+//         const nuevaCantidadExistente = cantidad + cantidadExistente;
+
+//         // Actualizar los campos con las nuevas sumas
+//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
+//     }
+// });
+
+// // Agregar un escuchador de eventos 'change' para detectar cambios en det_cantidad
+// detCantidadInput.addEventListener('change', () => {
+//     // Actualizar los valores iniciales después de realizar un cambio
+//     valorInicialCantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
+//     valorInicialCantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
+// });
+
+// // Agregar un escuchador de eventos 'input' para detectar cambios en det_lote
+// detLoteInput.addEventListener('input', () => {
+//     // Verificar si el campo det_lote está vacío
+//     if (detLoteInput.value.trim() === '') {
+//         // Si está vacío, restablecer los valores a sus valores iniciales
+//         valorInicialCantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
+//         valorInicialCantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
+//     }
+// });
+
+
+
+
+
+// // Almacenar los valores originales cuando la página se carga
+// let valorInicialCantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
+// let valorInicialCantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
+
+// // Escuchador de eventos 'input' al campo det_cantidad
+// detCantidadInput.addEventListener('input', () => {
+//     // Obtener el valor actual del campo det_cantidad
+//     const cantidad = parseFloat(detCantidadInput.value) || 0;
+
+//     // Verificar si el campo det_lote está vacío
+//     if (detLoteInput.value.trim() === '') {
+//         // Si está vacío, solo hacer la suma en det_cantidad_existente
+//         const nuevaCantidadExistente = cantidad + valorInicialCantidadExistente;
+//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
+
+//         // Restablecer el valor de det_cantidad_lote a su valor inicial
+//         detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
+//     } else {
+//         // Si no está vacío, hacer la suma solo en det_cantidad_existente
+//         const cantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
+//         const nuevaCantidadExistente = cantidad + cantidadExistente;
+
+//         // Actualizar los campos con las nuevas sumas
+//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
+//     }
+// });
+
+// // Escuchador de eventos 'change' al campo det_cantidad
+// detCantidadInput.addEventListener('change', () => {
+//     // Obtener el valor actual del campo det_cantidad
+//     const cantidad = parseFloat(detCantidadInput.value) || 0;
+
+//     // Verificar si el campo det_lote está vacío
+//     if (detLoteInput.value.trim() === '') {
+//         // Si está vacío, restablecer los valores a sus estados iniciales
+//         detCantidadExistenteInput.value = valorInicialCantidadExistente.toFixed(2);
+//         detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
+//     }
+// });
+
+
+
+// // Almacenar los valores originales cuando la página se carga
+// let valorInicialCantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
+// let valorInicialCantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
+
+// // Función para actualizar la sumatoria
+// const actualizarSumatoria = () => {
+//     // Obtener el valor actual del campo det_cantidad
+//     const cantidad = parseFloat(detCantidadInput.value) || 0;
+
+//     // Verificar si el campo det_lote está vacío
+//     if (detLoteInput.value.trim() === '') {
+//         // Si está vacío, solo hacer la suma en det_cantidad_existente
+//         const nuevaCantidadExistente = cantidad + valorInicialCantidadExistente;
+//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
+
+//         // Restablecer el valor de det_cantidad_lote a su valor inicial
+//         detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
+//     } else {
+//         // Si no está vacío, hacer la suma solo en det_cantidad_existente
+//         const cantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
+//         const nuevaCantidadExistente = cantidad + cantidadExistente;
+
+//         // Actualizar los campos con las nuevas sumas
+//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
+//     }
+// };
+
+// // Escuchador de eventos 'input' al campo det_cantidad
+// detCantidadInput.addEventListener('input', actualizarSumatoria);
+
+// // Escuchador de eventos 'change' al campo det_cantidad
+// detCantidadInput.addEventListener('change', () => {
+//     // Obtener el valor actual del campo det_cantidad
+//     const cantidad = parseFloat(detCantidadInput.value) || 0;
+
+//     // Verificar si el campo det_lote está vacío
+//     if (detLoteInput.value.trim() === '') {
+//         // Si está vacío, restablecer los valores a sus estados iniciales
+//         detCantidadExistenteInput.value = valorInicialCantidadExistente.toFixed(2);
+//         detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
+//     }
+// });
+
+// // Llamamos a la función inicial para configurar correctamente el estado inicial
+// actualizarSumatoria();
+
+
+
+// // Almacenar los valores originales cuando la página se carga
+// let valorInicialCantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
+// let valorInicialCantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
+
+// // Función para actualizar la sumatoria
+// const actualizarSumatoria = () => {
+//     // Obtener el valor actual del campo det_cantidad
+//     const cantidad = parseFloat(detCantidadInput.value) || 0;
+
+//     // Verificar si el campo det_lote está vacío
+//     if (detLoteInput.value.trim() === '') {
+//         // Si está vacío, solo hacer la suma en det_cantidad_existente
+//         const nuevaCantidadExistente = cantidad + valorInicialCantidadExistente;
+//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
+
+//         // Restablecer el valor de det_cantidad_lote a su valor inicial
+//         detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
+//     } else {
+//         // Si no está vacío, hacer la suma solo en det_cantidad_existente
+//         const cantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
+//         const nuevaCantidadExistente = cantidad + cantidadExistente;
+
+//         // Actualizar los campos con las nuevas sumas
+//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
+//     }
+// };
+
+// // Escuchador de eventos 'input' al campo det_cantidad
+// detCantidadInput.addEventListener('input', actualizarSumatoria);
+
+// // Escuchador de eventos 'change' al campo det_cantidad
+// detCantidadInput.addEventListener('change', () => {
+//     // Obtener el valor actual del campo det_cantidad
+//     const cantidad = parseFloat(detCantidadInput.value) || 0;
+
+//     // Verificar si el campo det_lote está vacío
+//     if (detLoteInput.value.trim() === '') {
+//         // Si está vacío, restablecer los valores a sus estados iniciales
+//         detCantidadExistenteInput.value = valorInicialCantidadExistente.toFixed(2);
+//         detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
+//     }
+// });
+
+// // Llamamos a la función inicial para configurar correctamente el estado inicial
+// actualizarSumatoria();
+
+
+
+// // Almacenar los valores originales cuando la página se carga
+// let valorInicialCantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
+// let valorInicialCantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
+
+// // Función para actualizar la sumatoria
+// const actualizarSumatoria = () => {
+//     // Obtener el valor actual del campo det_cantidad
+//     const cantidad = parseFloat(detCantidadInput.value) || 0;
+
+//     // Verificar si el campo det_lote está vacío
+//     if (detLoteInput.value.trim() === '') {
+//         // Si está vacío, solo hacer la suma en det_cantidad_existente
+//         const nuevaCantidadExistente = cantidad + valorInicialCantidadExistente;
+//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
+
+//         // Restablecer el valor de det_cantidad_lote a su valor inicial
+//         detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
+//     } else {
+//         // Si no está vacío, hacer la suma solo en det_cantidad_lote
+//         const nuevaCantidadLote = cantidad + valorInicialCantidadLote;
+
+//         // Actualizar el campo con la nueva suma
+//         detCantidadLoteInput.value = nuevaCantidadLote.toFixed(2);
+
+//         // Restablecer el valor de det_cantidad_existente a su valor inicial
+//         detCantidadExistenteInput.value = valorInicialCantidadExistente.toFixed(2);
+//     }
+// };
+
+// // Escuchador de eventos 'input' al campo det_cantidad
+// detCantidadInput.addEventListener('input', actualizarSumatoria);
+
+// // Escuchador de eventos 'change' al campo det_cantidad
+// detCantidadInput.addEventListener('change', () => {
+//     // Obtener el valor actual del campo det_cantidad
+//     const cantidad = parseFloat(detCantidadInput.value) || 0;
+
+//     // Verificar si el campo det_lote está vacío
+//     if (detLoteInput.value.trim() === '') {
+//         // Si está vacío, restablecer los valores a sus estados iniciales
+//         detCantidadExistenteInput.value = valorInicialCantidadExistente.toFixed(2);
+//         detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
+//     }
+// });
+
+// // Llamamos a la función inicial para configurar correctamente el estado inicial
+// actualizarSumatoria();
+
+
+
+// Almacenar los valores originales cuando la página se carga
+let valorInicialCantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
+let valorInicialCantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
+
+// Función para actualizar la sumatoria
+const actualizarSumatoria = () => {
+    // Obtener el valor actual del campo det_cantidad
+    const cantidad = parseFloat(detCantidadInput.value) || 0;
+
+    // Verificar si el campo det_lote está vacío
+    if (detLoteInput.value.trim() === '') {
+        // Si está vacío, solo hacer la suma en det_cantidad_existente
+        const nuevaCantidadExistente = cantidad + valorInicialCantidadExistente;
+        detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
+
+        // Restablecer el valor de det_cantidad_lote a su valor inicial
+        detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
+    } else {
+        // Si no está vacío, hacer la suma en ambos campos
+        const nuevaCantidadLote = cantidad + valorInicialCantidadLote;
+        const nuevaCantidadExistente = cantidad + valorInicialCantidadExistente;
+
+        // Actualizar los campos con las nuevas sumas
+        detCantidadLoteInput.value = nuevaCantidadLote.toFixed(2);
+        detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
+    }
+};
+
+// Escuchador de eventos 'input' al campo det_cantidad
+detCantidadInput.addEventListener('input', actualizarSumatoria);
+
+// Escuchador de eventos 'change' al campo det_cantidad
+detCantidadInput.addEventListener('change', () => {
+    // Obtener el valor actual del campo det_cantidad
+    const cantidad = parseFloat(detCantidadInput.value) || 0;
+
+    // Verificar si el campo det_lote está vacío
+    if (detLoteInput.value.trim() === '') {
+        // Si está vacío, restablecer los valores a sus estados iniciales
+        detCantidadExistenteInput.value = valorInicialCantidadExistente.toFixed(2);
+        detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
+    }
+});
+
+// Llamamos a la función inicial para configurar correctamente el estado inicial
+actualizarSumatoria();

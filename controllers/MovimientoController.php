@@ -5,6 +5,7 @@ namespace Controllers;
 
 use Exception;
 use Model\Almacen;
+use Model\Detalle;
 use Model\Estado;
 use Model\Mper;
 use Model\Mdep;
@@ -26,15 +27,15 @@ class MovimientoController
 
 
     public static function buscarDependenciaAPI()
-    
+
     {
         $sql = "SELECT dep_llave, dep_desc_md FROM mdep";
         try {
             $dependencias = Mdep::fetchArray($sql);
-    
+
             // Establece el tipo de contenido de la respuesta a JSON
             header('Content-Type: application/json');
-    
+
             // Convierte el array a JSON y envíalo como respuesta
             echo json_encode($dependencias);
         } catch (Exception $e) {
@@ -144,12 +145,11 @@ class MovimientoController
         }
     }
 
-        public static function buscarEstadosAPI()
+    public static function buscarEstadosAPI()
     {
         $sql = "SELECT est_descripcion, est_id 
         FROM inv_estado
-        WHERE est_situacion = 1
-        ";
+        WHERE est_situacion = 1";
         try {
             $estado = Estado::fetchArray($sql);
 
@@ -194,32 +194,120 @@ class MovimientoController
 
 
     public static function guardarAPI()
-{
-    try {
+    {
+        try {
 
-        $movimiento = new Movimiento($_POST);
-        $resultado = $movimiento->crear();
+            $movimiento = new Movimiento($_POST);
+            $resultado = $movimiento->crear();
 
-        if ($resultado['resultado'] == 1) {
+            if ($resultado['resultado'] == 1) {
+                echo json_encode([
+                    'mensaje' => 'Registro guardado correctamente',
+                    'codigo' => 1,
+                    'id' => $resultado['id'] // Devuelve el ID del registro recién insertado
+                ]);
+            } else {
+                echo json_encode([
+                    'mensaje' => 'Ocurrió un error',
+                    'codigo' => 0
+                ]);
+            }
+        } catch (Exception $e) {
             echo json_encode([
-                'mensaje' => 'Registro guardado correctamente',
-                'codigo' => 1,
-                'id' => $resultado['id'] // Devuelve el ID del registro recién insertado
-            ]);
-        } else {
-            echo json_encode([
+                'detalle' => $e->getMessage(),
                 'mensaje' => 'Ocurrió un error',
                 'codigo' => 0
             ]);
         }
-
-    } catch (Exception $e) {
-        echo json_encode([
-            'detalle' => $e->getMessage(),
-            'mensaje' => 'Ocurrió un error',
-            'codigo' => 0
-        ]);
     }
-}
 
+    /// para buscar la cantidad del formulario detalle
+
+    public static function buscarCantidadAPI()
+    {
+        $det_pro_id = $_GET['det_pro_id'] ?? '';
+        $det_lote = $_GET['det_lote'] ?? '';
+        $det_estado = $_GET['det_estado'] ?? '';
+
+
+
+        $sql = "SELECT 
+        det_pro_id,
+        det_lote,
+        det_estado,
+        MAX(det_cantidad) AS det_cantidad,
+        MAX(det_cantidad_lote) AS det_cantidad_lote
+    FROM 
+        inv_deta_movimientos
+    WHERE det_situacion = 1";
+
+        if ($det_pro_id != '') {
+            // Si es un número, la condición directamente
+            if (is_numeric($det_pro_id)) {
+                $sql .= " AND det_pro_id = $det_pro_id";
+            } else {
+                // Si es texto, usamos LIKE para buscar parcialmente
+                $sql .= " AND LOWER(det_pro_id) LIKE '%$det_pro_id%'";
+            }
+        }
+
+        if ($det_lote != '') {
+            $sql .= " AND LOWER(det_lote) LIKE '%$det_lote%'";
+        }
+
+        if ($det_estado != '') {
+            // Si es un número, la condición directamente
+            if (is_numeric($det_estado)) {
+                $sql .= " AND det_estado = $det_estado";
+            } else {
+                // Si es texto, u LIKE para buscar parcialmente
+                $sql .= " AND LOWER(det_estado) LIKE '%$det_estado%'";
+            }
+        }
+
+        $sql .= " GROUP BY 
+            det_pro_id,
+            det_lote,
+            det_estado";
+        try {
+
+            $detalle = Detalle::fetchArray($sql);
+
+            echo json_encode($detalle);
+        } catch (Exception $e) {
+            echo json_encode([
+                'detalle' => $e->getMessage(),
+                'mensaje' => 'Ocurrió un error',
+                'codigo' => 0
+            ]);
+        }
+    }
+
+    public static function guardarDetalleAPI()
+    {
+        try {
+
+            $detalle = new Detalle($_POST);
+            $resultado = $detalle->crear();
+
+            if ($resultado['resultado'] == 1) {
+                echo json_encode([
+                    'mensaje' => 'Registro guardado correctamente',
+                    'codigo' => 1,
+
+                ]);
+            } else {
+                echo json_encode([
+                    'mensaje' => 'Ocurrió un error',
+                    'codigo' => 0
+                ]);
+            }
+        } catch (Exception $e) {
+            echo json_encode([
+                'detalle' => $e->getMessage(),
+                'mensaje' => 'Ocurrió un error',
+                'codigo' => 0
+            ]);
+        }
+    }
 }

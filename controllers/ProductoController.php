@@ -129,19 +129,19 @@ class ProductoController
 
         if ($pro_almacen_id != '') {
             $pro_almacen_id = strtolower($pro_almacen_id);
-            $sql .= " AND LOWER(est_descripcion) LIKE '%$pro_almacen_id%' ";
+            $sql .= " AND LOWER(pro_almacen_id) LIKE '%$pro_almacen_id%' ";
         }
         if ($pro_medida != '') {
             $pro_medida = strtolower($pro_medida);
-            $sql .= " AND LOWER(est_descripcion) LIKE '%$pro_medida%' ";
+            $sql .= " AND LOWER(pro_medida) LIKE '%$pro_medida%' ";
             }
             if ($pro_nom_articulo != '') {
                 $pro_nom_articulo = strtolower($pro_nom_articulo);
-                $sql .= " AND LOWER(est_descripcion) LIKE '%$pro_nom_articulo%' ";
+                $sql .= " AND LOWER(pro_nom_articulo) LIKE '%$pro_nom_articulo%' ";
                  }
                     if ($pro_descripcion != '') {
                         $pro_descripcion = strtolower($pro_descripcion);
-                        $sql .= " AND LOWER(est_descripcion) LIKE '%$pro_descripcion%' ";
+                        $sql .= " AND LOWER(pro_descripcion) LIKE '%$pro_descripcion%' ";
                     }
 
 

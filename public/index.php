@@ -69,7 +69,10 @@ $router->get('/API/movimiento/buscarAlmacenes', [MovimientoController::class, 'b
 $router->get('/API/movimiento/buscarEstados', [MovimientoController::class, 'buscarEstadosAPI']);
 $router->get('/API/movimiento/buscarProducto', [MovimientoController::class, 'buscarProductoAPI']);
 $router->get('/API/movimiento/buscarDependencia', [MovimientoController::class, 'buscarDependenciaAPI']);
+$router->get('/API/movimiento/buscarCantidad', [MovimientoController::class, 'buscarCantidadAPI']);
 $router->post('/API/movimiento/guardar', [MovimientoController::class,'guardarAPI'] );
+$router->post('/API/movimiento/guardarDetalle', [MovimientoController::class,'guardarDetalleAPI'] );
+
 
 
 //rutas para manejar la vista de movimiento de la tabla INV_MOVIMIENTOS (egresos)

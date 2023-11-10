@@ -140,7 +140,7 @@
                 </form>
             </div>
         </div>
-    </div>  <!-- aqui empieza la siguiente div para el formulario de detalle -->
+    </div> <!-- aqui empieza la siguiente div para el formulario de detalle -->
     <div class="col-lg-6">
         <div class="card" id="mov_detalle">
             <h2 class="card-header bg-primary text-white text-center p-3 rounded">Detalle del Ingreso del Almacén</h2>
@@ -178,19 +178,6 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col">
-                            <label for="det_fecha_vence">Seleccione la fecha de vencimiento</label>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col">
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-box"></i></span>
-                                <input type="date" name="det_fecha_vence" id="det_fecha_vence" class="form-control"  required>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col">
                             <label for="det_estado">Seleccione el estado</label>
                         </div>
                     </div>
@@ -206,6 +193,20 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col">
+                            <label for="det_fecha_vence">Seleccione la fecha de vencimiento</label>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-box"></i></span>
+                                <input type="date" name="det_fecha_vence" id="det_fecha_vence" class="form-control" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col">
                             <label for="det_cantidad_existente">Ingrese la Cantidad</label>
                         </div>
                     </div>
@@ -217,7 +218,7 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col">
-                            <label for="det_cantidad">Cantidad Existente</label>
+                            <label for="det_cantidad_existente">Cantidad Existente</label>
                         </div>
                     </div>
                     <div class="mb-3">
@@ -228,7 +229,18 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col">
-                            <label for="det_cantidad_existente">Escriba observaciones</label>
+                            <label for="det_cantidad">Cantidad Lote</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-card-text"></i></span>
+                            <input type="number" name="det_cantidad_lote" id="det_cantidad_lote" class="form-control" placeholder="Cantidad" readonly>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="det_observaciones">Escriba observaciones</label>
                         </div>
                     </div>
                     <div class="mb-3">

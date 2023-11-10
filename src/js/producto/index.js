@@ -49,6 +49,10 @@ const datatable = new Datatable('#tablaProducto', {
         },
         {
             title: 'Nombre del Producto',
+            data: 'pro_id'
+        },
+        {
+            title: 'Nombre del Producto',
             data: 'pro_nom_articulo'
         },
         {
@@ -65,14 +69,14 @@ const datatable = new Datatable('#tablaProducto', {
         },
         {
             title: 'MODIFICAR',
-            data: 'uni_id',
+            data: 'pro_id',
             searchable: false,
             orderable: false,
-            render: (data, type, row, meta) => `<button class="btn btn-warning" data-id='${row["uni_id"]}' data-nombre='${row["uni_nombre"]}' data-almacen='${row["alma_id"]}'>Modificar</button>`
+            render: (data, type, row, meta) => `<button class="btn btn-warning" data-id='${row["pro_id"]}' data-nombre='${row["uni_nombre"]}' data-almacen='${row["alma_id"]}'>Modificar</button>`
         },
         {
             title: 'ELIMINAR',
-            data: 'uni_id',
+            data: 'pro_id',
             searchable: false,
             orderable: false,
             render: (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Eliminar</button>`
@@ -110,7 +114,7 @@ const traeDatos = (e) => {
 
 const colocarDatos = (dataset) => {
     formulario.uni_nombre.value = dataset.nombre;
-    formulario.uni_id.value = dataset.id;
+    formulario.pro_id.value = dataset.id;
     nombreAlmacen.value = dataset.almacen;
 
 
@@ -137,47 +141,10 @@ const cancelarAccion = () => {
 };
 
 
-//cargar contenido cuando se cargue la pagina
-
-document.addEventListener('DOMContentLoaded', async function () {
-
-    try {
-        await buscarAlmacenes();
-        await buscarUnidades();
-
-
-        const selectAlmacen = formulario.pro_almacen_id;
-        const selectMedida = formulario.pro_medida;
-    
-
-        selectAlmacen.addEventListener('change', () => {
-            const almacenSeleccionado = selectAlmacen.value;
-            const unidadesFiltradas = medida.filter(medida => medida.alma_id == almacenSeleccionado);
-            selectMedida.innerHTML = '';
-            const defaultOption = document.createElement('option');
-            defaultOption.value = '';
-            defaultOption.textContent = 'SELECCIONE...';
-            selectMedida.appendChild(defaultOption);
-
-            unidadesFiltradas.forEach(unidad => {
-                const option = document.createElement('option');
-                option.value = unidad.uni_id;
-                option.textContent = unidad.uni_nombre;
-                selectMedida.appendChild(option);
-            });
-        });
-
-
-        //buscar();
-    } catch (error) {
-        console.error(error);
-        // Manejar el error, si es necesario.
-    }
-});
 
 const buscarAlmacenes = async () => {
     // Verificar si los elementos del formulario existen antes de acceder a sus propiedades
-    if (formulario.alma_nombre && formulario.alma_id) {
+    if (formulario.pro_almacen_id && formulario.alma_id) {
         let alma_nombre = formulario.alma_nombre.value;
         let alma_id = formulario.alma_id.value;
     }
@@ -262,6 +229,44 @@ const buscarUnidades = async () => {
     formulario.reset();
 };
 
+
+//cargar contenido cuando se cargue la pagina
+
+document.addEventListener('DOMContentLoaded', async function () {
+
+    try {
+        await buscarAlmacenes();
+        await buscarUnidades();
+
+
+        const selectAlmacen = formulario.pro_almacen_id;
+        const selectMedida = formulario.pro_medida;
+
+
+        selectAlmacen.addEventListener('change', () => {
+            const almacenSeleccionado = selectAlmacen.value;
+            const unidadesFiltradas = medida.filter(medida => medida.alma_id == almacenSeleccionado);
+            selectMedida.innerHTML = '';
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = 'SELECCIONE...';
+            selectMedida.appendChild(defaultOption);
+
+            unidadesFiltradas.forEach(unidad => {
+                const option = document.createElement('option');
+                option.value = unidad.uni_id;
+                option.textContent = unidad.uni_nombre;
+                selectMedida.appendChild(option);
+            });
+        });
+
+
+        //buscar();
+    } catch (error) {
+        console.error(error);
+        // Manejar el error, si es necesario.
+    }
+});
 
 // const buscarEstados = async () => {
 //     // Verificar si los elementos del formulario existen antes de acceder a sus propiedades
@@ -365,7 +370,7 @@ const guardar = async (evento) => {
 }
 
 const buscar = async () => {
-    
+
 
     let pro_almacen_id = formulario.pro_almacen_id.value;
     let pro_medida = formulario.pro_medida.value;
@@ -398,11 +403,11 @@ const buscar = async () => {
         console.log(error);
     }
     formulario.reset();
-   
+
     //actualizarDependencia();
 };
 
-buscar();
+//buscar();
 
 
 
@@ -412,3 +417,40 @@ buscar();
 ////////////////////////////////////////////////////////////////
 
 formulario.addEventListener('submit', guardar);
+btnBuscar.addEventListener('click', buscar);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
