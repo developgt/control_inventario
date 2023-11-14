@@ -12,7 +12,6 @@ class Guarda extends ActiveRecord
     public $guarda_catalogo;
     public $guarda_almacen;
     public $guarda_situacion;
-   
 
     public function __construct($args = [])
     {
@@ -20,5 +19,7 @@ class Guarda extends ActiveRecord
         $this->guarda_catalogo = $args['guarda_catalogo'] ?? '';
         $this->guarda_almacen = $args['guarda_almacen'] ?? '';
         $this->guarda_situacion = $args['guarda_situacion'] ?? 1;
-    }
+
+}
+
 }

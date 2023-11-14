@@ -1,6 +1,6 @@
 {
-    "name": "mindef/base",
-    "description": "Proyecto MVC demo",
+    "name": "mindef/menu",
+    "description": "Menú principal para autocom v 3.0",
     "type": "project",
     "config": {
         "platform-check": false

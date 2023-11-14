@@ -13,10 +13,6 @@ module.exports = {
     'js/producto/index' : './src/js/producto/index.js',
     'js/movimiento/index' : './src/js/movimiento/index.js',
     'js/movegreso/index' : './src/js/movegreso/index.js',
-
-
-
-
   },
   output: {
     filename: '[name].js',
