@@ -5,10 +5,15 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  <!-- Agrega SweetAlert2 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.0/dist/sweetalert2.min.css">
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-  <style>
+  <!-- Agrega SweetAlert2 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.0/dist/sweetalert2.all.min.js"></script>
+</head>
+<style>
     .carousel-inner img {
       width: 100%;
       height: 100%;
@@ -20,12 +25,11 @@
     }
 
     #almacenAsignado {
-      text-align: left; /* Alineación a la izquierda */
-      text-transform: uppercase; /* Convertir a mayúsculas */
+      text-align: left;
+      text-transform: uppercase;
       font-size: 14px;
     }
-  </style>
-</head>
+</style>
 <body>
 
 <div class="row justify-content-center mt-0">
@@ -36,13 +40,14 @@
                 <img id="fotoUsuario" class="card-img-top" src="./images/header.jpg" alt="header">
                 <br><br>
                 <p class="card-text fw-bold"> <?= $usuario['grado'] .' '. $usuario['nombre'] ?> </p>
+                <p class="card-text fw-bold"> <?= $usuario['empleo'] ?> </p>
                 <p> ALMACENES ASIGNADOS </p>
                 <figure>
                     <blockquote id='almacenAsignado' class="blockquote">
                         <!-- Vacío inicialmente, se llenará con JavaScript -->
                     </blockquote>
                 </figure>
-                <button class="btn btn-warning btn-block" style="margin-top: 20px;">Ingresar como Guardalmacén</button>
+                <button class="btn btn-warning btn-block" id="btnIngresarGuardalmacen" style="margin-top: 20px;">Ingresar como Guardalmacén</button>
             </div>
         </div>
     </div>
@@ -89,19 +94,45 @@
                     Sun Tzu
                 </figcaption>
             </figure>
-            <button class="btn btn-warning btn-lg" style="position: absolute; bottom: 0; right: 0; margin: 10px;">
+            <button class="btn btn-primary btn-lg" id="buttonGestion" style="position: absolute; bottom: 0; right: 0; margin: 10px;">
                 Gestionar Almacenes <i class="bi bi-arrow-right-square bi-lg"></i>
             </button>
         </div>
     </div>
 </div>
 
-<script> 
-    const nombreAlmacen = document.getElementById('almacenAsignado')
-   
-    var usuario = <?= json_encode($usuario) ?>; 
-    var fotoUrl = `https://sistema.ipm.org.gt/sistema/fotos_afiliados/ACTJUB/${usuario.per_catalogo}.jpg`; 
-    document.getElementById("fotoUsuario").src = fotoUrl; 
+<!-- Modal para seleccionar el almacén -->
+<div class="modal fade" id="modalSeleccionarAlmacen" tabindex="-1" aria-labelledby="modalSeleccionarAlmacenLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalSeleccionarAlmacenLabel">Seleccionar Almacén</h5>
+                <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button> -->
+            </div>
+            <div class="modal-body">
+                <form id="formSeleccionarAlmacen">
+                    <div class="form-group">
+                        <label for="selectAlmacenes">Seleccione el almacén:</label>
+                        <select class="form-control" id="selectAlmacenes" name="almacen">
+                            <!-- Opciones del select se llenarán con JavaScript -->
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Ingresar al Almacen Seleccionado</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    const buttonGestion = document.getElementById('buttonGestion');
+    const nombreAlmacen = document.getElementById('almacenAsignado');
+    const usuario = <?= json_encode($usuario) ?>;
+    const fotoUrl = `https://sistema.ipm.org.gt/sistema/fotos_afiliados/ACTJUB/${usuario.per_catalogo}.jpg`;
+    document.getElementById("fotoUsuario").src = fotoUrl;
 
     const buscar = async () => {
         const url = `/control_inventario/API/menu/buscar`;
@@ -122,10 +153,75 @@
         } catch (error) {
             console.log(error);
         }
-
     };
 
     buscar();
+
+    const btnIngresarGuardalmacen = document.getElementById('btnIngresarGuardalmacen');
+
+    // Función para mostrar el modal al hacer clic en el botón "Ingresar como Guardalmacén"
+    btnIngresarGuardalmacen.addEventListener('click', async function() {
+        try {
+            const respuesta = await fetch('/control_inventario/API/menu/buscar', { method: 'GET' });
+            const data = await respuesta.json();
+            const almacenes = data.almacenes || [];
+
+            if (almacenes.length > 0) {
+                const selectAlmacenes = document.getElementById('selectAlmacenes');
+                selectAlmacenes.innerHTML = ''; // Limpiar opciones actuales
+
+                almacenes.forEach(almacen => {
+                    const option = document.createElement('option');
+                    option.value = almacen.alma_nombre;
+                    option.textContent = almacen.alma_nombre.toUpperCase();
+                    selectAlmacenes.appendChild(option);
+                });
+
+                // Mostrar el modal
+                $('#modalSeleccionarAlmacen').modal('show');
+            } else {
+                // Mostrar SweetAlert si no hay registros de almacenes
+                Swal.fire({
+                    icon: 'error',
+                    title: 'No ha sido registrado en ningún almacén',
+                    text: 'Por favor, contacte al administrador.',
+                });
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    });
+
+    // Función para manejar el envío del formulario y redirigir a la página correspondiente
+    document.getElementById('formSeleccionarAlmacen').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        // Obtener el valor seleccionado en el select
+        const selectedAlmacen = document.getElementById('selectAlmacenes').value;
+
+        // Aquí puedes redirigir a la página correspondiente, por ejemplo:
+        window.location.href = `/control_inventario/guardalmacen?almacen=${selectedAlmacen}`;
+
+        // Cerrar el modal después de redirigir
+        $('#modalSeleccionarAlmacen').modal('hide');
+    });
+
+    buttonGestion.addEventListener('click', function () {
+        if (usuario && usuario.empleo) {
+            if (usuario.empleo.includes('LOGISTICA')) {
+                window.location.href = '/control_inventario/gestion';
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Usted no posee permisos para la creación de almacenes.',
+                });
+            }
+        } else {
+            console.error('El objeto usuario o la propiedad empleo es undefined.');
+        }
+    });
+
 </script>
 
 </body>

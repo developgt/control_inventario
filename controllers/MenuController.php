@@ -12,7 +12,26 @@ class MenuController {
     public static function index(Router $router){
         isAuth();
         try {
-            $usuario = Usuario::fetchFirst("SELECT per_catalogo, trim(per_nom1) || ' ' || trim(per_nom2) || ' ' ||trim(per_ape1) || ' ' || trim(per_ape2) as nombre , dep_desc_lg as dependencia, gra_desc_md as grado from mper inner join morg on per_plaza = org_plaza inner join mdep on org_dependencia = dep_llave inner join grados on per_grado = gra_codigo where per_catalogo = user ");
+            $usuario = Usuario::fetchFirst("
+            
+            SELECT
+            per_catalogo,
+            TRIM(per_nom1) || ' ' || TRIM(per_nom2) || ' ' || TRIM(per_ape1) || ' ' || TRIM(per_ape2) as nombre,
+            per_desc_empleo as empleo,
+            dep_desc_lg as dependencia,
+            gra_desc_md as grado
+        FROM
+            mper
+        INNER JOIN
+            morg ON per_plaza = org_plaza
+        INNER JOIN
+            mdep ON org_dependencia = dep_llave
+        INNER JOIN
+            grados ON per_grado = gra_codigo
+        WHERE
+            per_catalogo = user;
+
+            ");
             
         } catch (Exception $e) {
             getHeadersApi();
@@ -55,8 +74,6 @@ class MenuController {
         }
         console.log(data);
     }
-    
-   
     
 }
 

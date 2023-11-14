@@ -23,7 +23,7 @@
         <div class="collapse navbar-collapse" id="navbarToggler">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a href="/login/logout" class="btn btn-danger"><i class="bi bi-house-fill me-2"></i>Regresar al Menu principal</a>
+                    <a href="/login/logout" class="btn btn-danger"><i class="bi bi-x-lg me-2"></i>Cerrar Sesión</a>
                 </li>
             </ul>          
         </div>
