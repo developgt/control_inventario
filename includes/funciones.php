@@ -16,61 +16,22 @@ function s($html) {
 // Función que revisa que el usuario este autenticado
 function isAuth() {
     session_start();
-    if(!isset($_SESSION['login'])) {
-        header('Location: /');
+    if(!isset($_SESSION['auth_user'])) {
+        header('Location: /login/');
     }
 }
 function isAuthApi() {
-    getHeadersApi();
     session_start();
     if(!isset($_SESSION['auth_user'])) {
-        echo json_encode([    
-            "mensaje" => "No esta autenticado",
-
-            "codigo" => 4,
-        ]);
+        echo json_encode(["error" => "NO AUTENTICADO"]);
         exit;
     }
 }
 
 function isNotAuth(){
     session_start();
-    if(isset($_SESSION['auth'])) {
-        header('Location: /auth/');
-    }
-}
-
-
-function hasPermission(array $permisos){
-
-    $comprobaciones = [];
-    foreach ($permisos as $permiso) {
-
-        $comprobaciones[] = !isset($_SESSION[$permiso]) ? false : true;
-      
-    }
-
-    if(array_search(true, $comprobaciones) !== false){}else{
-        header('Location: /');
-    }
-}
-
-function hasPermissionApi(array $permisos){
-    getHeadersApi();
-    $comprobaciones = [];
-    foreach ($permisos as $permiso) {
-
-        $comprobaciones[] = !isset($_SESSION[$permiso]) ? false : true;
-      
-    }
-
-    if(array_search(true, $comprobaciones) !== false){}else{
-        echo json_encode([     
-            "mensaje" => "No tiene permisos",
-
-            "codigo" => 4,
-        ]);
-        exit;
+    if(isset($_SESSION['auth_user'])) {
+        header('Location: /menu/');
     }
 }
 

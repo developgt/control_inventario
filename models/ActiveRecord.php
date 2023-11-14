@@ -6,9 +6,8 @@ class ActiveRecord {
     // Base DE DATOS
     protected static $db;
     protected static $tabla = '';
-    protected static $columnasDB = [];
-
     protected static $idTabla = '';
+    protected static $columnasDB = [];
 
     // Alertas y Mensajes
     protected static $alertas = [];
@@ -34,8 +33,7 @@ class ActiveRecord {
     // Registros - CRUD
     public function guardar() {
         $resultado = '';
-        $id = static::$idTabla ?? 'id';
-        if(!is_null($this->$id)) {
+        if(!is_null($this->id)) {
             // actualizar
             $resultado = $this->actualizar();
         } else {
@@ -55,8 +53,7 @@ class ActiveRecord {
 
     // Busca un registro por su id
     public static function find($id) {
-        $idQuery = static::$idTabla ?? 'id';
-        $query = "SELECT * FROM " . static::$tabla  ." WHERE $idQuery = ${id}";
+        $query = "SELECT * FROM " . static::$tabla  ." WHERE id = ${id}";
         $resultado = self::consultarSQL($query);
         return array_shift( $resultado ) ;
     }
@@ -78,7 +75,7 @@ class ActiveRecord {
     // SQL para Consultas Avanzadas.
     public static function SQL($consulta) {
         $query = $consulta;
-        $resultado = self::$db->query($query);
+        $resultado = self::consultarSQL($query);
         return $resultado;
     }
 
@@ -115,11 +112,10 @@ class ActiveRecord {
         foreach($atributos as $key => $value) {
             $valores[] = "{$key}={$value}";
         }
-        $id = static::$idTabla ?? 'id';
 
         $query = "UPDATE " . static::$tabla ." SET ";
         $query .=  join(', ', $valores );
-        $query .= " WHERE " . $id . " = " . self::$db->quote($this->$id) . " ";
+        $query .= " WHERE id = " . self::$db->quote($this->id) . " ";
 
         // debuguear($query);
 
@@ -194,7 +190,7 @@ class ActiveRecord {
         $atributos = [];
         foreach(static::$columnasDB as $columna) {
             $columna = strtolower($columna);
-            if($columna === 'id') continue;
+            if($columna === static::$idTabla ?? 'id') continue;
             $atributos[$columna] = $this->$columna;
         }
         return $atributos;

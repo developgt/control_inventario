@@ -1,7 +1,7 @@
 {
-  "name": "demo-app",
+  "name": "menu-principal",
   "version": "1.0.0",
-  "description": "Aplicacion MVC demo",
+  "description": "Menu principal para autocom V 3.0",
   "main": "index.js",
   "scripts": {
     "build": "webpack",
