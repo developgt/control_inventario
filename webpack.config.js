@@ -6,7 +6,15 @@ module.exports = {
   entry: {
     'js/app' : './src/js/app.js',
     'js/inicio' : './src/js/inicio.js',
+    'js/almacen/index' : './src/js/almacen/index.js',
+    'js/estado/index' : './src/js/estado/index.js',
+    'js/medida/index' : './src/js/medida/index.js',
+    'js/guarda/index' : './src/js/guarda/index.js',
+    'js/producto/index' : './src/js/producto/index.js',
+    'js/movimiento/index' : './src/js/movimiento/index.js',
+    'js/movegreso/index' : './src/js/movegreso/index.js',
     'js/gestion' : './src/js/gestion/index.js',
+
   },
   output: {
     filename: '[name].js',

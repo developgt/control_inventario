@@ -150,6 +150,7 @@ class ActiveRecord {
     }
 
     public static function fetchArray($query){
+        $data = [];
         $resultado = self::$db->query($query);
         $respuesta = $resultado->fetchAll(PDO::FETCH_ASSOC);
         foreach ($respuesta as $value) {
