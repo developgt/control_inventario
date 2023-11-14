@@ -5,6 +5,7 @@ namespace Controllers;
 
 use Exception;
 use Model\Almacen;
+use Model\Detalle;
 use Model\Estado;
 use Model\Mper;
 use Model\Mdep;
@@ -140,6 +141,65 @@ class MovimientoEgresoController
         } catch (Exception $e) {
             // En caso de error, envía una respuesta vacía
             echo json_encode([]);
+        }
+    }
+
+
+    
+    public static function buscarExistenciasAPI()
+    {
+
+
+        $almacen = $_GET['mov_alma'] ?? '';
+        $producto = $_GET['det_pro_id'] ?? '';
+
+
+
+
+        $sql = "SELECT
+        det_pro_id,
+        det_lote,
+        det_estado,
+        det_fecha_vence,
+        est_descripcion,
+        det_cantidad_existente,
+        det_cantidad_lote,
+        pro_nom_articulo,
+        pro_medida_nombre
+    FROM (
+        SELECT
+            d.det_pro_id,
+            d.det_lote,
+            d.det_estado,
+            d.det_fecha_vence,
+            e.est_descripcion,
+            d.det_cantidad_existente,
+            d.det_cantidad_lote,
+            p.pro_nom_articulo,
+            u.uni_nombre AS pro_medida_nombre,
+            ROW_NUMBER() OVER (PARTITION BY d.det_lote, d.det_estado ORDER BY d.det_cantidad_lote DESC) AS NumeroFila
+        FROM inv_deta_movimientos d
+        INNER JOIN inv_producto p ON d.det_pro_id = p.pro_id
+        LEFT JOIN inv_uni_med u ON p.pro_medida = u.uni_id
+        INNER JOIN inv_movimientos m ON d.det_mov_id = m.mov_id
+        INNER JOIN inv_estado e ON d.det_estado = e.est_id
+        WHERE m.mov_alma_id = $almacen AND d.det_pro_id = $producto
+    ) AS DetallesNumerados
+    WHERE NumeroFila = 1;";
+
+      
+
+        try {
+
+            $estado = Detalle::fetchArray($sql);
+
+            echo json_encode($estado);
+        } catch (Exception $e) {
+            echo json_encode([
+                'detalle' => $e->getMessage(),
+                'mensaje' => 'Ocurrió un error',
+                'codigo' => 0
+            ]);
         }
     }
 

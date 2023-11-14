@@ -50,9 +50,24 @@ const detCantidadInput = document.getElementById('det_cantidad');
 const detCantidadExistenteInput = document.getElementById('det_cantidad_existente');
 const detCantidadLoteInput = document.getElementById('det_cantidad_lote');
 
+// ////PARA MANEJAR EL CKECK BOX DE SI Y NO DE LOTE 
+
+const checkboxLoteNo = document.getElementById('tiene_lote_no');
+const checkboxLoteSi = document.getElementById('tiene_lote_si');
+
+// para el modal///////
+const botonVerIngresos = document.getElementById('btnVerIngresos');
+const modalVerExistencias = document.getElementById('verExistencias');
+const botonCerrarModal = document.querySelector('.modal-header .close');
+const formularioModal = document.getElementById('formularioExistencia');
+
+
+
+let almaSeleccionadoId;// para guardar el id del almacen seleccionado
 let estado = [];// se define estado como un array vacio...
 let producto = [];
-
+let almacenes = []; // se define almacenes como un array vacio...
+let dependencias = [];
 
 
 // Oculta el elemento div card formulario detalle
@@ -63,8 +78,7 @@ btnModificarDetalle.parentElement.style.display = 'none'
 btnCancelarDetalle.disabled = true
 btnCancelarDetalle.parentElement.style.display = 'none'
 
-let almacenes = []; // se define almacenes como un array vacio...
-let dependencias = [];
+
 //////////DATATABLE//////////////////////////////////////////////////////
 
 let contador = 1;
@@ -72,6 +86,7 @@ btnModificar.disabled = true;
 btnModificar.parentElement.style.display = 'none';
 btnCancelar.disabled = true;
 btnCancelar.parentElement.style.display = 'none';
+
 
 
 
@@ -214,51 +229,6 @@ const buscarOficialesResponsable = async () => {
 
 
 
-const buscarAlmacenes = async () => {
-    // Verificar si los elementos del formulario existen antes de acceder a sus propiedades
-    if (formulario.alma_nombre && formulario.alma_id) {
-        let alma_nombre = formulario.alma_nombre.value;
-        let alma_id = formulario.alma_id.value;
-    }
-    const url = `/control_inventario/API/movimiento/buscarAlmacenes`;
-    const config = {
-        method: 'GET'
-    };
-
-    try {
-        const respuesta = await fetch(url, config);
-        const data = await respuesta.json();
-        console.log('data de almacenes', data); // Imprimir datos en la consola
-
-        almacenes = data;
-        // Limpiar el contenido del select
-        formulario.mov_alma_id.innerHTML = '';
-
-         // Agregar opción predeterminada
-    const defaultOption = document.createElement('option');
-    defaultOption.value = '';
-    defaultOption.textContent = 'SELECCIONE...';
-    formulario.mov_alma_id.appendChild(defaultOption);
-        // Iterar sobre cada objeto en el arreglo y crear opciones para el select
-        data.forEach(almacen => {
-            const option = document.createElement('option');
-            option.value = almacen.alma_id;
-            option.textContent = almacen.alma_nombre;
-            formulario.mov_alma_id.appendChild(option);
-        });
-
-   
-
-        //contador = 1;
-        //datatable.clear().draw();
-    } catch (error) {
-        console.log(error);
-    }
-    formulario.reset();
-};
-
-
-
 const buscarDependencia = async () => {
     // Verificar si los elementos del formulario existen antes de acceder a sus propiedades
     if (formulario.dep_desc_md && formulario.dep_llave) {
@@ -279,11 +249,11 @@ const buscarDependencia = async () => {
         // Limpiar el contenido del select
         formularioMovimiento.mov_proce_destino.innerHTML = '';
 
-         // Agregar opción predeterminada
-    const defaultOption = document.createElement('option');
-    defaultOption.value = '';
-    defaultOption.textContent = 'SELECCIONE...';
-    formularioMovimiento.mov_proce_destino.appendChild(defaultOption);
+        // Agregar opción predeterminada
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = 'SELECCIONE...';
+        formularioMovimiento.mov_proce_destino.appendChild(defaultOption);
         // Iterar sobre cada objeto en el arreglo y crear opciones para el select
         data.forEach(dependencias => {
             const option = document.createElement('option');
@@ -292,7 +262,7 @@ const buscarDependencia = async () => {
             formularioMovimiento.mov_proce_destino.appendChild(option);
         });
 
-   
+
 
         //contador = 1;
         //datatable.clear().draw();
@@ -341,8 +311,67 @@ const buscarEstados = async () => {
         console.log(error);
     }
     formularioDetalle.reset();
-}
+};
 
+const buscarAlmacenes = async () => {
+    // Verificar si los elementos del formulario existen antes de acceder a sus propiedades
+    if (formulario.alma_nombre && formulario.alma_id) {
+        let alma_nombre = formulario.alma_nombre.value;
+        let alma_id = formulario.alma_id.value;
+    }
+    const url = `/control_inventario/API/movimiento/buscarAlmacenes`;
+    const config = {
+        method: 'GET'
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+        console.log('data de almacenes', data); // Imprimir datos en la consola
+
+        almacenes = data;
+        // Limpiar el contenido del select
+        formulario.mov_alma_id.innerHTML = '';
+
+        // Agregar opción predeterminada
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = 'SELECCIONE...';
+        formulario.mov_alma_id.appendChild(defaultOption);
+        // Iterar sobre cada objeto en el arreglo y crear opciones para el select
+        data.forEach(almacen => {
+            const option = document.createElement('option');
+            option.value = almacen.alma_id;
+            option.textContent = almacen.alma_nombre;
+            formulario.mov_alma_id.appendChild(option);
+        });
+
+
+
+        //contador = 1;
+        //datatable.clear().draw();
+    } catch (error) {
+        console.log(error);
+    }
+    formulario.reset();
+};
+
+
+/////////////////////////////almacenar el id//////////////////////////////////////
+// Agregar evento al cambio del select para almacenar el ID del almacén
+formulario.mov_alma_id.addEventListener('change', function () {
+    // Obtener el ID del almacén seleccionado
+    almaSeleccionadoId = this.value;
+
+    // Imprimir el valor en la consola para verificar
+    console.log('Alma ID seleccionado:', almaSeleccionadoId);
+
+    // Llamar a buscarProducto pasando el ID del almacén
+    buscarProducto();
+});
+
+
+////////////////buscar producto de acuerdo al id del almacen seleccionado/////////////////////////////
 
 const buscarProducto = async () => {
     // Verificar si los elementos del formulario existen antes de acceder a sus propiedades
@@ -350,10 +379,13 @@ const buscarProducto = async () => {
         let pro_nom_articulo = formularioDetalle.pro_nom_articulo.value;
         let pro_id = formularioDetalle.pro_id.value;
     }
-    const url = `/control_inventario/API/movimiento/buscarProducto`;
+
+    const url = `/control_inventario/API/movimiento/buscarProducto?almaSeleccionadoId=${almaSeleccionadoId}`;
     const config = {
         method: 'GET'
     };
+
+    console.log(data)
 
     try {
         const respuesta = await fetch(url, config);
@@ -377,8 +409,6 @@ const buscarProducto = async () => {
             formularioDetalle.det_pro_id.appendChild(option);
         });
 
-
-
         //contador = 1;
         //datatable.clear().draw();
     } catch (error) {
@@ -387,20 +417,21 @@ const buscarProducto = async () => {
     formularioDetalle.reset();
 }
 
+///////////////////////////
 
 ////// GUARDAR CAMPOS DEL FORMULARIO MOVIMIENTO
 
 const guardar = async (evento) => {
     evento.preventDefault();
 
-    if (!validarFormulario(formularioMovimiento, ['mov_id', 'mov_tipo_mov'])) {
+    if (!validarFormulario(formulario, ['mov_id', 'mov_tipo_mov'])) {
         Toast.fire({
             icon: 'info',
             text: 'Debe llenar todos los datos'
         })
         return
     }
-    const body = new FormData(formularioMovimiento)
+    const body = new FormData(formulario)
     body.delete('mov_id')
     const url = '/control_inventario/API/movimiento/guardar';
     const config = {
@@ -415,21 +446,19 @@ const guardar = async (evento) => {
         console.log(data);
         // return
 
-        const { codigo, mensaje, id, detalle} = data;
+        const { codigo, mensaje, id, detalle } = data;
         let icon = 'info'
         switch (codigo) {
             case 1:
                 const movimientoId = id;
-                formularioMovimiento.reset();
+                formulario.reset();
                 icon = 'success'
-            
-
                 document.getElementById('det_mov_id').value = movimientoId;
-                     // Ocultar el formulario de movimiento
-                 movMovimientoDiv.style.display = 'none';
-
+                // Ocultar el formulario de movimiento
+                movMovimientoDiv.style.display = 'none';
                 // Mostrar el formulario de detalle
-                 movDetalleDiv.style.display = 'block';
+                movDetalleDiv.style.display = 'block';
+
                 //buscar();
                 break;
 
@@ -450,18 +479,129 @@ const guardar = async (evento) => {
     } catch (error) {
         console.log(error);
     }
-    //buscar();
+
 }
 
-///////////////////////////////
+
+//////////////////////////////////////////////
+////buscar cantidad existentes por lotes y cantidad existentes del formulario detalle//////
 
 
-////// GUARDAR CAMPOS DEL FORMULARIO DETALLE
+const buscarCantidadLote = async () => {
 
-const GuardarDetalle = async (evento) => {
+
+    let det_pro_id = detProIdSelect.value;
+    let det_lote = detLoteInput.value;
+    let det_estado = detEstadoSelect.value;
+
+    //if (det_pro_id && det_lote && det_estado) {
+    //     if (det_pro_id && det_estado) {
+    //         // Comprobar si el campo de lote está lleno (ignorar si es nulo)
+    //         if (det_lote !== null && det_lote.trim() === '') {
+    //             //return;
+    //         }
+
+    const url = `/control_inventario/API/movimiento/buscarCantidadLote?det_pro_id=${det_pro_id}&det_lote=${det_lote}&det_estado=${det_estado}`;
+
+
+    const config = {
+        method: 'GET'
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+        console.log(data);
+
+        // Verificar si se encontraron registros
+        if (data && data.length > 0) {
+            // Asignar los valores a los inputs
+            //formularioDetalle.det_cantidad_existente.value = data[0].det_cantidad_existente;
+            formularioDetalle.det_cantidad_lote.value = data[0].det_cantidad_lote;
+
+            // Actualizar los valores iniciales después de la búsqueda
+            //valorInicialCantidadExistente = parseFloat(data[0].det_cantidad_existente) || 0;
+            valorInicialCantidadLote = parseFloat(data[0].det_cantidad_lote) || 0;
+
+        } else {
+            // Si no se encontraron registros, establecer los inputs en 0
+            //formularioDetalle.det_cantidad_existente.value = 0;
+            formularioDetalle.det_cantidad_lote.value = 0;
+
+            // Si no se encontraron registros, los valores iniciales serán 0
+            //valorInicialCantidadExistente = 0;
+            valorInicialCantidadLote = 0;
+
+        }
+
+    } catch (error) {
+        console.log(error);
+    }
+    //   } else {
+
+    //   }
+
+};
+
+
+
+const buscarCantidad = async () => {
+
+
+    let det_pro_id = detProIdSelect.value;
+
+    const url = `/control_inventario/API/movimiento/buscarCantidad?det_pro_id=${det_pro_id}`;
+
+
+    const config = {
+        method: 'GET'
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+        console.log(data);
+
+        // Verificar si se encontraron registros
+        if (data && data.length > 0) {
+            // Asignar los valores a los inputs
+            formularioDetalle.det_cantidad_existente.value = data[0].det_cantidad_existente;
+            //formularioDetalle.det_cantidad_lote.value = data[0].det_cantidad_lote;
+
+            // Actualizar los valores iniciales después de la búsqueda
+            valorInicialCantidadExistente = parseFloat(data[0].det_cantidad_existente) || 0;
+            //valorInicialCantidadLote = parseFloat(data[0].det_cantidad_lote) || 0;
+
+        } else {
+            // Si no se encontraron registros, establecer los inputs en 0
+            formularioDetalle.det_cantidad_existente.value = 0;
+            //formularioDetalle.det_cantidad_lote.value = 0;
+
+            // Si no se encontraron registros, los valores iniciales serán 0
+            valorInicialCantidadExistente = 0;
+            //valorInicialCantidadLote = 0;
+
+
+
+            // Toast.fire({
+            //     title: 'No se encontraron registros',
+            //     icon: 'info'
+            // });
+        }
+
+    } catch (error) {
+        console.log(error);
+    }
+
+
+};
+
+
+
+const guardarDetalle = async (evento) => {
     evento.preventDefault();
 
-    if (!validarFormulario(formularioDetalle, ['det_id', 'det_mov_id'])) {
+    if (!validarFormulario(formularioDetalle, ['det_id', 'det_lote'])) {
         Toast.fire({
             icon: 'info',
             text: 'Debe llenar todos los datos'
@@ -470,7 +610,9 @@ const GuardarDetalle = async (evento) => {
     }
     const body = new FormData(formularioDetalle)
     body.delete('det_id')
+    //  const url = '/control_inventario/API/movimiento/guardarDetalle';
     const url = '/control_inventario/API/movimiento/guardarDetalle';
+
     const config = {
         method: 'POST',
         body
@@ -483,12 +625,14 @@ const GuardarDetalle = async (evento) => {
         console.log(data);
         // return
 
-        const { codigo, mensaje, detalle} = data;
+        const { codigo, mensaje, detalle } = data;
         let icon = 'info'
         switch (codigo) {
             case 1:
                 formularioDetalle.reset();
                 icon = 'success'
+
+
                 //buscar();
                 break;
 
@@ -508,31 +652,32 @@ const GuardarDetalle = async (evento) => {
 
     } catch (error) {
         console.log(error);
+
+        if (!error.response || !error.response.ok) {
+            console.log('Error de red o servidor:', error.message);
+            return;
+        }
+
+        console.log('Respuesta completa:', await error.text());
+
+        //console.log('Respuesta completa:', error.response);
     }
     //buscar();
-}
+    //buscarProducto();
+};
 
-//////////////////////////////////////////////
-////buscar cantidad existentes por lotes y cantidad existentes del formulario detalle//////
+/////////////////////////////////////////////////////////////
+///////////FUNCIONES PARA EL MODAL///////////////////////////
 
+////para buscar almacenes en el modal/////////////
 
-const buscarCantidad = async () => {
-
-    
-    let det_pro_id = detProIdSelect.value;
-    let det_lote = detLoteInput.value;
-    let det_estado = detEstadoSelect.value;
-
-    //if (det_pro_id && det_lote && det_estado) {
-        if (det_pro_id && det_estado) {
-            // Comprobar si el campo de lote está lleno (ignorar si es nulo)
-            if (det_lote !== null && det_lote.trim() === '') {
-                //return;
-            }
-
-    const url = `/control_inventario/API/movimiento/buscarCantidad?det_pro_id=${det_pro_id}&det_lote=${det_lote}&det_estado=${det_estado}`;
-
-
+const buscarAlmacenesModal = async () => {
+    // Verificar si los elementos del formulario existen antes de acceder a sus propiedades
+    if (formularioModal.alma_nombre && formularioModal.alma_id) {
+        let alma_nombre = formularioModal.alma_nombre.value;
+        let alma_id = formularioModal.alma_id.value;
+    }
+    const url = `/control_inventario/API/movimiento/buscarAlmacenes`;
     const config = {
         method: 'GET'
     };
@@ -540,39 +685,60 @@ const buscarCantidad = async () => {
     try {
         const respuesta = await fetch(url, config);
         const data = await respuesta.json();
-        console.log(data);
+        console.log('data de almacenes', data); // Imprimir datos en la consola
 
-         // Verificar si se encontraron registros
-         if (data && data.length > 0) {
-            // Asignar los valores a los inputs
-            formularioDetalle.det_cantidad_existente.value = data[0].det_cantidad_existente || 0;
-            formularioDetalle.det_cantidad_lote.value = data[0].det_cantidad_lote || 0;
-        } else {
-            // Si no se encontraron registros, establecer los inputs en 0
-            formularioDetalle.det_cantidad_existente.value = 0;
-            formularioDetalle.det_cantidad_lote.value = 0;
+        almacenes = data;
+        // Limpiar el contenido del select
+        formularioModal.mov_alma.innerHTML = '';
 
-            Toast.fire({
-                title: 'No se encontraron registros',
-                icon: 'info'
-            });
-        }
+        // Agregar opción predeterminada
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = 'SELECCIONE...';
+        formularioModal.mov_alma.appendChild(defaultOption);
+        // Iterar sobre cada objeto en el arreglo y crear opciones para el select
+        data.forEach(almacen => {
+            const option = document.createElement('option');
+            option.value = almacen.alma_id;
+            option.textContent = almacen.alma_nombre;
+            formularioModal.mov_alma.appendChild(option);
+        });
 
+
+
+        //contador = 1;
+        datatable.clear().draw();
     } catch (error) {
         console.log(error);
     }
-  } else {
-
-  }
-
+    formularioModal.reset();
 };
+
+// // Agregar evento al cambio del select para almacenar el ID del almacén
+// formulario.mov_alma_id.addEventListener('change', function() {
+//     // Obtener el ID del almacén seleccionado
+//     const almacenSeleccionadoId = this.value;
+
+//     // Almacenar el ID en una variable o campo oculto
+//     //almacenSeleccionadoGlobal = almacenSeleccionadoId; // Puedes usar una variable glob
+
+
+
+//     // Llamar a buscarProducto pasando el ID del almacén
+
+//     buscarProducto();
+
+
+// });
+
 
 //////////////////
 ///////////////LLAMAR A LAS FUNCIONES///////////
 buscarAlmacenes();
+buscarAlmacenesModal();
 buscarDependencia();
 buscarEstados();
-buscarProducto();
+//buscarProducto();
 
 
 
@@ -582,557 +748,47 @@ buscarProducto();
 mov_perso_entrega.addEventListener('input', buscarOficiales);
 mov_perso_recibe.addEventListener('input', buscarOficialesRecibe);
 mov_perso_respon.addEventListener('input', buscarOficialesResponsable);
-formularioMovimiento.addEventListener('submit', guardar)
+formulario.addEventListener('submit', guardar);
+formularioDetalle.addEventListener('submit', guardarDetalle);
 
-  
-    btnSiguiente.addEventListener('click', function(event) {
+btnSiguiente.addEventListener('click', function (event) {
     //     // Prevenir el envío normal del formulario
 
-        event.preventDefault();
+    event.preventDefault();
     //     guardar();
 
-     
-
-        // Ocultar el formulario de movimiento
-        movMovimientoDiv.style.display = 'none';
-
-        // Mostrar el formulario de detalle
-        movDetalleDiv.style.display = 'block';
-    });
 
 
-    // Agrega un oyente de eventos al botón "Anterior" del formulario de detalle
-    btnAnterior.addEventListener('click', function(event) {
-        // Prevenir el envío normal del formulario
-        event.preventDefault();
+    // Ocultar el formulario de movimiento
+    movMovimientoDiv.style.display = 'none';
+
+    // Mostrar el formulario de detalle
+    movDetalleDiv.style.display = 'block';
+});
+
+
+// Agrega un oyente de eventos al botón "Anterior" del formulario de detalle
+btnAnterior.addEventListener('click', function (event) {
+    // Prevenir el envío normal del formulario
+    event.preventDefault();
 
 
 
-        // Ocultar el formulario de detalle
-        movDetalleDiv.style.display = 'none';
+    // Ocultar el formulario de detalle
+    movDetalleDiv.style.display = 'none';
 
-        // Mostrar el formulario de movimiento
-        movMovimientoDiv.style.display = 'block';
-    });
+    // Mostrar el formulario de movimiento
+    movMovimientoDiv.style.display = 'block';
+});
 
 //EVENTOS PARA BUSCAR LA CANTIDAD EXISTENTE
 
 detProIdSelect.addEventListener('input', buscarCantidad);
-detLoteInput.addEventListener('input', buscarCantidad);
-detEstadoSelect.addEventListener('input', buscarCantidad);
-
-
-// // Almacenar los valores originales cuando la página se carga
-// let valorInicialCantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
-// let valorInicialCantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
-
-// // Escuchador de eventos 'change' al campo det_cantidad
-// detCantidadInput.addEventListener('change', () => {
-//     // Obtener el valor actual del campo det_cantidad
-//     const cantidad = parseFloat(detCantidadInput.value) || 0;
-
-//     // Verificar si el campo det_lote está vacío
-//     if (detLoteInput.value.trim() === '') {
-//         // Si está vacío, solo hacer la suma en det_cantidad_existente
-//         const nuevaCantidadExistente = cantidad + valorInicialCantidadExistente;
-//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
-
-//         // Restablecer el valor de det_cantidad_lote a su valor inicial
-//         detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
-//     } else {
-//         // Si no está vacío, hacer la suma en ambos campos
-//         const cantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
-//         const cantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
-
-//         const nuevaCantidadExistente = cantidad + cantidadExistente;
-//         const nuevaCantidadLote = cantidad + cantidadLote;
-
-//         // Actualizar los campos con las nuevas sumas
-//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
-//         detCantidadLoteInput.value = nuevaCantidadLote.toFixed(2);
-//     }
-
-//     // Actualizar los valores iniciales después de realizar un cambio
-//     valorInicialCantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
-//     valorInicialCantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
-// });
-
-// // Agregar un escuchador de eventos 'input' para detectar cambios en det_cantidad
-// detCantidadInput.addEventListener('input', () => {
-//     // Verificar si el campo det_cantidad está vacío
-//     if (detCantidadInput.value.trim() === '') {
-//         // Si está vacío, restablecer los valores a sus valores iniciales
-//         valorInicialCantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
-//         valorInicialCantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
-//     }
-// });
-
-
-// // Almacenar los valores originales cuando la página se carga
-// let valorInicialCantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
-// let valorInicialCantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
-
-// // Escuchador de eventos 'input' al campo det_cantidad
-// detCantidadInput.addEventListener('input', () => {
-//     // Obtener el valor actual del campo det_cantidad
-//     const cantidad = parseFloat(detCantidadInput.value) || 0;
-
-//     // Verificar si el campo det_lote está vacío
-//     if (detLoteInput.value.trim() === '') {
-//         // Si está vacío, solo hacer la suma en det_cantidad_existente
-//         const nuevaCantidadExistente = cantidad + valorInicialCantidadExistente;
-//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
-
-//         // Restablecer el valor de det_cantidad_lote a su valor inicial
-//         detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
-//     } else {
-//         // Si no está vacío, hacer la suma en ambos campos
-//         const cantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
-//         const cantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
-
-//         const nuevaCantidadExistente = cantidad + cantidadExistente;
-//         const nuevaCantidadLote = cantidad + cantidadLote;
-
-//         // Actualizar los campos con las nuevas sumas
-//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
-//         detCantidadLoteInput.value = nuevaCantidadLote.toFixed(2);
-//     }
-// });
-
-// // Agregar un escuchador de eventos 'change' para detectar cambios en det_cantidad
-// detCantidadInput.addEventListener('change', () => {
-//     // Actualizar los valores iniciales después de realizar un cambio
-//     valorInicialCantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
-//     valorInicialCantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
-// });
-
-// Agregar un escuchador de eventos 'input' para detectar cambios en det_lote
-// detLoteInput.addEventListener('input', () => {
-//     // Verificar si el campo det_lote está vacío
-//     if (detLoteInput.value.trim() === '') {
-//         // Si está vacío, restablecer los valores a sus valores iniciales
-//         valorInicialCantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
-//         valorInicialCantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
-//     }
-// });
-
-
-
-// // Almacenar los valores originales cuando la página se carga
-// const valorInicialCantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
-// const valorInicialCantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
-
-// // Escuchador de eventos 'change' al campo det_cantidad
-// detCantidadInput.addEventListener('change', () => {
-//     // Obtener el valor actual del campo det_cantidad
-//     const cantidad = parseFloat(detCantidadInput.value) || 0;
-
-//     // Verificar si el campo det_lote está vacío
-//     if (detLoteInput.value.trim() === '') {
-//         // Si está vacío, solo hacer la suma en det_cantidad_existente
-//         const nuevaCantidadExistente = cantidad + valorInicialCantidadExistente;
-//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
-
-//         // Restablecer el valor de det_cantidad_lote a su valor inicial
-//         detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
-//     } else {
-//         // Si no está vacío, hacer la suma en ambos campos
-//         const cantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
-//         const cantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
-
-//         const nuevaCantidadExistente = cantidad + cantidadExistente;
-//         const nuevaCantidadLote = cantidad + cantidadLote;
-
-//         // Actualizar los campos con las nuevas sumas
-//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
-//         detCantidadLoteInput.value = nuevaCantidadLote.toFixed(2);
-//     }
-// });
-
-
-
-// ///evento para realizar la sumatoria de los campos det_cantidad
-
-// //  escuchador de eventos 'change' al campo det_cantidad
-// detCantidadInput.addEventListener('change', () => {
-//     // Obtener los valores actuales de los campos
-//     const cantidad = parseFloat(detCantidadInput.value) || 0;
-//     const cantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
-//     const cantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
-
-//     // Verificar si el campo det_lote está vacío
-//     if (detLoteInput.value.trim() === '') {
-//         // Si está vacío, solo hacer la suma en det_cantidad_existente
-//         const nuevaCantidadExistente = cantidad + cantidadExistente;
-//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
-//     } else {
-//         // Si no está vacío, hacer la suma en ambos campos
-//         const nuevaCantidadExistente = cantidad + cantidadExistente;
-//         const nuevaCantidadLote = cantidad + cantidadLote;
-
-//         // Actualizar los campos con las nuevas sumas
-//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
-//         detCantidadLoteInput.value = nuevaCantidadLote.toFixed(2);
-//     }
-// });
-
-
-// // Función para actualizar la sumatoria
-// const actualizarSumatoria = () => {
-//     // Obtener los valores actuales
-//     const cantidad = parseFloat(detCantidadInput.value) || 0; // Convertir a número o establecer a 0 si no se puede convertir
-
-//     // Actualizar los campos
-//     detCantidadExistenteInput.value = cantidad + parseFloat(detCantidadExistenteInput.value) || 0;
-
-//     // Solo actualizar det_cantidad_lote si det_lote no está vacío
-//     if (detLoteInput.value.trim() !== '') {
-//         detCantidadLoteInput.value = cantidad + parseFloat(detCantidadLoteInput.value) || 0;
-//     }
-// };
-
-// // Agregar escuchador de eventos 'input' al campo det_cantidad
-// detCantidadInput.addEventListener('change', () => {
-//     // Actualizar sumatoria
-//     actualizarSumatoria();
-// });
-
-// // Agregar escuchador de eventos 'input' al campo det_lote
-// detLoteInput.addEventListener('input', () => {
-//     // Actualizar sumatoria solo si det_lote no está vacío
-//     if (detLoteInput.value.trim() !== '') {
-//         actualizarSumatoria();
-//     }
-// });
-
-
-
-
-
-// // Almacenar los valores originales cuando la página se carga
-// const valorInicialCantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
-// const valorInicialCantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
-
-// // Escuchador de eventos 'change' al campo det_cantidad
-// detCantidadInput.addEventListener('change', () => {
-//     // Obtener el valor actual del campo det_cantidad
-//     const cantidad = parseFloat(detCantidadInput.value) || 0;
-
-//     // Verificar si el campo det_lote está vacío
-//     if (detLoteInput.value.trim() === '') {
-//         // Si está vacío, solo hacer la suma en det_cantidad_existente
-//         const nuevaCantidadExistente = cantidad + valorInicialCantidadExistente;
-//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
-
-//         // Restablecer el valor de det_cantidad_lote a su valor inicial
-//         detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
-//     } else {
-//         // Si no está vacío, hacer la suma en ambos campos
-//         const cantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
-//         const cantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
-
-//         const nuevaCantidadExistente = cantidad + cantidadExistente;
-//         const nuevaCantidadLote = cantidad + cantidadLote;
-
-//         // Actualizar los campos con las nuevas sumas
-//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
-//         detCantidadLoteInput.value = nuevaCantidadLote.toFixed(2);
-//     }
-// });
-
-// // Agregar un escuchador de eventos 'input' para detectar cambios en det_cantidad
-// detCantidadInput.addEventListener('input', () => {
-//     // Verificar si el campo det_cantidad está vacío
-//     if (detCantidadInput.value.trim() === '') {
-//         // Si está vacío, restablecer los valores a sus valores iniciales
-//         detCantidadExistenteInput.value = valorInicialCantidadExistente.toFixed(2);
-//         detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
-//     }
-// });
-
-
-
-// // Almacenar los valores originales cuando la página se carga
-// let valorInicialCantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
-// let valorInicialCantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
-
-// // Escuchador de eventos 'change' al campo det_cantidad
-// detCantidadInput.addEventListener('change', () => {
-//     // Obtener el valor actual del campo det_cantidad
-//     const cantidad = parseFloat(detCantidadInput.value) || 0;
-
-//     // Verificar si el campo det_lote está vacío
-//     if (detLoteInput.value.trim() === '') {
-//         // Si está vacío, solo hacer la suma en det_cantidad_existente
-//         const nuevaCantidadExistente = cantidad + valorInicialCantidadExistente;
-//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
-
-//         // Restablecer el valor de det_cantidad_lote a su valor inicial
-//         detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
-//     } else {
-//         // Si no está vacío, hacer la suma en ambos campos
-//         const cantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
-//         const cantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
-
-//         const nuevaCantidadExistente = cantidad + cantidadExistente;
-//         const nuevaCantidadLote = cantidad + cantidadLote;
-
-//         // Actualizar los campos con las nuevas sumas
-//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
-//         detCantidadLoteInput.value = nuevaCantidadLote.toFixed(2);
-//     }
-
-//     // Actualizar los valores iniciales después de realizar un cambio
-//     valorInicialCantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
-//     valorInicialCantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
-// });
-
-// // Agregar un escuchador de eventos 'input' para detectar cambios en det_cantidad
-// detCantidadInput.addEventListener('input', () => {
-//     // Verificar si el campo det_cantidad está vacío
-//     if (detCantidadInput.value.trim() === '') {
-//         // Si está vacío, restablecer los valores a sus valores iniciales
-//         detCantidadExistenteInput.value = valorInicialCantidadExistente.toFixed(2);
-//         detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
-//     }
-// });
-
-
-
-// // Almacenar los valores originales cuando la página se carga
-// let valorInicialCantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
-// let valorInicialCantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
-
-// // Escuchador de eventos 'input' al campo det_cantidad
-// detCantidadInput.addEventListener('input', () => {
-//     // Obtener el valor actual del campo det_cantidad
-//     const cantidad = parseFloat(detCantidadInput.value) || 0;
-
-//     // Verificar si el campo det_lote está vacío
-//     if (detLoteInput.value.trim() === '') {
-//         // Si está vacío, solo hacer la suma en det_cantidad_existente
-//         const nuevaCantidadExistente = cantidad + valorInicialCantidadExistente;
-//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
-
-//         // Restablecer el valor de det_cantidad_lote a su valor inicial
-//         detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
-//     } else {
-//         // Si no está vacío, hacer la suma solo en det_cantidad_existente
-//         const cantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
-//         const nuevaCantidadExistente = cantidad + cantidadExistente;
-
-//         // Actualizar los campos con las nuevas sumas
-//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
-//     }
-// });
-
-// // Agregar un escuchador de eventos 'change' para detectar cambios en det_cantidad
-// detCantidadInput.addEventListener('change', () => {
-//     // Actualizar los valores iniciales después de realizar un cambio
-//     valorInicialCantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
-//     valorInicialCantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
-// });
-
-// // Agregar un escuchador de eventos 'input' para detectar cambios en det_lote
-// detLoteInput.addEventListener('input', () => {
-//     // Verificar si el campo det_lote está vacío
-//     if (detLoteInput.value.trim() === '') {
-//         // Si está vacío, restablecer los valores a sus valores iniciales
-//         valorInicialCantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
-//         valorInicialCantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
-//     }
-// });
-
-
-
-
-
-// // Almacenar los valores originales cuando la página se carga
-// let valorInicialCantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
-// let valorInicialCantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
-
-// // Escuchador de eventos 'input' al campo det_cantidad
-// detCantidadInput.addEventListener('input', () => {
-//     // Obtener el valor actual del campo det_cantidad
-//     const cantidad = parseFloat(detCantidadInput.value) || 0;
-
-//     // Verificar si el campo det_lote está vacío
-//     if (detLoteInput.value.trim() === '') {
-//         // Si está vacío, solo hacer la suma en det_cantidad_existente
-//         const nuevaCantidadExistente = cantidad + valorInicialCantidadExistente;
-//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
-
-//         // Restablecer el valor de det_cantidad_lote a su valor inicial
-//         detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
-//     } else {
-//         // Si no está vacío, hacer la suma solo en det_cantidad_existente
-//         const cantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
-//         const nuevaCantidadExistente = cantidad + cantidadExistente;
-
-//         // Actualizar los campos con las nuevas sumas
-//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
-//     }
-// });
-
-// // Escuchador de eventos 'change' al campo det_cantidad
-// detCantidadInput.addEventListener('change', () => {
-//     // Obtener el valor actual del campo det_cantidad
-//     const cantidad = parseFloat(detCantidadInput.value) || 0;
-
-//     // Verificar si el campo det_lote está vacío
-//     if (detLoteInput.value.trim() === '') {
-//         // Si está vacío, restablecer los valores a sus estados iniciales
-//         detCantidadExistenteInput.value = valorInicialCantidadExistente.toFixed(2);
-//         detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
-//     }
-// });
-
-
-
-// // Almacenar los valores originales cuando la página se carga
-// let valorInicialCantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
-// let valorInicialCantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
-
-// // Función para actualizar la sumatoria
-// const actualizarSumatoria = () => {
-//     // Obtener el valor actual del campo det_cantidad
-//     const cantidad = parseFloat(detCantidadInput.value) || 0;
-
-//     // Verificar si el campo det_lote está vacío
-//     if (detLoteInput.value.trim() === '') {
-//         // Si está vacío, solo hacer la suma en det_cantidad_existente
-//         const nuevaCantidadExistente = cantidad + valorInicialCantidadExistente;
-//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
-
-//         // Restablecer el valor de det_cantidad_lote a su valor inicial
-//         detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
-//     } else {
-//         // Si no está vacío, hacer la suma solo en det_cantidad_existente
-//         const cantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
-//         const nuevaCantidadExistente = cantidad + cantidadExistente;
-
-//         // Actualizar los campos con las nuevas sumas
-//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
-//     }
-// };
-
-// // Escuchador de eventos 'input' al campo det_cantidad
-// detCantidadInput.addEventListener('input', actualizarSumatoria);
-
-// // Escuchador de eventos 'change' al campo det_cantidad
-// detCantidadInput.addEventListener('change', () => {
-//     // Obtener el valor actual del campo det_cantidad
-//     const cantidad = parseFloat(detCantidadInput.value) || 0;
-
-//     // Verificar si el campo det_lote está vacío
-//     if (detLoteInput.value.trim() === '') {
-//         // Si está vacío, restablecer los valores a sus estados iniciales
-//         detCantidadExistenteInput.value = valorInicialCantidadExistente.toFixed(2);
-//         detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
-//     }
-// });
-
-// // Llamamos a la función inicial para configurar correctamente el estado inicial
-// actualizarSumatoria();
-
-
-
-// // Almacenar los valores originales cuando la página se carga
-// let valorInicialCantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
-// let valorInicialCantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
-
-// // Función para actualizar la sumatoria
-// const actualizarSumatoria = () => {
-//     // Obtener el valor actual del campo det_cantidad
-//     const cantidad = parseFloat(detCantidadInput.value) || 0;
-
-//     // Verificar si el campo det_lote está vacío
-//     if (detLoteInput.value.trim() === '') {
-//         // Si está vacío, solo hacer la suma en det_cantidad_existente
-//         const nuevaCantidadExistente = cantidad + valorInicialCantidadExistente;
-//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
-
-//         // Restablecer el valor de det_cantidad_lote a su valor inicial
-//         detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
-//     } else {
-//         // Si no está vacío, hacer la suma solo en det_cantidad_existente
-//         const cantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
-//         const nuevaCantidadExistente = cantidad + cantidadExistente;
-
-//         // Actualizar los campos con las nuevas sumas
-//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
-//     }
-// };
-
-// // Escuchador de eventos 'input' al campo det_cantidad
-// detCantidadInput.addEventListener('input', actualizarSumatoria);
-
-// // Escuchador de eventos 'change' al campo det_cantidad
-// detCantidadInput.addEventListener('change', () => {
-//     // Obtener el valor actual del campo det_cantidad
-//     const cantidad = parseFloat(detCantidadInput.value) || 0;
-
-//     // Verificar si el campo det_lote está vacío
-//     if (detLoteInput.value.trim() === '') {
-//         // Si está vacío, restablecer los valores a sus estados iniciales
-//         detCantidadExistenteInput.value = valorInicialCantidadExistente.toFixed(2);
-//         detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
-//     }
-// });
-
-// // Llamamos a la función inicial para configurar correctamente el estado inicial
-// actualizarSumatoria();
-
-
-
-// // Almacenar los valores originales cuando la página se carga
-// let valorInicialCantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
-// let valorInicialCantidadLote = parseFloat(detCantidadLoteInput.value) || 0;
-
-// // Función para actualizar la sumatoria
-// const actualizarSumatoria = () => {
-//     // Obtener el valor actual del campo det_cantidad
-//     const cantidad = parseFloat(detCantidadInput.value) || 0;
-
-//     // Verificar si el campo det_lote está vacío
-//     if (detLoteInput.value.trim() === '') {
-//         // Si está vacío, solo hacer la suma en det_cantidad_existente
-//         const nuevaCantidadExistente = cantidad + valorInicialCantidadExistente;
-//         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
-
-//         // Restablecer el valor de det_cantidad_lote a su valor inicial
-//         detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
-//     } else {
-//         // Si no está vacío, hacer la suma solo en det_cantidad_lote
-//         const nuevaCantidadLote = cantidad + valorInicialCantidadLote;
-
-//         // Actualizar el campo con la nueva suma
-//         detCantidadLoteInput.value = nuevaCantidadLote.toFixed(2);
-
-//         // Restablecer el valor de det_cantidad_existente a su valor inicial
-//         detCantidadExistenteInput.value = valorInicialCantidadExistente.toFixed(2);
-//     }
-// };
-
-// // Escuchador de eventos 'input' al campo det_cantidad
-// detCantidadInput.addEventListener('input', actualizarSumatoria);
-
-// // Escuchador de eventos 'change' al campo det_cantidad
-// detCantidadInput.addEventListener('change', () => {
-//     // Obtener el valor actual del campo det_cantidad
-//     const cantidad = parseFloat(detCantidadInput.value) || 0;
-
-//     // Verificar si el campo det_lote está vacío
-//     if (detLoteInput.value.trim() === '') {
-//         // Si está vacío, restablecer los valores a sus estados iniciales
-//         detCantidadExistenteInput.value = valorInicialCantidadExistente.toFixed(2);
-//         detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
-//     }
-// });
-
-// // Llamamos a la función inicial para configurar correctamente el estado inicial
-// actualizarSumatoria();
-
+detProIdSelect.addEventListener('input', buscarCantidadLote);
+detLoteInput.addEventListener('input', buscarCantidadLote);
+detEstadoSelect.addEventListener('input', buscarCantidadLote);
+
+//buscarProducto();
 
 
 // Almacenar los valores originales cuando la página se carga
@@ -1145,14 +801,14 @@ const actualizarSumatoria = () => {
     const cantidad = parseFloat(detCantidadInput.value) || 0;
 
     // Verificar si el campo det_lote está vacío
-    if (detLoteInput.value.trim() === '') {
-        // Si está vacío, solo hacer la suma en det_cantidad_existente
-        const nuevaCantidadExistente = cantidad + valorInicialCantidadExistente;
-        detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
+    // if (detLoteInput.value.trim() === '') {
+    //     // Si está vacío, solo hacer la suma en det_cantidad_existente
+    //     const nuevaCantidadExistente = cantidad + valorInicialCantidadExistente;
+    //     detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
 
-        // Restablecer el valor de det_cantidad_lote a su valor inicial
-        detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
-    } else {
+    //     // Restablecer el valor de det_cantidad_lote a su valor inicial
+    //     detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
+    // } else {
         // Si no está vacío, hacer la suma en ambos campos
         const nuevaCantidadLote = cantidad + valorInicialCantidadLote;
         const nuevaCantidadExistente = cantidad + valorInicialCantidadExistente;
@@ -1160,8 +816,8 @@ const actualizarSumatoria = () => {
         // Actualizar los campos con las nuevas sumas
         detCantidadLoteInput.value = nuevaCantidadLote.toFixed(2);
         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
-    }
-};
+    };
+//};
 
 // Escuchador de eventos 'input' al campo det_cantidad
 detCantidadInput.addEventListener('input', actualizarSumatoria);
@@ -1172,12 +828,61 @@ detCantidadInput.addEventListener('change', () => {
     const cantidad = parseFloat(detCantidadInput.value) || 0;
 
     // Verificar si el campo det_lote está vacío
-    if (detLoteInput.value.trim() === '') {
+    //if (detLoteInput.value.trim() === '') {
         // Si está vacío, restablecer los valores a sus estados iniciales
-        detCantidadExistenteInput.value = valorInicialCantidadExistente.toFixed(2);
-        detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
+        //detCantidadExistenteInput.value = valorInicialCantidadExistente.toFixed(2);
+        //detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
+    //}
+});
+
+checkboxLoteNo.addEventListener('change', function() {
+    if (this.checked) {
+        checkboxLoteSi.checked = false;
+        detLoteInput.value = 'SIN/L';
+    } else {
+        detLoteInput.value = '';
     }
 });
 
+checkboxLoteSi.addEventListener('change', function() {
+    if (this.checked) {
+        checkboxLoteNo.checked = false; 
+        detLoteInput.value = '';
+
+    }
+});
+
+
+
 // Llamamos a la función inicial para configurar correctamente el estado inicial
 actualizarSumatoria();
+
+// Agrega un evento de clic al botón
+botonVerIngresos.addEventListener('click', () => {
+    // Abre el modal al hacer clic en el botón
+    modalVerExistencias.classList.add('show');
+    modalVerExistencias.style.display = 'block';
+    document.body.classList.add('modal-open');
+});
+
+//////////evento para cerrar el modal haciendo clic
+
+botonCerrarModal.addEventListener('click', function () {
+    // Cierra el modal
+    modalVerExistencias.style.display = 'none';
+    document.body.classList.remove('modal-open');
+    //formularioGuarda.reset();
+
+
+});
+
+////cerrar el modal cuando se hace clic fuera del modal...
+modalVerExistencias.addEventListener('click', function (event) {
+    if (event.target === asignarOficialModal) {
+        asignarOficialModal.style.display = 'none';
+        document.body.classList.remove('modal-open');
+        //buscarDependencia();
+    }
+});
+
+

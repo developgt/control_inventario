@@ -70,10 +70,9 @@ $router->get('/API/movimiento/buscarEstados', [MovimientoController::class, 'bus
 $router->get('/API/movimiento/buscarProducto', [MovimientoController::class, 'buscarProductoAPI']);
 $router->get('/API/movimiento/buscarDependencia', [MovimientoController::class, 'buscarDependenciaAPI']);
 $router->get('/API/movimiento/buscarCantidad', [MovimientoController::class, 'buscarCantidadAPI']);
+$router->get('/API/movimiento/buscarCantidadLote', [MovimientoController::class, 'buscarCantidadLoteAPI']);
 $router->post('/API/movimiento/guardar', [MovimientoController::class,'guardarAPI'] );
-$router->post('/API/movimiento/guardarDetalle', [MovimientoController::class,'guardarDetalleAPI'] );
-
-
+$router->post('/API/movimiento/guardarDetalle', [MovimientoController::class,'guardarDetalleAPI']);
 
 //rutas para manejar la vista de movimiento de la tabla INV_MOVIMIENTOS (egresos)
 
@@ -83,6 +82,8 @@ $router->get('/API/movegreso/buscarOficialesRecibe', [MovimientoEgresoController
 $router->get('/API/movegreso/buscarOficialesResponsable', [MovimientoEgresoController::class, 'buscarOficialesResponsableAPI']);
 $router->get('/API/movegreso/buscarAlmacenes', [MovimientoEgresoController::class, 'buscarAlmacenesAPI']);
 $router->get('/API/movegreso/buscarDependencia', [MovimientoEgresoController::class, 'buscarDependenciaAPI']);
+$router->get('/API/movegreso/buscarExistencias', [MovimientoEgresoController::class, 'buscarExistenciasAPI']);
+
 
 
 

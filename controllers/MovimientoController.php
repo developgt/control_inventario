@@ -164,23 +164,34 @@ class MovimientoController
         }
     }
 
+    // $sql = "SELECT pro_id, pro_nom_articulo, inv_uni_med.uni_nombre AS pro_medida, 
+    // inv_almacenes.alma_nombre AS pro_almacen_id
+    // FROM inv_producto
+    // JOIN inv_uni_med ON inv_producto.pro_medida = inv_uni_med.uni_id
+    // JOIN inv_almacenes ON inv_producto.pro_almacen_id = inv_almacenes.alma_id
+    // JOIN mdep ON inv_almacenes.alma_unidad = mdep.dep_llave
+    // JOIN morg ON mdep.dep_llave = morg.org_dependencia
+    // JOIN mper ON morg.org_plaza = mper.per_plaza
+    // WHERE mper.per_catalogo = 665133 AND inv_producto.pro_situacion = 1";
     public static function buscarProductoAPI()
     {
 
-        $sql = "SELECT pro_id, pro_nom_articulo, inv_uni_med.uni_nombre AS pro_medida, 
-        inv_almacenes.alma_nombre AS pro_almacen_id
-        FROM inv_producto
-        JOIN inv_uni_med ON inv_producto.pro_medida = inv_uni_med.uni_id
-        JOIN inv_almacenes ON inv_producto.pro_almacen_id = inv_almacenes.alma_id
-        JOIN mdep ON inv_almacenes.alma_unidad = mdep.dep_llave
-        JOIN morg ON mdep.dep_llave = morg.org_dependencia
-        JOIN mper ON morg.org_plaza = mper.per_plaza
-        WHERE mper.per_catalogo = 665133 AND inv_producto.pro_situacion = 1";
+        $almaSeleccionadoId = $_GET['almaSeleccionadoId'];
 
+
+
+        $sql = "SELECT pro_id, pro_nom_articulo, inv_uni_med.uni_nombre AS pro_medida, 
+                inv_almacenes.alma_nombre AS pro_almacen_id
+                FROM inv_producto
+                JOIN inv_uni_med ON inv_producto.pro_medida = inv_uni_med.uni_id
+                JOIN inv_almacenes ON inv_producto.pro_almacen_id = inv_almacenes.alma_id
+                WHERE inv_almacenes.alma_id = $almaSeleccionadoId AND inv_producto.pro_situacion = 1";
 
         try {
 
             $producto = Producto::fetchArray($sql);
+
+            header('Content-Type: application/json');
 
             echo json_encode($producto);
         } catch (Exception $e) {
@@ -221,54 +232,16 @@ class MovimientoController
         }
     }
 
-    /// para buscar la cantidad del formulario detalle
+    /// para buscar la cantidad del formulario detalle 
 
     public static function buscarCantidadAPI()
     {
         $det_pro_id = $_GET['det_pro_id'] ?? '';
-        $det_lote = $_GET['det_lote'] ?? '';
-        $det_estado = $_GET['det_estado'] ?? '';
 
+        $sql = "   SELECT det_cantidad_existente from inv_deta_movimientos where det_pro_id = $det_pro_id and det_situacion = 1 
+        and det_id = (select max(det_id) from  inv_deta_movimientos where det_pro_id = $det_pro_id and det_situacion = 1)
+        group by det_cantidad_existente";
 
-
-        $sql = "SELECT 
-        det_pro_id,
-        det_lote,
-        det_estado,
-        MAX(det_cantidad) AS det_cantidad,
-        MAX(det_cantidad_lote) AS det_cantidad_lote
-    FROM 
-        inv_deta_movimientos
-    WHERE det_situacion = 1";
-
-        if ($det_pro_id != '') {
-            // Si es un número, la condición directamente
-            if (is_numeric($det_pro_id)) {
-                $sql .= " AND det_pro_id = $det_pro_id";
-            } else {
-                // Si es texto, usamos LIKE para buscar parcialmente
-                $sql .= " AND LOWER(det_pro_id) LIKE '%$det_pro_id%'";
-            }
-        }
-
-        if ($det_lote != '') {
-            $sql .= " AND LOWER(det_lote) LIKE '%$det_lote%'";
-        }
-
-        if ($det_estado != '') {
-            // Si es un número, la condición directamente
-            if (is_numeric($det_estado)) {
-                $sql .= " AND det_estado = $det_estado";
-            } else {
-                // Si es texto, u LIKE para buscar parcialmente
-                $sql .= " AND LOWER(det_estado) LIKE '%$det_estado%'";
-            }
-        }
-
-        $sql .= " GROUP BY 
-            det_pro_id,
-            det_lote,
-            det_estado";
         try {
 
             $detalle = Detalle::fetchArray($sql);
@@ -283,25 +256,24 @@ class MovimientoController
         }
     }
 
-    public static function guardarDetalleAPI()
+    ///BUSCAR LA CANTIDAD DE ACUERDO AL LOTE Y ESTADO DEL FORM DETALLE
+    public static function buscarCantidadLoteAPI()
     {
+        $det_pro_id = $_GET['det_pro_id'] ?? '';
+        $det_lote = $_GET['det_lote'] ?? '';
+        $det_estado = $_GET['det_estado'] ?? '';
+
+
+        $sql = "SELECT det_cantidad_lote from inv_deta_movimientos where det_pro_id = $det_pro_id and det_situacion = 1 and det_lote = '$det_lote' and det_estado = $det_estado
+        and det_id = (select max(det_id) from  inv_deta_movimientos where det_pro_id = $det_pro_id and det_situacion = 1 and det_lote = '$det_lote' and det_estado = $det_estado)
+        group by det_cantidad_lote";
+
+
         try {
 
-            $detalle = new Detalle($_POST);
-            $resultado = $detalle->crear();
+            $detalle = Detalle::fetchArray($sql);
 
-            if ($resultado['resultado'] == 1) {
-                echo json_encode([
-                    'mensaje' => 'Registro guardado correctamente',
-                    'codigo' => 1,
-
-                ]);
-            } else {
-                echo json_encode([
-                    'mensaje' => 'Ocurrió un error',
-                    'codigo' => 0
-                ]);
-            }
+            echo json_encode($detalle);
         } catch (Exception $e) {
             echo json_encode([
                 'detalle' => $e->getMessage(),
@@ -310,4 +282,42 @@ class MovimientoController
             ]);
         }
     }
+
+
+    public static function guardarDetalleAPI()
+    {
+        try {
+
+            $movimiento = new Detalle($_POST);
+            $resultado = $movimiento->crear();
+
+
+            if ($resultado['resultado'] == 1) {
+                header('Content-Type: application/json');
+
+                echo json_encode([
+                    'mensaje' => 'Registro guardado correctamente',
+                    'codigo' => 1,
+
+                ]);
+            } else {
+                header('Content-Type: application/json');
+
+                echo json_encode([
+                    'mensaje' => 'Ocurrió un error',
+                    'codigo' => 0
+                ]);
+            }
+        } catch (Exception $e) {
+            header('Content-Type: application/json');
+
+            echo json_encode([
+                'detalle' => $e->getMessage(),
+                'mensaje' => 'Ocurrió un error',
+                'codigo' => 0
+            ]);
+        }
+    }
+
+
 }
