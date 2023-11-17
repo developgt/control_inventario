@@ -26,7 +26,19 @@ const mov_perso_recibe_nom = document.getElementById('mov_perso_recibe_nom');
 const mov_perso_respon = document.getElementById('mov_perso_respon');
 const mov_perso_respon_nom = document.getElementById('mov_perso_respon_nom');
 const movMovimientoDiv = document.getElementById('mov_movimiento')
+/////
+const select = document.getElementById('mov_tipo_trans');
+
+
 let typingTimeout;
+
+const fechaInput = document.getElementById('mov_fecha');
+
+const establecerFechaActual = () => {
+    const fechaHoraActual = new Date();
+    const formatoFecha = fechaHoraActual.toISOString().split('T')[0]; // Obtiene la parte de la fecha y la formatea
+    fechaInput.value = formatoFecha;
+};
 
 
 btnModificar.disabled = true
@@ -47,22 +59,31 @@ const detProIdSelect = document.getElementById('det_pro_id');
 const detLoteInput = document.getElementById('det_lote');
 const detEstadoSelect = document.getElementById('det_estado');
 const detCantidadInput = document.getElementById('det_cantidad');
+const detFechaInput = document.getElementById('det_fecha_vence');
 const detCantidadExistenteInput = document.getElementById('det_cantidad_existente');
 const detCantidadLoteInput = document.getElementById('det_cantidad_lote');
+
+const campoLote = document.getElementById('campoLote');
+const fechaCampo = document.getElementById('fechaCampo');
+
 
 // ////PARA MANEJAR EL CKECK BOX DE SI Y NO DE LOTE 
 
 const checkboxLoteNo = document.getElementById('tiene_lote_no');
 const checkboxLoteSi = document.getElementById('tiene_lote_si');
 
+const checkboxFechaNo = document.getElementById('tiene_fecha_no');
+const checkboxFechaSi = document.getElementById('tiene_fecha_si')
 // para el modal///////
 const botonVerIngresos = document.getElementById('btnVerIngresos');
 const modalVerExistencias = document.getElementById('verExistencias');
 const botonCerrarModal = document.querySelector('.modal-header .close');
 const formularioModal = document.getElementById('formularioExistencia');
+const btnBuscarExistencias = document.getElementById('btnBuscarExistencias');
+const det_pro = document.getElementById('det_pro');
 
 
-
+let almaSeleccionId;
 let almaSeleccionadoId;// para guardar el id del almacen seleccionado
 let estado = [];// se define estado como un array vacio...
 let producto = [];
@@ -72,6 +93,12 @@ let dependencias = [];
 
 // Oculta el elemento div card formulario detalle
 movDetalleDiv.style.display = "none";
+campoLote.style.display = "none";
+fechaCampo.style.display = "none";
+
+
+
+
 
 btnModificarDetalle.disabled = true
 btnModificarDetalle.parentElement.style.display = 'none'
@@ -82,11 +109,196 @@ btnCancelarDetalle.parentElement.style.display = 'none'
 //////////DATATABLE//////////////////////////////////////////////////////
 
 let contador = 1;
-btnModificar.disabled = true;
-btnModificar.parentElement.style.display = 'none';
-btnCancelar.disabled = true;
-btnCancelar.parentElement.style.display = 'none';
 
+const datatable = new Datatable('#tablaExistencias', {
+    language: lenguaje,
+    data: null,
+    columns: [
+        {
+            title: 'NO',
+            render: () => contador++
+        },
+        {
+            title: 'Producto',
+            data: 'pro_id'
+
+        },
+        {
+            title: 'ID',
+            data: 'det_id'
+        },
+        {
+            title: 'Producto',
+            data: 'det_pro_id'
+        },
+        {
+            title: 'Estado del insumo',
+            data: 'det_estado'
+        },
+        {
+            title: 'Tipo de transaccion',
+            data: 'mov_tipo_trans',
+            render: function (data) {
+                return (data === 'I') ? 'INGRESO INTERNO' : (data === 'E') ? 'INGRESO EXTERNO' : data;
+            }
+        },
+        {
+            title: 'Producto',
+            data: 'pro_nom_articulo'
+        },
+        {
+            title: 'Medida',
+            data: 'pro_medida_nombre'
+        },
+        {
+            title: 'Lote',
+            data: 'det_lote'
+        },
+        {
+            title: 'Estado del insumo',
+            data: 'est_descripcion'
+        },
+        {
+            title: 'Fecha de Vencimiento',
+            data: 'det_fecha_vence',
+            render: function (data) {
+                // Verifica si la fecha es '7/05/1999' y muestra 'Sin fecha de vencimiento'
+                return (data === '1999-05-07') ? 'Sin fecha de vencimiento' : data;
+            }
+        },
+        {
+            title: 'Cantidad Existente Por lote',
+            data: 'det_cantidad_lote'
+        },
+        {
+            title: 'EDITAR DETALLE',
+            data: 'det_id',
+            searchable: false,
+            orderable: false,
+            render: (data, type, row, meta) => `<button class="btn btn-warning"  data-proid='${row["pro_id"]}' data-producto='${row["det_pro_id"]}' data-lote='${row["det_lote"]}' data-estado='${row["det_estado"]}' data-fecha='${row["det_fecha_vence"]}'>Editar</button>`
+        },
+        {
+            title: 'ELIMINAR',
+            data: 'det_id',
+            searchable: false,
+            orderable: false,
+            render: (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Eliminar</button>`
+        }
+    ],
+    columnDefs: [
+        {
+            targets: [1, 2, 3, 4],
+            visible: false, 
+            width: 0,
+            searchable: false,
+            
+        }
+      
+    ]
+});
+
+
+//// PARA TRAER LOS DATOS 
+const traeDatos = (e) => {
+    const button = e.target;
+    //const proid = button.dataset.proid;
+    const producto = button.dataset.producto;
+    const lote = button.dataset.lote;
+    const estado = button.dataset.estado;
+    const fecha = button.dataset.fecha;
+
+
+    
+    const dataset = {
+        //pro_id: proid,
+        det_pro_id: producto,
+        det_lote: lote,
+        det_estado: estado,
+        det_fecha_vence: fecha,
+       
+
+    };  
+    console.log('Datos en traeDatos:', dataset);
+        colocarDatos(dataset);
+        modalVerExistencias.style.display = 'none';
+        document.body.classList.remove('modal-open');
+        // Mostrar el formulario de detalle
+        movDetalleDiv.style.display = 'block';
+        // Ocultar el formulario de movimiento
+        movMovimientoDiv.style.display = 'none';
+        //buscar por cantidad y lote
+        buscarCantidad();
+        buscarCantidadLote();
+       
+};
+
+const colocarDatos = (dataset) => {
+    console.log('Datos en colocarDatos:', dataset);
+
+
+    //formularioDetalle.pro_id.value = dataset.pro_id;
+    formularioDetalle.det_pro_id.value = dataset.det_pro_id;
+    formularioDetalle.det_lote.value = dataset.det_lote;
+    formularioDetalle.det_estado.value = dataset.det_estado;
+    formularioDetalle.det_fecha_vence.value = dataset.det_fecha_vence;
+
+    // btnGuardar.disabled = true;
+    // btnGuardar.parentElement.style.display = 'none';
+    // btnBuscar.disabled = true;
+    // btnBuscar.parentElement.style.display = 'none';
+    // btnModificar.disabled = false;
+    // btnModificar.parentElement.style.display = '';
+    // btnCancelar.disabled = false;
+    // btnCancelar.parentElement.style.display = '';
+};
+
+const cancelarAccion = () => {
+    formularioDetalle.reset();
+    btnGuardar.disabled = false;
+    btnGuardar.parentElement.style.display = '';
+    btnBuscar.disabled = false;
+    btnBuscar.parentElement.style.display = '';
+    btnModificar.disabled = true;
+    btnModificar.parentElement.style.display = 'none';
+    btnCancelar.disabled = true;
+    btnCancelar.parentElement.style.display = 'none';
+};
+
+
+////////////// FUNCION PARA BUSCAR LOS ELEMENTOS GUARDADOS
+
+const buscarExistencias = async () => {
+    
+
+    let det_pro = formularioExistencia.det_pro.value;
+
+    const url = `/control_inventario/API/movimiento/buscarExistencias?det_pro=${det_pro}`;
+    const config = {
+        method: 'GET'
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+
+        datatable.clear().draw();
+        if (data) {
+            contador = 1;
+            datatable.rows.add(data).draw();
+        } else {
+            Toast.fire({
+                title: 'No se encontraron registros',
+                icon: 'info'
+            });
+        }
+
+    } catch (error) {
+        console.log(error);
+    }
+    //formularioExistencia.reset();
+
+    //actualizarDependencia();
+};
 
 
 
@@ -261,15 +473,49 @@ const buscarDependencia = async () => {
             option.textContent = dependencias.dep_desc_md;
             formularioMovimiento.mov_proce_destino.appendChild(option);
         });
-
-
-
         //contador = 1;
         //datatable.clear().draw();
     } catch (error) {
         console.log(error);
     }
-    formularioMovimiento.reset();
+    //formularioMovimiento.reset();
+};
+
+
+const buscarDependenciaInterna = async () => {
+    // Verificar si los elementos del formulario existen antes de acceder a sus propiedades
+    if (formulario.dep_desc_md && formulario.dep_llave) {
+        let dep_desc_md = formulario.dep_desc_md.value;
+        let dep_llave = formulario.dep_llave.value;
+    }
+    const url = `/control_inventario/API/movimiento/buscarDependenciaInterna`;
+    const config = {
+        method: 'GET'
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+        console.log('data de dependencias', data); // Imprimir datos en la consola
+
+        dependencias = data;
+        // Limpiar el contenido del select
+        formularioMovimiento.mov_proce_destino.innerHTML = '';
+
+        // Iterar sobre cada objeto en el arreglo y crear opciones para el select
+        data.forEach(dependencias => {
+            const option = document.createElement('option');
+            option.value = dependencias.dep_llave;
+            option.textContent = dependencias.dep_desc_md;
+            formularioMovimiento.mov_proce_destino.appendChild(option);
+        });
+        //contador = 1;
+        //datatable.clear().draw();
+    } catch (error) {
+        console.log(error);
+    }
+    
+    //formularioMovimiento.reset();
 };
 
 
@@ -310,7 +556,7 @@ const buscarEstados = async () => {
     } catch (error) {
         console.log(error);
     }
-    formularioDetalle.reset();
+    //formularioDetalle.reset();
 };
 
 const buscarAlmacenes = async () => {
@@ -353,7 +599,7 @@ const buscarAlmacenes = async () => {
     } catch (error) {
         console.log(error);
     }
-    formulario.reset();
+    //formulario.reset();
 };
 
 
@@ -368,6 +614,7 @@ formulario.mov_alma_id.addEventListener('change', function () {
 
     // Llamar a buscarProducto pasando el ID del almacén
     buscarProducto();
+    
 });
 
 
@@ -414,10 +661,56 @@ const buscarProducto = async () => {
     } catch (error) {
         console.log(error);
     }
-    formularioDetalle.reset();
+    //formularioDetalle.reset();
 }
 
 ///////////////////////////
+
+
+const buscarProductoModal = async () => {
+    // Verificar si los elementos del formulario existen antes de acceder a sus propiedades
+    if (formularioModal.pro_nom_articulo && formularioModal.pro_id) {
+        let pro_nom_articulo = formularioModal.pro_nom_articulo.value;
+        let pro_id = formularioModal.pro_id.value;
+    }
+
+    const url = `/control_inventario/API/movimiento/buscarProductoModal?almaSeleccionId=${almaSeleccionId}`;
+    const config = {
+        method: 'GET'
+    };
+
+    console.log(data)
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+        console.log('data de productos', data); // Imprimir datos en la consola
+
+        producto = data;
+        // Limpiar el contenido del select
+        formularioModal.det_pro.innerHTML = '';
+
+        // Agregar opción predeterminada
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = 'SELECCIONE...';
+        formularioModal.det_pro.appendChild(defaultOption);
+        // Iterar sobre cada objeto en el arreglo y crear opciones para el select
+        data.forEach(producto => {
+            const option = document.createElement('option');
+            option.value = producto.pro_id;
+            option.textContent = producto.pro_nom_articulo;
+            formularioModal.det_pro.appendChild(option);
+        });
+
+        //contador = 1;
+        //datatable.clear().draw();
+    } catch (error) {
+        console.log(error);
+    }
+    //formularioExistenc.reset();
+};
+
 
 ////// GUARDAR CAMPOS DEL FORMULARIO MOVIMIENTO
 
@@ -493,6 +786,7 @@ const buscarCantidadLote = async () => {
     let det_pro_id = detProIdSelect.value;
     let det_lote = detLoteInput.value;
     let det_estado = detEstadoSelect.value;
+    let det_fecha_vence = detFechaInput.value;
 
     //if (det_pro_id && det_lote && det_estado) {
     //     if (det_pro_id && det_estado) {
@@ -501,7 +795,7 @@ const buscarCantidadLote = async () => {
     //             //return;
     //         }
 
-    const url = `/control_inventario/API/movimiento/buscarCantidadLote?det_pro_id=${det_pro_id}&det_lote=${det_lote}&det_estado=${det_estado}`;
+    const url = `/control_inventario/API/movimiento/buscarCantidadLote?det_pro_id=${det_pro_id}&det_lote=${det_lote}&det_estado=${det_estado}&det_fecha_vence=${det_fecha_vence}`;
 
 
     const config = {
@@ -601,13 +895,16 @@ const buscarCantidad = async () => {
 const guardarDetalle = async (evento) => {
     evento.preventDefault();
 
-    if (!validarFormulario(formularioDetalle, ['det_id', 'det_lote'])) {
+    if (!validarFormulario(formularioDetalle, ['det_id', 'det_fecha_vence'])) {
         Toast.fire({
             icon: 'info',
             text: 'Debe llenar todos los datos'
         })
         return
     }
+    //  // Guarda el valor actual del campo det_mov_id
+    const detMovIdValue = document.getElementById('det_mov_id').value;
+  
     const body = new FormData(formularioDetalle)
     body.delete('det_id')
     //  const url = '/control_inventario/API/movimiento/guardarDetalle';
@@ -632,7 +929,8 @@ const guardarDetalle = async (evento) => {
                 formularioDetalle.reset();
                 icon = 'success'
 
-
+                // Restaura el valor del campo det_mov_id
+                document.getElementById('det_mov_id').value = detMovIdValue;
                 //buscar();
                 break;
 
@@ -660,10 +958,8 @@ const guardarDetalle = async (evento) => {
 
         console.log('Respuesta completa:', await error.text());
 
-        //console.log('Respuesta completa:', error.response);
     }
-    //buscar();
-    //buscarProducto();
+  
 };
 
 /////////////////////////////////////////////////////////////
@@ -707,12 +1003,25 @@ const buscarAlmacenesModal = async () => {
 
 
         //contador = 1;
-        datatable.clear().draw();
+        //datatable.clear().draw();
     } catch (error) {
         console.log(error);
     }
-    formularioModal.reset();
+    //formularioModal.reset();
 };
+
+/////////////////////////////almacenar el id//////////////////////////////////////
+// Agregar evento al cambio del select para almacenar el ID del almacén
+formularioModal.mov_alma.addEventListener('change', function () {
+    // Obtener el ID del almacén seleccionado
+    almaSeleccionId = this.value;
+
+    // Imprimir el valor en la consola para verificar
+    console.log('Alma ID seleccionado:', almaSeleccionId);
+
+    buscarProductoModal();
+});
+
 
 // // Agregar evento al cambio del select para almacenar el ID del almacén
 // formulario.mov_alma_id.addEventListener('change', function() {
@@ -732,12 +1041,32 @@ const buscarAlmacenesModal = async () => {
 // });
 
 
+function mostrarDependencia() {
+    if (select.value === "I") {
+      
+        buscarDependenciaInterna();
+    } else if (select.value === "E") {
+    
+        buscarDependencia();
+    } else {
+       
+    }
+}
+
+///evento para detectar el cambio del select 
+select.addEventListener('change', mostrarDependencia);
+
+
+
+
 //////////////////
 ///////////////LLAMAR A LAS FUNCIONES///////////
+establecerFechaActual();
 buscarAlmacenes();
 buscarAlmacenesModal();
-buscarDependencia();
+//buscarDependencia();
 buscarEstados();
+
 //buscarProducto();
 
 
@@ -750,6 +1079,7 @@ mov_perso_recibe.addEventListener('input', buscarOficialesRecibe);
 mov_perso_respon.addEventListener('input', buscarOficialesResponsable);
 formulario.addEventListener('submit', guardar);
 formularioDetalle.addEventListener('submit', guardarDetalle);
+btnBuscarExistencias.addEventListener('click', buscarExistencias);
 
 btnSiguiente.addEventListener('click', function (event) {
     //     // Prevenir el envío normal del formulario
@@ -786,6 +1116,7 @@ btnAnterior.addEventListener('click', function (event) {
 detProIdSelect.addEventListener('input', buscarCantidad);
 detProIdSelect.addEventListener('input', buscarCantidadLote);
 detLoteInput.addEventListener('input', buscarCantidadLote);
+detFechaInput.addEventListener('input', buscarCantidadLote);
 detEstadoSelect.addEventListener('input', buscarCantidadLote);
 
 //buscarProducto();
@@ -839,8 +1170,12 @@ checkboxLoteNo.addEventListener('change', function() {
     if (this.checked) {
         checkboxLoteSi.checked = false;
         detLoteInput.value = 'SIN/L';
+        campoLote.style.display = "none";
+
+      
     } else {
         detLoteInput.value = '';
+       
     }
 });
 
@@ -848,9 +1183,37 @@ checkboxLoteSi.addEventListener('change', function() {
     if (this.checked) {
         checkboxLoteNo.checked = false; 
         detLoteInput.value = '';
+        campoLote.style.display = "block";
 
     }
 });
+
+checkboxFechaNo.addEventListener('change', function() {
+    if (this.checked) {
+        checkboxFechaSi.checked = false;
+        detFechaInput.value = '1999-05-07'
+        buscarCantidadLote(); /// si esta checkeado despues de que se coloque la fecha que se ejecute la funcion///////
+
+        fechaCampo.style.display = "none"
+        
+    } else {
+        detFechaInput.value = '';
+        detCantidadLoteInput.value = '';
+
+    }
+});
+
+checkboxFechaSi.addEventListener('change', function() {
+    if (this.checked) {
+        checkboxFechaNo.checked = false; 
+        detFechaInput.value = '';
+        fechaCampo.style.display = "block";
+        detCantidadLoteInput.value = '';
+
+
+    }
+});
+
 
 
 
@@ -878,11 +1241,13 @@ botonCerrarModal.addEventListener('click', function () {
 
 ////cerrar el modal cuando se hace clic fuera del modal...
 modalVerExistencias.addEventListener('click', function (event) {
-    if (event.target === asignarOficialModal) {
-        asignarOficialModal.style.display = 'none';
+    if (event.target === modalVerExistencias) {
+        modalVerExistencias.style.display = 'none';
         document.body.classList.remove('modal-open');
         //buscarDependencia();
     }
 });
+
+
 
 

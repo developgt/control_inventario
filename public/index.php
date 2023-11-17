@@ -74,8 +74,11 @@ $router->get('/API/movimiento/buscarOficialesResponsable', [MovimientoController
 $router->get('/API/movimiento/buscarAlmacenes', [MovimientoController::class, 'buscarAlmacenesAPI']);
 $router->get('/API/movimiento/buscarEstados', [MovimientoController::class, 'buscarEstadosAPI']);
 $router->get('/API/movimiento/buscarProducto', [MovimientoController::class, 'buscarProductoAPI']);
+$router->get('/API/movimiento/buscarProductoModal', [MovimientoController::class, 'buscarProductoModalAPI']);
 $router->get('/API/movimiento/buscarDependencia', [MovimientoController::class, 'buscarDependenciaAPI']);
+$router->get('/API/movimiento/buscarDependenciaInterna', [MovimientoController::class, 'buscarDependenciaInternaAPI']);
 $router->get('/API/movimiento/buscarCantidad', [MovimientoController::class, 'buscarCantidadAPI']);
+$router->get('/API/movimiento/buscarExistencias', [MovimientoController::class, 'buscarExistenciasAPI']);
 $router->get('/API/movimiento/buscarCantidadLote', [MovimientoController::class, 'buscarCantidadLoteAPI']);
 $router->post('/API/movimiento/guardar', [MovimientoController::class,'guardarAPI'] );
 $router->post('/API/movimiento/guardarDetalle', [MovimientoController::class,'guardarDetalleAPI']);

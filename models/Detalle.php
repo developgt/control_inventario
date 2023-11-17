@@ -30,7 +30,7 @@ class Detalle extends ActiveRecord
         $this->det_mov_id  = $args['det_mov_id'] ?? '';
         $this->det_pro_id = $args['det_pro_id'] ?? '';
         $this->det_lote = $args['det_lote'] ?? '';
-        $this->det_fecha_vence = $args['det_fecha_vence'] ?? '';
+        $this->det_fecha_vence = $args['det_fecha_vence'] ?? '07/05/1999';
         $this->det_estado = $args['det_estado'] ?? '';
         $this->det_cantidad = $args['det_cantidad'] ?? '';
         $this->det_cantidad_existente = $args['det_cantidad_existente'] ?? '';

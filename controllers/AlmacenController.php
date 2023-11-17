@@ -8,23 +8,64 @@ use Model\Mper;
 use Model\Mdep;
 use Model\Guarda;
 use MVC\Router;
+use Model\Usuario;
 
 class AlmacenController
 {
 
-    public static function index(Router $router)
-    {
+    // public static function index(Router $router)
+    // {
 
-        //$almacen = static::buscarDependencia();
+    //     //$almacen = static::buscarDependencia();
 
+    //     $router->render('almacen/index', [
+    //         //'almacen' => $almacen,
+    //     ]);
+    // }
+
+
+    public static function index(Router $router){
+        isAuth();
+        try {
+            $usuario = Usuario::fetchFirst("
+            
+            SELECT
+            per_catalogo,
+            TRIM(per_nom1) || ' ' || TRIM(per_nom2) || ' ' || TRIM(per_ape1) || ' ' || TRIM(per_ape2) as nombre,
+            per_desc_empleo as empleo,
+            dep_desc_lg as dependencia,
+            gra_desc_md as grado
+        FROM
+            mper
+        INNER JOIN
+            morg ON per_plaza = org_plaza
+        INNER JOIN
+            mdep ON org_dependencia = dep_llave
+        INNER JOIN
+            grados ON per_grado = gra_codigo
+        WHERE
+            per_catalogo = user;
+
+            ");
+            
+        } catch (Exception $e) {
+            getHeadersApi();
+            echo json_encode([
+                "detalle" => $e->getMessage(),       
+                "mensaje" => "Error de conexión bd",
+        
+                "codigo" => 5,
+            ]);
+            exit;
+        }
         $router->render('almacen/index', [
-            //'almacen' => $almacen,
+            'usuario' => $usuario,
         ]);
     }
     public static function buscarDependenciaAPI()
 
 {
-    $sql = "SELECT dep_llave, dep_desc_md FROM mper, morg, mdep WHERE per_plaza = org_plaza AND org_dependencia = dep_llave AND per_catalogo = 665133";
+    $sql = "SELECT dep_llave, dep_desc_md FROM mper, morg, mdep WHERE per_plaza = org_plaza AND org_dependencia = dep_llave AND per_catalogo = user";
     try {
         $almacen = Mdep::fetchArray($sql);
 
@@ -83,7 +124,7 @@ class AlmacenController
  
 
 
-        $sql = "select alma_nombre, alma_unidad, alma_descripcion, alma_id from inv_almacenes, mper, morg, mdep where per_plaza = org_plaza and org_dependencia= dep_llave and alma_unidad = dep_llave and per_catalogo = 665133
+        $sql = "select alma_nombre, alma_unidad, alma_descripcion, alma_id from inv_almacenes, mper, morg, mdep where per_plaza = org_plaza and org_dependencia= dep_llave and alma_unidad = dep_llave and per_catalogo = user
         and alma_situacion = 1";
 
         if ($alma_nombre != '') {
@@ -300,7 +341,7 @@ class AlmacenController
             AND mper.per_plaza = morg.org_plaza 
             AND morg.org_dependencia = mdep.dep_llave 
             AND a.alma_unidad = mdep.dep_llave 
-            AND mper.per_catalogo = 665133
+            AND mper.per_catalogo = user
             AND g.guarda_situacion = 1
             ";
 
