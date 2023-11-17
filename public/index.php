@@ -15,6 +15,7 @@ use Controllers\ProductoController;
 use Controllers\MovimientoController;
 use Controllers\MovimientoEgresoController;
 use Controllers\MenuController;
+use Controllers\GestionController;
 
 
 $router = new Router();
@@ -97,6 +98,12 @@ $router->get('/API/movegreso/buscarExistencias', [MovimientoEgresoController::cl
 
 $router->get('/', [MenuController::class,'index']);
 $router->get('/API/menu/buscar', [MenuController::class,'buscarAlmacen']);
+
+
+$router->get('/gestion', [GestionController::class,'index']);
+$router->get('/API/gestion/buscar', [GestionController::class,'buscarAlmacen']);
+
+$router->get('/guardalmacen', [GuardalmacenController::class, 'index']);
 
 
 // Comprueba y valida las rutas, que existan y les asigna las funciones del Controlador
