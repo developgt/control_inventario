@@ -99,7 +99,6 @@ fechaCampo.style.display = "none";
 
 
 
-
 btnModificarDetalle.disabled = true
 btnModificarDetalle.parentElement.style.display = 'none'
 btnCancelarDetalle.disabled = true

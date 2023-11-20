@@ -11,16 +11,56 @@ use MVC\Router;
 use Model\Guarda;
 use Model\Medida;
 use Model\Producto;
+use Model\Usuario;
 
 class ProductoController
 {
 
-    public static function index(Router $router)
-    {
-        //$almacen = static::buscarAlmacen();
+    // public static function index(Router $router)
+    // {
+    //     //$almacen = static::buscarAlmacen();
 
+    //     $router->render('producto/index', [
+    //         //'almacen' => $almacen
+    //     ]);
+    // }
+
+    public static function index(Router $router){
+        isAuth();
+        try {
+            $usuario = Usuario::fetchFirst("
+            
+            SELECT
+            per_catalogo,
+            TRIM(per_nom1) || ' ' || TRIM(per_nom2) || ' ' || TRIM(per_ape1) || ' ' || TRIM(per_ape2) as nombre,
+            per_desc_empleo as empleo,
+            dep_desc_lg as dependencia,
+            gra_desc_md as grado
+        FROM
+            mper
+        INNER JOIN
+            morg ON per_plaza = org_plaza
+        INNER JOIN
+            mdep ON org_dependencia = dep_llave
+        INNER JOIN
+            grados ON per_grado = gra_codigo
+        WHERE
+            per_catalogo = user;
+
+            ");
+            
+        } catch (Exception $e) {
+            getHeadersApi();
+            echo json_encode([
+                "detalle" => $e->getMessage(),       
+                "mensaje" => "Error de conexión bd",
+        
+                "codigo" => 5,
+            ]);
+            exit;
+        }
         $router->render('producto/index', [
-            //'almacen' => $almacen
+            'usuario' => $usuario,
         ]);
     }
 
@@ -30,7 +70,7 @@ class ProductoController
 
     public static function buscarAlmacenesAPI()
     {
-        $sql = "select alma_nombre, alma_id from inv_almacenes, mper, morg, mdep where per_plaza = org_plaza and org_dependencia= dep_llave and alma_unidad = dep_llave and per_catalogo = 665133
+        $sql = "select alma_nombre, alma_id from inv_almacenes, mper, morg, mdep where per_plaza = org_plaza and org_dependencia= dep_llave and alma_unidad = dep_llave and per_catalogo = user
         and alma_situacion = 1";
         try {
             $almacen = Almacen::fetchArray($sql);
@@ -54,7 +94,7 @@ class ProductoController
         JOIN mdep ON inv_almacenes.alma_unidad = mdep.dep_llave
         JOIN morg ON mdep.dep_llave = morg.org_dependencia
         JOIN mper ON morg.org_plaza = mper.per_plaza
-        WHERE mper.per_catalogo = 665133 AND inv_uni_med.uni_situacion = 1;
+        WHERE mper.per_catalogo = user AND inv_uni_med.uni_situacion = 1;
         ";
         try {
             $medida = Medida::fetchArray($sql);
@@ -124,7 +164,7 @@ class ProductoController
         JOIN mdep ON inv_almacenes.alma_unidad = mdep.dep_llave
         JOIN morg ON mdep.dep_llave = morg.org_dependencia
         JOIN mper ON morg.org_plaza = mper.per_plaza
-        WHERE mper.per_catalogo = 665133 AND inv_producto.pro_situacion = 1
+        WHERE mper.per_catalogo = user AND inv_producto.pro_situacion = 1
 ";
 
         if ($pro_almacen_id != '') {

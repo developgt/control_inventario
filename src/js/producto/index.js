@@ -407,7 +407,7 @@ const buscar = async () => {
     //actualizarDependencia();
 };
 
-//buscar();
+buscar();
 
 
 

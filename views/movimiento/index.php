@@ -141,6 +141,17 @@
             </div>
         </div>
     </div>
+    <!-- <div class="col-lg-4">
+        <!-- <div class="card" style="background-color: rgba(0, 0, 255, 0.2);">
+            <div class="card-body">
+                <h5 class="card-title">Detalle de Ingresos</h5>
+                <p class="card-text">Haz clic en el botón para ver el detalle de ingresos.</p>
+                <button type="button" id="btnVerIngresos" class="btn btn-success w-100">VER INGRESOS</button>
+            </div>
+        </div> -->
+
+
+    <!-- </div> -->
 </div>
 </div>
 <div class="container bg-light border rounded mx-auto mt-2" id="mov_detalle">

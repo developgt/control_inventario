@@ -83,35 +83,112 @@ class AlmacenController
 
 
 
-//funcion para guardar almacen
+// //funcion para guardar almacen
+
+//     public static function guardarAPI()
+//     {
+//         try {
+
+//             $almacen = new Almacen($_POST);
+//             $resultado = $almacen->crear();
+
+//             if ($resultado['resultado'] == 1) {
+//                 echo json_encode([
+//                     'mensaje' => 'Registro guardado correctamente',
+//                     'codigo' => 1,
+//                     'id' => $resultado['id'] // Devuelve el ID del registro recién insertado
+//                 ]);
+//             } else {
+//                 echo json_encode([
+//                     'mensaje' => 'Ocurrió un error',
+//                     'codigo' => 0
+//                 ]);
+//             }
+
+//         } catch (Exception $e) {
+//             echo json_encode([
+//                 'detalle' => $e->getMessage(),
+//                 'mensaje' => 'Ocurrió un error',
+//                 'codigo' => 0
+//             ]);
+//         }
+//     }
+
+
+    
+//     public static function guardarAsignarAPI()
+//     {
+//         try {
+
+//             $guarda = new Guarda($_POST);
+//             $resultado = $guarda->crear();
+
+//             if ($resultado['resultado'] == 1) {
+//                 echo json_encode([
+//                     'mensaje' => 'Registro guardado correctamente',
+//                     'codigo' => 1
+//                 ]);
+//             } else {
+//                 echo json_encode([
+//                     'mensaje' => 'Ocurrió un error',
+//                     'codigo' => 0
+//                 ]);
+//             }
+//         } catch (Exception $e) {
+//             echo json_encode([
+//                 'detalle' => $e->getMessage(),
+//                 'mensaje' => 'Ocurrió un error',
+//                 'codigo' => 0
+//             ]);
+//         }
+//     }
+
+
 
     public static function guardarAPI()
-    {
-        try {
+{
+    try {
+        // Guardar Almacén
+        $almacen = new Almacen($_POST);
+        $resultadoAlmacen = $almacen->crear();
 
-            $almacen = new Almacen($_POST);
-            $resultado = $almacen->crear();
+        if ($resultadoAlmacen['resultado'] == 1) {
+            // Almacén guardado correctamente, ahora asignar
+            $_POST['guarda_almacen'] = $resultadoAlmacen['id']; // Asigna el ID del almacén al campo 'guarda_almacen'
 
-            if ($resultado['resultado'] == 1) {
+            $guarda = new Guarda($_POST);
+            $resultadoAsignar = $guarda->crear();
+
+            if ($resultadoAsignar['resultado'] == 1) {
+                // Ambos registros guardados correctamente
                 echo json_encode([
-                    'mensaje' => 'Registro guardado correctamente',
-                    'codigo' => 1
+                    'mensaje' => 'Registros guardados correctamente',
+                    'codigo' => 1,
+                    'idAlmacen' => $resultadoAlmacen['id'],
+                    'idAsignar' => $resultadoAsignar['id']
                 ]);
             } else {
+                // Error al asignar
                 echo json_encode([
-                    'mensaje' => 'Ocurrió un error',
+                    'mensaje' => 'Ocurrió un error al asignar',
                     'codigo' => 0
                 ]);
             }
-
-        } catch (Exception $e) {
+        } else {
+            // Error al guardar el almacén
             echo json_encode([
-                'detalle' => $e->getMessage(),
-                'mensaje' => 'Ocurrió un error',
+                'mensaje' => 'Ocurrió un error al guardar el almacén',
                 'codigo' => 0
             ]);
         }
+    } catch (Exception $e) {
+        echo json_encode([
+            'detalle' => $e->getMessage(),
+            'mensaje' => 'Ocurrió un error',
+            'codigo' => 0
+        ]);
     }
+}
 
 
     ///////funcion para buscar los datos de la tabla inv_almacenes
@@ -120,7 +197,7 @@ class AlmacenController
 
         $alma_nombre = $_GET['alma_nombre'] ?? '';
         $alma_descripcion = $_GET['alma_descripcion'] ?? '';
-        //$alma_unidad = $_GET['alma_unidad'] ?? '';
+        $alma_unidad = $_GET['alma_unidad'] ?? '';
  
 
 
@@ -159,8 +236,9 @@ class AlmacenController
         try {
             $alma_id = $_POST['alma_id'];
             $alma_nombre = $_POST['alma_nombre'];
-            $alma_descripcion = $_POST['alma_descripcion'];
             $alma_unidad = $_POST['alma_unidad'];
+            $alma_descripcion = $_POST['alma_descripcion'];
+    
 
             // echo json_encode($_POST);
             // exit;
@@ -168,7 +246,7 @@ class AlmacenController
                 'alma_id' => $alma_id, 
                 'alma_nombre' => $alma_nombre,
                 'alma_descripcion' => $alma_descripcion,
-                'alma_unidad' => $alma_unidad
+                'alma_unidad' => $alma_unidad,
             ]);
     
             $resultado = $almacen->actualizar();
@@ -287,12 +365,12 @@ class AlmacenController
 
         public static function buscarOficialesAPI()
         {
-            $guarda_catalogo = $_GET['guarda_catalogo'] ?? '';
+            // $guarda_catalogo = $_GET['guarda_catalogo'] ?? '';
     
-            $sql = "SELECT  trim(gra_desc_ct) || ' DE ' || trim(arm_desc_md)  || ' ' || trim(per_ape1) || ' ' || trim(per_ape2) || ', ' || trim(per_nom1)  || ', ' || trim(per_nom2) as guarda_nombre
+            $sql = "SELECT  trim(gra_desc_ct) || ' DE ' || trim(arm_desc_md)  || ' ' || trim(per_ape1) || ' ' || trim(per_ape2) || ', ' || trim(per_nom1)  || ', ' || trim(per_nom2) as guarda_nombre, per_catalogo
             FROM mper inner join grados on per_grado = gra_codigo
             INNER JOIN armas on per_arma = arm_codigo
-            where per_catalogo = $guarda_catalogo";
+            where per_catalogo = user";
     
             try {
                 $oficial = Mper::fetchArray($sql);
