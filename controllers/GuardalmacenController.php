@@ -7,7 +7,6 @@ use Model\Usuario;
 use Model\Guarda;
 use Model\Almacen;
 use MVC\Router;
-
 class GuardalmacenController {
     public static function index(Router $router){
         isAuth();
@@ -49,4 +48,3 @@ class GuardalmacenController {
     }
     
 }
-

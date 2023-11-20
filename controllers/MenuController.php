@@ -74,6 +74,7 @@ class MenuController {
         }
         console.log(data);
     }
+   
     
 }
 
