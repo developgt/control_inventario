@@ -16,6 +16,8 @@ use Controllers\MovimientoController;
 use Controllers\MovimientoEgresoController;
 use Controllers\MenuController;
 use Controllers\GestionController;
+use Controllers\GuardalmacenController;
+use Controllers\KardexController;
 
 
 $router = new Router();
@@ -94,8 +96,6 @@ $router->get('/API/movegreso/buscarAlmacenes', [MovimientoEgresoController::clas
 $router->get('/API/movegreso/buscarDependencia', [MovimientoEgresoController::class, 'buscarDependenciaAPI']);
 $router->get('/API/movegreso/buscarExistencias', [MovimientoEgresoController::class, 'buscarExistenciasAPI']);
 
-
-
 $router->get('/', [MenuController::class,'index']);
 $router->get('/API/menu/buscar', [MenuController::class,'buscarAlmacen']);
 
@@ -104,7 +104,10 @@ $router->get('/gestion', [GestionController::class,'index']);
 $router->get('/API/gestion/buscar', [GestionController::class,'buscarAlmacen']);
 
 $router->get('/guardalmacen', [GuardalmacenController::class, 'index']);
+$router->get('/API/guardalmacen/buscar', [GuardalmacenController::class, 'buscarAlmacen']);
 
+$router->get('/kardex', [KardexController::class, 'index']);
+$router->get('/API/kardex/buscar', [KardexController::class, 'buscarProducto']);
 
 // Comprueba y valida las rutas, que existan y les asigna las funciones del Controlador
 $router->comprobarRutas();

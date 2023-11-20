@@ -6,6 +6,7 @@ module.exports = {
   entry: {
     'js/app' : './src/js/app.js',
     'js/inicio' : './src/js/inicio.js',
+    'js/menu/index' : './src/js/menu/index.js',
     'js/almacen/index' : './src/js/almacen/index.js',
     'js/estado/index' : './src/js/estado/index.js',
     'js/medida/index' : './src/js/medida/index.js',
@@ -13,7 +14,9 @@ module.exports = {
     'js/producto/index' : './src/js/producto/index.js',
     'js/movimiento/index' : './src/js/movimiento/index.js',
     'js/movegreso/index' : './src/js/movegreso/index.js',
-    'js/gestion' : './src/js/gestion/index.js',
+    'js/gestion/index' : './src/js/gestion/index.js',
+    'js/guardalmacen/index' : './src/js/guardalmacen/index.js',
+    'js/kardex/index' : './src/js/kardex/index.js',
 
   },
   output: {
