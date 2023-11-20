@@ -8,7 +8,7 @@
         margin-top: 10px;
         background-color: beige;
         /* Color beige */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         /* Sombra */
     }
 
@@ -17,7 +17,7 @@
         margin: 10px;
         background-color: #f2f2f2;
         /* Color de fondo */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         /* Sombra */
 
     }
@@ -31,7 +31,7 @@
         margin-top: 10px;
         border-radius: 10px;
         /* Bordes redondeados */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         /* Sombra */
     }
 
@@ -63,9 +63,8 @@
     .custom-modal-header {
         background: linear-gradient(to right, rgba(70, 130, 180, 0.8), rgba(30, 144, 255, 0.8));
         color: #fff;
-        /* Cambia el color del texto según tus preferencias */
         border-bottom: 2px solid #fff;
-        /* Añade un borde inferior blanco */
+    
     }
 
     /* Estilo para el título del modal */
@@ -76,7 +75,7 @@
     .mi-tabla {
     width: 100%; 
     border-collapse: collapse; 
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Añade una sombra alrededor de la tabla */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Añade una sombra alrededor de la tabla */
 }
 
 
@@ -85,14 +84,14 @@
     <h1 class="text-center mt-4 mb-4 encabezado-inventario">Creación de Inventario</h1>
     <div class="row justify-content-center mb-5">
         <form class="col-lg-8 border rounded bg-light p-3" id="formularioAlmacen">
-            <input type="text" name="alma_id" id="alma_id">
+            <input type="hidden" name="alma_id" id="alma_id">
             <div class="row mb-3">
                 <div class="col">
-                    <label for="alma_nombre"><i class="bi bi-archive me-2"></i>Nombre del Inventario</label>
+                    <label for="alma_nombre"><i class="bi bi-archive-fill me-2"></i>Nombre del Inventario</label>
                     <input type="text" name="alma_nombre" id="alma_nombre" class="form-control">
                 </div>
                 <div class="col">
-                    <label for="alma_unidad"><i class="bi bi-shield-check me-2"></i>Dependencia</label>
+                    <label for="alma_unidad"><i class="bi bi-shield-shaded me-2"></i>Dependencia</label>
                     <input type="hidden" id="alma_unidad" name="alma_unidad" class="form-control">
                     <input type="text" id="alma_unidad_id" class="form-control readonly" readonly>
                 </div>
@@ -100,18 +99,18 @@
             <input type="hidden" name="guarda_id" id="guarda_id">
             <div class="row mb-3">
                 <div class="col-sm-4">
-                    <label for="guarda_catalogo"><i class="bi bi-file-earmark-text me-2"></i>Catálogo</label>
+                    <label for="guarda_catalogo"><i class="bi bi-bookmark-check-fill me-2"></i>Catálogo</label>
                     <input type="text" name="guarda_catalogo" id="guarda_catalogo" class="form-control">
                 </div>
                 <div class="col">
-                    <label for="guarda_nombre"><i class="bi bi-file-earmark-text me-2"></i>Grado y Nombre del Oficial</label>
+                    <label for="guarda_nombre"><i class="bi bi-person-fill me-2" ></i>Grado y Nombre del Oficial</label>
                     <input type="text" name="guarda_nombre" id="guarda_nombre" class="form-control readonly" readonly>
                 </div>
                 <input type="hidden" name="guarda_almacen" id="guarda_almacen">
             </div>
             <div class="row mb-3">
                 <div class="col">
-                    <label for="alma_descripcion"><i class="bi bi-file-earmark-text me-2"></i>Descripción</label>
+                    <label for="alma_descripcion"><i class="bi bi-file-earmark-text-fill me-2"></i>Descripción</label>
                     <input type="text" name="alma_descripcion" id="alma_descripcion" class="form-control">
                 </div>
             </div>

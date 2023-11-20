@@ -141,7 +141,7 @@ const cancelarAccion = () => {
     btnCancelar.disabled = true;
     btnCancelar.parentElement.style.display = 'none';
     actualizarDependencia();
-    buscarOficiales();
+  
 };
 
 //// Función para buscar las dependencias y colocarlas en el input alma_unidad
@@ -183,6 +183,7 @@ const buscarDependencia = async () => {
 const actualizarDependencia = async () => {
     try {
         await buscarDependencia();
+        await buscarOficiales();
     } catch (error) {
         console.error(error);
         // Manejar el error si es necesario.
@@ -281,7 +282,7 @@ const guardar = async (evento) => {
         console.log(error);
     }
     actualizarDependencia();
-    buscarOficiales();
+   
 }
 
 
@@ -432,6 +433,8 @@ const modificar = async () => {
     formulario.reset();
     actualizarDependencia();
     buscar();
+    modalVerRegistros.classList.add('show');
+    modalVerRegistros.style.display = 'block';
 };
 
 
@@ -472,7 +475,6 @@ const buscarOficiales = async () => {
 
 
 actualizarDependencia();
-buscarOficiales();
 //BuscarAsignar();
 //eventos de la vista general
 formulario.addEventListener('submit', guardar);
@@ -501,7 +503,7 @@ botonCerrarModal.addEventListener('click', function () {
     modalVerRegistros.style.display = 'none';
     cancelarAccion();
     actualizarDependencia();
-    buscarOficiales();
+
 });
 
 ////cerrar el modal cuando se hace clic fuera del modal...
@@ -510,7 +512,7 @@ modalVerRegistros.addEventListener('click', function (event) {
         modalVerRegistros.style.display = 'none';
         cancelarAccion();
         actualizarDependencia();
-        buscarOficiales();
+     
     }
 });
 

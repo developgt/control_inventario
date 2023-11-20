@@ -148,12 +148,17 @@ class AlmacenController
     public static function guardarAPI()
 {
     try {
+
+          // Convertir todos los valores de $_POST a mayúsculas
+          array_walk_recursive($_POST, function (&$value) {
+            $value = strtoupper($value);
+        });
         // Guardar Almacén
         $almacen = new Almacen($_POST);
         $resultadoAlmacen = $almacen->crear();
 
         if ($resultadoAlmacen['resultado'] == 1) {
-            // Almacén guardado correctamente, ahora asignar
+          
             $_POST['guarda_almacen'] = $resultadoAlmacen['id']; // Asigna el ID del almacén al campo 'guarda_almacen'
 
             $guarda = new Guarda($_POST);
@@ -162,7 +167,7 @@ class AlmacenController
             if ($resultadoAsignar['resultado'] == 1) {
                 // Ambos registros guardados correctamente
                 echo json_encode([
-                    'mensaje' => 'Registros guardados correctamente',
+                    'mensaje' => 'Inventario creado correctamente',
                     'codigo' => 1,
                     'idAlmacen' => $resultadoAlmacen['id'],
                     'idAsignar' => $resultadoAsignar['id']
