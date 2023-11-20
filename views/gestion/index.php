@@ -144,31 +144,31 @@
       <h3> Seleccione el Tipo de Abastecimiento a Inventario </h3>  <br>      
             <div class="all-body">
                 <div class="all">
-                    <div class="clase1">
+                    <div class="clase1" id="clase1">
                         <div class="text">Alimentos y Comestibles</div>
                     </div>
-                    <div class="clase2">
+                    <div class="clase2" id="clase2">
                         <div class="text">Vestuario y Equipo Individual</div>
                     </div>
-                    <div class="clase3">
+                    <div class="clase3" id="clase3">
                         <div class="text">Carburantes y Lubricantes</div>
                     </div>
-                    <div class="clase4">
+                    <div class="clase4" id="clase4">
                         <div class="text">Material de Construccion</div>
                     </div>
-                    <div class="clase5">
+                    <div class="clase5" id="clase5">
                         <div class="text">Articulos Personales</div>
                     </div>
-                    <div class="clase6">
+                    <div class="clase6" id="clase6">
                         <div class="text">Articulos Terminados</div>
                     </div>
-                    <div class="clase7">
+                    <div class="clase7" id="clase7">
                         <div class="text">Repuestos y Accesorios</div>
                     </div>
-                    <div class="clase8">
+                    <div class="clase8" id="clase8">
                         <div class="text">Apoyo Asuntos Civiles</div>
                     </div>
-                    <div class="clase9">
+                    <div class="clase9" id="clase9">
                         <div class="text">Material Capturado/Recuperable</div>
                     </div>
                   </div>

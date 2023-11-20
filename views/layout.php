@@ -34,6 +34,9 @@
                 <li class="nav-item">
                     <a class="nav-link" aria-current="page" href="/control_inventario/crear"><i class="bi bi bi-building-fill-check me-2"></i>Realizar Entrega de Inventario</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="/control_inventario/almacen"><i class="bi bi bi-building-fill-check me-2"></i>Inventario</a>
+                </li>
             </ul>
             <ul class="navbar-nav me-0 mb-2 mb-lg-0">
                 <li class="nav-item">
