@@ -26,8 +26,20 @@ const mov_perso_recibe_nom = document.getElementById('mov_perso_recibe_nom');
 const mov_perso_respon = document.getElementById('mov_perso_respon');
 const mov_perso_respon_nom = document.getElementById('mov_perso_respon_nom');
 const movMovimientoDiv = document.getElementById('mov_movimiento')
+
 let typingTimeout;
 
+const select = document.getElementById('mov_tipo_trans');
+
+
+
+const fechaInput = document.getElementById('mov_fecha');
+
+const establecerFechaActual = () => {
+    const fechaHoraActual = new Date();
+    const formatoFecha = fechaHoraActual.toISOString().split('T')[0]; // Obtiene la parte de la fecha y la formatea
+    fechaInput.value = formatoFecha;
+};
 
 btnModificar.disabled = true
 btnModificar.parentElement.style.display = 'none'
@@ -45,10 +57,13 @@ const movDetalleDiv = document.getElementById('mov_detalle');
 //CONST PARA LOS INPUTS 
 const detProIdSelect = document.getElementById('det_pro_id');
 const detLoteInput = document.getElementById('det_lote');
+const detFechaInput = document.getElementById('det_fecha_vence');
 const detEstadoSelect = document.getElementById('det_estado');
 const detCantidadInput = document.getElementById('det_cantidad');
 const detCantidadExistenteInput = document.getElementById('det_cantidad_existente');
 const detCantidadLoteInput = document.getElementById('det_cantidad_lote');
+const fechaCampo = document.getElementById('fechaCampo');
+const sinFecha = document.getElementById('sinFecha');
 
 //////formulario existencias//////////////////
 const formularioExistencia = document.getElementById('formularioExistencia');
@@ -60,7 +75,7 @@ const btnBuscarExistencias = document.getElementById('btnBuscarExistencias');
 const checkboxLoteNo = document.getElementById('tiene_lote_no');
 const checkboxLoteSi = document.getElementById('tiene_lote_si');
 
-// para el modal///////
+///////////// para el modal///////
 const botonVerIngresos = document.getElementById('btnVerIngresos');
 const modalVerExistencias = document.getElementById('verExistencias');
 const botonCerrarModal = document.querySelector('.modal-header .close');
@@ -73,6 +88,7 @@ let almacenes = []; // se define almacenes como un array vacio...
 let dependencias = [];
 // Oculta el elemento div card formulario detalle
 movDetalleDiv.style.display = "none";
+sinFecha.style.display = "none";
 
 btnModificarDetalle.disabled = true
 btnModificarDetalle.parentElement.style.display = 'none'
@@ -92,6 +108,11 @@ const datatable = new Datatable('#tablaExistencias', {
         {
             title: 'NO',
             render: () => contador++
+        },
+        {
+            title: 'Producto',
+            data: 'pro_id'
+
         },
         {
             title: 'Producto',
@@ -119,22 +140,22 @@ const datatable = new Datatable('#tablaExistencias', {
         },
         {
             title: 'Fecha de Vencimiento',
-            data: 'det_fecha_vence'
-        },
-        {
-            title: 'Cantidad Existente',
-            data: 'det_cantidad_existente'
+            data: 'det_fecha_vence',
+            render: function (data) {
+                // Verifica si la fecha es '7/05/1999' y muestra 'Sin fecha de vencimiento'
+                return (data === '1999-05-07') ? 'Sin fecha de vencimiento' : data;
+            }
         },
         {
             title: 'Cantidad Existente Por lote',
             data: 'det_cantidad_lote'
         },
         {
-            title: 'MODIFICAR',
+            title: 'RETIRAR DEL INVENTARIO',
             data: 'det_id',
             searchable: false,
             orderable: false,
-            render: (data, type, row, meta) => `<button class="btn btn-warning" data-id='${row["est_id"]}' data-descripcion='${row["est_descripcion"]}'>Modificar</button>`
+            render: (data, type, row, meta) => `<button class="btn btn-warning"  data-proid='${row["pro_id"]}' data-producto='${row["det_pro_id"]}' data-lote='${row["det_lote"]}' data-estado='${row["det_estado"]}' data-fecha='${row["det_fecha_vence"]}'>Retirar</button>`
         },
         {
             title: 'ELIMINAR',
@@ -146,7 +167,7 @@ const datatable = new Datatable('#tablaExistencias', {
     ],
     columnDefs: [
         {
-            targets: [1, 2],
+            targets: [1, 2, 3, 11],
             visible: false, 
             width: 0,
             searchable: false,
@@ -160,37 +181,68 @@ const datatable = new Datatable('#tablaExistencias', {
 //// PARA TRAER LOS DATOS 
 const traeDatos = (e) => {
     const button = e.target;
-    const id = button.dataset.id;
-    const descripcion = button.dataset.descripcion;
+    //const proid = button.dataset.proid;
+    const producto = button.dataset.producto;
+    const lote = button.dataset.lote;
+    const estado = button.dataset.estado;
+    const fecha = button.dataset.fecha;
 
-
-
-
+    if (fecha === '1999-05-07') {
+        // Si la fecha de vencimiento es '1999-05-7', oculta fechaCampo y muestra sinFecha
+        fechaCampo.style.display = 'none';
+        sinFecha.style.display = 'block';
+    } else {
+        // Si la fecha de vencimiento no es '1999-05-7', muestra fechaCampo y oculta sinFecha
+        fechaCampo.style.display = 'block';
+        sinFecha.style.display = 'none';
+        // Asigna la fecha al campo fechaCampo
+       }
+    
     const dataset = {
-        est_id: id,
-        est_descripcion: descripcion,
+        //pro_id: proid,
+        det_pro_id: producto,
+        det_lote: lote,
+        det_estado: estado,
+        det_fecha_vence: fecha,
+       
 
-    };
-
-    colocarDatos(dataset);
+    };  
+    console.log('Datos en traeDatos:', dataset);
+        colocarDatos(dataset);
+        modalVerExistencias.style.display = 'none';
+        document.body.classList.remove('modal-open');
+        // Mostrar el formulario de detalle
+        movDetalleDiv.style.display = 'block';
+        // Ocultar el formulario de movimiento
+        movMovimientoDiv.style.display = 'none';
+        //buscar por cantidad y lote
+        buscarCantidad();
+        buscarCantidadLote();
+       
 };
 
 const colocarDatos = (dataset) => {
-    formulario.est_descripcion.value = dataset.est_descripcion;
-    formulario.est_id.value = dataset.est_id;
+    console.log('Datos en colocarDatos:', dataset);
+    
 
-    btnGuardar.disabled = true;
-    btnGuardar.parentElement.style.display = 'none';
-    btnBuscar.disabled = true;
-    btnBuscar.parentElement.style.display = 'none';
-    btnModificar.disabled = false;
-    btnModificar.parentElement.style.display = '';
-    btnCancelar.disabled = false;
-    btnCancelar.parentElement.style.display = '';
+    //formularioDetalle.pro_id.value = dataset.pro_id;
+    formularioDetalle.det_pro_id.value = dataset.det_pro_id;
+    formularioDetalle.det_lote.value = dataset.det_lote;
+    formularioDetalle.det_estado.value = dataset.det_estado;
+    formularioDetalle.det_fecha_vence.value = dataset.det_fecha_vence;
+
+    // btnGuardar.disabled = true;
+    // btnGuardar.parentElement.style.display = 'none';
+    // btnBuscar.disabled = true;
+    // btnBuscar.parentElement.style.display = 'none';
+    // btnModificar.disabled = false;
+    // btnModificar.parentElement.style.display = '';
+    // btnCancelar.disabled = false;
+    // btnCancelar.parentElement.style.display = '';
 };
 
 const cancelarAccion = () => {
-    formulario.reset();
+    formularioDetalle.reset();
     btnGuardar.disabled = false;
     btnGuardar.parentElement.style.display = '';
     btnBuscar.disabled = false;
@@ -207,7 +259,7 @@ const cancelarAccion = () => {
 //////////para buscar oficiales y llenar el campo de la persona que entrega////////
 
 const buscarOficiales = async () => {
-    let mov_perso_entrega = formularioMovimiento.mov_perso_entrega.value;
+    let mov_perso_entrega = formulario.mov_perso_entrega.value;
     clearTimeout(typingTimeout); // Limpiar el temporizador anterior (si existe)  
 
     // Función que se ejecutará después del retraso
@@ -253,7 +305,7 @@ const buscarOficiales = async () => {
 //////////para buscar oficiales y llenar el campo de la persona que recibe////////
 
 const buscarOficialesRecibe = async () => {
-    let mov_perso_recibe = formularioMovimiento.mov_perso_recibe.value;
+    let mov_perso_recibe = formulario.mov_perso_recibe.value;
     clearTimeout(typingTimeout); // Limpiar el temporizador anterior (si existe)  
 
     // Función que se ejecutará después del retraso
@@ -299,7 +351,7 @@ const buscarOficialesRecibe = async () => {
 //////////para buscar oficiales y llenar el campo de la persona que entrega////////
 
 const buscarOficialesResponsable = async () => {
-    let mov_perso_respon = formularioMovimiento.mov_perso_respon.value;
+    let mov_perso_respon = formulario.mov_perso_respon.value;
     clearTimeout(typingTimeout); // Limpiar el temporizador anterior (si existe)  
 
     // Función que se ejecutará después del retraso
@@ -383,7 +435,7 @@ const buscarAlmacenes = async () => {
     } catch (error) {
         console.log(error);
     }
-    formulario.reset();
+    //formulario.reset();
 };
 
 
@@ -406,29 +458,27 @@ const buscarDependencia = async () => {
 
         dependencias = data;
         // Limpiar el contenido del select
-        formularioMovimiento.mov_proce_destino.innerHTML = '';
+        formulario.mov_proce_destino.innerHTML = '';
 
          // Agregar opción predeterminada
     const defaultOption = document.createElement('option');
     defaultOption.value = '';
     defaultOption.textContent = 'SELECCIONE...';
-    formularioMovimiento.mov_proce_destino.appendChild(defaultOption);
+    formulario.mov_proce_destino.appendChild(defaultOption);
         // Iterar sobre cada objeto en el arreglo y crear opciones para el select
         data.forEach(dependencias => {
             const option = document.createElement('option');
             option.value = dependencias.dep_llave;
             option.textContent = dependencias.dep_desc_md;
-            formularioMovimiento.mov_proce_destino.appendChild(option);
+            formulario.mov_proce_destino.appendChild(option);
         });
-
-   
 
         //contador = 1;
         //datatable.clear().draw();
     } catch (error) {
         console.log(error);
     }
-    formularioMovimiento.reset();
+    //formularioMovimie.reset();
 };
 
 
@@ -470,66 +520,66 @@ const buscarEstados = async () => {
     } catch (error) {
         console.log(error);
     }
-    formularioDetalle.reset();
+    //formularioDetalle.reset();
 };
 
 ////para buscar almacenes en el formulario existencia/////////////
 
-const buscarAlmacenesEgreso = async () => {
-    // Verificar si los elementos del formulario existen antes de acceder a sus propiedades
-    if (formularioExistencia.alma_nombre && formularioExistencia.alma_id) {
-        let alma_nombre = formularioExistencia.alma_nombre.value;
-        let alma_id = formularioExistencia.alma_id.value;
-    }
-    const url = `/control_inventario/API/movimiento/buscarAlmacenes`;
-    const config = {
-        method: 'GET'
-    };
+// const buscarAlmacenesEgreso = async () => {
+//     // Verificar si los elementos del formulario existen antes de acceder a sus propiedades
+//     if (formularioExistencia.alma_nombre && formularioExistencia.alma_id) {
+//         let alma_nombre = formularioExistencia.alma_nombre.value;
+//         let alma_id = formularioExistencia.alma_id.value;
+//     }
+//     const url = `/control_inventario/API/movimiento/buscarAlmacenes`;
+//     const config = {
+//         method: 'GET'
+//     };
 
-    try {
-        const respuesta = await fetch(url, config);
-        const data = await respuesta.json();
-        console.log('data de almacenes', data); // Imprimir datos en la consola
+//     try {
+//         const respuesta = await fetch(url, config);
+//         const data = await respuesta.json();
+//         console.log('data de almacenes', data); // Imprimir datos en la consola
 
-        almacenes = data;
-        // Limpiar el contenido del select
-        formularioExistencia.mov_alma.innerHTML = '';
+//         almacenes = data;
+//         // Limpiar el contenido del select
+//         formularioExistencia.mov_alma.innerHTML = '';
 
-        // Agregar opción predeterminada
-        const defaultOption = document.createElement('option');
-        defaultOption.value = '';
-        defaultOption.textContent = 'SELECCIONE...';
-        formularioExistencia.mov_alma.appendChild(defaultOption);
-        // Iterar sobre cada objeto en el arreglo y crear opciones para el select
-        data.forEach(almacen => {
-            const option = document.createElement('option');
-            option.value = almacen.alma_id;
-            option.textContent = almacen.alma_nombre;
-            formularioExistencia.mov_alma.appendChild(option);
-        });
+//         // Agregar opción predeterminada
+//         const defaultOption = document.createElement('option');
+//         defaultOption.value = '';
+//         defaultOption.textContent = 'SELECCIONE...';
+//         formularioExistencia.mov_alma.appendChild(defaultOption);
+//         // Iterar sobre cada objeto en el arreglo y crear opciones para el select
+//         data.forEach(almacen => {
+//             const option = document.createElement('option');
+//             option.value = almacen.alma_id;
+//             option.textContent = almacen.alma_nombre;
+//             formularioExistencia.mov_alma.appendChild(option);
+//         });
 
 
 
-        //contador = 1;
-        //datatable.clear().draw();
-    } catch (error) {
-        console.log(error);
-    }
-    formularioExistencia.reset();
-};
+//         //contador = 1;
+//         //datatable.clear().draw();
+//     } catch (error) {
+//         console.log(error);
+//     }
+//     formularioExistencia.reset();
+// };
 
 /////////////////////////////almacenar el id del formulario existencia//////////////////////////////////////
-// Agregar evento al cambio del select para almacenar el ID del almacén
-formularioExistencia.mov_alma.addEventListener('change', function () {
-    // Obtener el ID del almacén seleccionado
-    almaSeleccionadoId = this.value;
+// // Agregar evento al cambio del select para almacenar el ID del almacén
+// formularioExistencia.mov_alma.addEventListener('change', function () {
+//     // Obtener el ID del almacén seleccionado
+//     almaSeleccionadoId = this.value;
 
-    // Imprimir el valor en la consola para verificar
-    console.log('Alma ID seleccionado:', almaSeleccionadoId);
+//     // Imprimir el valor en la consola para verificar
+//     console.log('Alma ID seleccionado:', almaSeleccionadoId);
 
-    // Llamar a buscarProducto pasando el ID del almacén
-    buscarProducto();
-});
+//     // Llamar a buscarProducto pasando el ID del almacén
+//     buscarProducto();
+// });
 
 
 
@@ -545,6 +595,7 @@ formulario.mov_alma_id.addEventListener('change', function () {
 
     // Llamar a buscarProducto pasando el ID del almacén
     buscarProducto();
+    buscarProductoDetalle();
 });
 
 
@@ -571,19 +622,19 @@ const buscarProducto = async () => {
 
         producto = data;
         // Limpiar el contenido del select
-        formularioExistencia.det_pro_id.innerHTML = '';
+        formularioExistencia.det_pro.innerHTML = '';
 
         // Agregar opción predeterminada
         const defaultOption = document.createElement('option');
         defaultOption.value = '';
         defaultOption.textContent = 'SELECCIONE...';
-        formularioExistencia.det_pro_id.appendChild(defaultOption);
+        formularioExistencia.det_pro.appendChild(defaultOption);
         // Iterar sobre cada objeto en el arreglo y crear opciones para el select
         data.forEach(producto => {
             const option = document.createElement('option');
             option.value = producto.pro_id;
             option.textContent = producto.pro_nom_articulo;
-            formularioExistencia.det_pro_id.appendChild(option);
+            formularioExistencia.det_pro.appendChild(option);
         });
 
         //contador = 1;
@@ -591,18 +642,64 @@ const buscarProducto = async () => {
     } catch (error) {
         console.log(error);
     }
-    formularioDetalle.reset();
+    formularioExistencia.reset();
 };
+
+const buscarProductoDetalle = async () => {
+    // Verificar si los elementos del formulario existen antes de acceder a sus propiedades
+    if (formularioDetalle.pro_nom_articulo && formularioDetalle.pro_id) {
+        let pro_nom_articulo = formularioDetalle.pro_nom_articulo.value;
+        let pro_id = formularioDetalle.pro_id.value;
+    }
+
+    const url = `/control_inventario/API/movimiento/buscarProducto?almaSeleccionadoId=${almaSeleccionadoId}`;
+    const config = {
+        method: 'GET'
+    };
+
+    console.log(data)
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+        console.log('data de productos', data); // Imprimir datos en la consola
+
+        producto = data;
+        // Limpiar el contenido del select
+        formularioDetalle.det_pro_id.innerHTML = '';
+
+        // Agregar opción predeterminada
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = 'SELECCIONE...';
+        formularioDetalle.det_pro_id.appendChild(defaultOption);
+        // Iterar sobre cada objeto en el arreglo y crear opciones para el select
+        data.forEach(producto => {
+            const option = document.createElement('option');
+            option.value = producto.pro_id;
+            option.textContent = producto.pro_nom_articulo;
+            formularioDetalle.det_pro_id.appendChild(option);
+        });
+
+        //contador = 1;
+        //datatable.clear().draw();
+    } catch (error) {
+        console.log(error);
+    }
+    //formularioExistenc.reset();
+};
+
+
 
 ////////////// FUNCION PARA BUSCAR LOS ELEMENTOS GUARDADOS
 
 const buscarExistencias = async () => {
     
    
-    let mov_alma = formularioExistencia.mov_alma.value;
-    let det_pro_id = formularioExistencia.det_pro_id.value;
+   
+    let det_pro = formularioExistencia.det_pro.value;
 
-    const url = `/control_inventario/API/movegreso/buscarExistencias?mov_alma=${mov_alma}&det_pro_id=${det_pro_id}`;
+    const url = `/control_inventario/API/movegreso/buscarExistencias?det_pro=${det_pro}`;
     const config = {
         method: 'GET'
     };
@@ -625,7 +722,7 @@ const buscarExistencias = async () => {
     } catch (error) {
         console.log(error);
     }
-    formularioExistencia.reset();
+    //formularioExistencia.reset();
 
     //actualizarDependencia();
 };
@@ -669,9 +766,10 @@ const guardar = async (evento) => {
                 icon = 'success'
                 document.getElementById('det_mov_id').value = movimientoId;
                 // Ocultar el formulario de movimiento
-                movMovimientoDiv.style.display = 'none';
-                // Mostrar el formulario de detalle
-                movDetalleDiv.style.display = 'block';
+                buscarProducto();
+                modalVerExistencias.classList.add('show');
+                modalVerExistencias.style.display = 'block';
+                document.body.classList.add('modal-open');
 
                 //buscar();
                 break;
@@ -709,6 +807,8 @@ const buscarCantidadLote = async () => {
     let det_pro_id = detProIdSelect.value;
     let det_lote = detLoteInput.value;
     let det_estado = detEstadoSelect.value;
+    let det_fecha_vence = detFechaInput.value;
+
 
     //if (det_pro_id && det_lote && det_estado) {
     //     if (det_pro_id && det_estado) {
@@ -717,7 +817,7 @@ const buscarCantidadLote = async () => {
     //             //return;
     //         }
 
-    const url = `/control_inventario/API/movimiento/buscarCantidadLote?det_pro_id=${det_pro_id}&det_lote=${det_lote}&det_estado=${det_estado}`;
+    const url = `/control_inventario/API/movimiento/buscarCantidadLote?det_pro_id=${det_pro_id}&det_lote=${det_lote}&det_estado=${det_estado}&det_fecha_vence=${det_fecha_vence}`;
 
 
     const config = {
@@ -846,9 +946,6 @@ const guardarDetalle = async (evento) => {
             case 1:
                 formularioDetalle.reset();
                 icon = 'success'
-
-
-                //buscar();
                 break;
 
             case 0:
@@ -874,20 +971,68 @@ const guardarDetalle = async (evento) => {
         }
 
         console.log('Respuesta completa:', await error.text());
-
-        //console.log('Respuesta completa:', error.response);
     }
-    //buscar();
-    //buscarProducto();
+  
 };
 
 
 
+const buscarDependenciaInterna = async () => {
+    // Verificar si los elementos del formulario existen antes de acceder a sus propiedades
+    if (formulario.dep_desc_md && formulario.dep_llave) {
+        let dep_desc_md = formulario.dep_desc_md.value;
+        let dep_llave = formulario.dep_llave.value;
+    }
+    const url = `/control_inventario/API/movimiento/buscarDependenciaInterna`;
+    const config = {
+        method: 'GET'
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+        console.log('data de dependencias', data); // Imprimir datos en la consola
+
+        dependencias = data;
+        // Limpiar el contenido del select
+        formularioMovimiento.mov_proce_destino.innerHTML = '';
+
+        // Iterar sobre cada objeto en el arreglo y crear opciones para el select
+        data.forEach(dependencias => {
+            const option = document.createElement('option');
+            option.value = dependencias.dep_llave;
+            option.textContent = dependencias.dep_desc_md;
+            formularioMovimiento.mov_proce_destino.appendChild(option);
+        });
+        //contador = 1;
+        //datatable.clear().draw();
+    } catch (error) {
+        console.log(error);
+    }
+    
+    //formularioMovimiento.reset();
+};
+
+
+function mostrarDependencia() {
+    if (select.value === "I") {
+      
+        buscarDependenciaInterna();
+    } else if (select.value === "E") {
+    
+        buscarDependencia();
+    } else {
+       
+    }
+}
+
+
 buscarAlmacenes();
-buscarAlmacenesEgreso();
-buscarDependencia();
+//buscarDependencia();
 buscarEstados();
-//buscarAlmacenesEgreso();
+establecerFechaActual();
+
+
 
 ////////eventos/////////////////////////////////////
 mov_perso_entrega.addEventListener('input', buscarOficiales);
@@ -896,6 +1041,8 @@ mov_perso_respon.addEventListener('input', buscarOficialesResponsable);
 btnBuscarExistencias.addEventListener('click', buscarExistencias);
 formulario.addEventListener('submit', guardar);
 formularioDetalle.addEventListener('submit', guardarDetalle);
+///evento para detectar el cambio del select 
+select.addEventListener('change', mostrarDependencia);
 
   
     btnSiguiente.addEventListener('click', function(event) {
@@ -931,9 +1078,9 @@ detProIdSelect.addEventListener('input', buscarCantidad);
 detProIdSelect.addEventListener('input', buscarCantidadLote);
 detLoteInput.addEventListener('input', buscarCantidadLote);
 detEstadoSelect.addEventListener('input', buscarCantidadLote);
+datatable.on('click', '.btn-warning', traeDatos );
 
-//buscarProducto();
-
+//////para realizar la resta en los campos det_cantidad.///////////////
 
 // Almacenar los valores originales cuando la página se carga
 let valorInicialCantidadExistente = parseFloat(detCantidadExistenteInput.value) || 0;
@@ -944,16 +1091,19 @@ const actualizarSumatoria = () => {
     // Obtener el valor actual del campo det_cantidad
     const cantidad = parseFloat(detCantidadInput.value) || 0;
 
-    // Verificar si el campo det_lote está vacío
-    // if (detLoteInput.value.trim() === '') {
-    //     // Si está vacío, solo hacer la suma en det_cantidad_existente
-    //     const nuevaCantidadExistente = cantidad + valorInicialCantidadExistente;
-    //     detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
-
-    //     // Restablecer el valor de det_cantidad_lote a su valor inicial
-    //     detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
-    // } else {
-        // Si no está vacío, hacer la suma en ambos campos
+    // Validar que la cantidad ingresada no sea mayor que la cantidad existente y la cantidad por lote
+if (cantidad > valorInicialCantidadExistente || cantidad > valorInicialCantidadLote) {
+    
+    Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'La cantidad ingresada no puede ser mayor que la cantidad existente o la cantidad por lote.'
+       
+    });
+      // se coloca el campo detcantidad igual a vacio
+      detCantidadInput.value = '';
+   
+    } else{
       
         const nuevaCantidadLote = valorInicialCantidadLote - cantidad;
         const nuevaCantidadExistente = valorInicialCantidadExistente - cantidad;
@@ -962,23 +1112,21 @@ const actualizarSumatoria = () => {
         detCantidadLoteInput.value = nuevaCantidadLote.toFixed(2);
         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
     };
-//};
+ }
 
-// Escuchador de eventos 'input' al campo det_cantidad
-detCantidadInput.addEventListener('input', actualizarSumatoria);
+// eventos 'input' al campo det_cantidad
+detCantidadInput.addEventListener('change', actualizarSumatoria);
 
-// Escuchador de eventos 'change' al campo det_cantidad
+// eventos 'change' al campo det_cantidad
 detCantidadInput.addEventListener('change', () => {
-    // Obtener el valor actual del campo det_cantidad
+    // se obtiene el valor actual del campo det_cantidad
     const cantidad = parseFloat(detCantidadInput.value) || 0;
 
-    // Verificar si el campo det_lote está vacío
-    //if (detLoteInput.value.trim() === '') {
-        // Si está vacío, restablecer los valores a sus estados iniciales
-        //detCantidadExistenteInput.value = valorInicialCantidadExistente.toFixed(2);
-        //detCantidadLoteInput.value = valorInicialCantidadLote.toFixed(2);
-    //}
 });
+
+// Se llama a la funci[on] para configurar correctamente el estado inicial
+actualizarSumatoria();
+
 
 checkboxLoteNo.addEventListener('change', function() {
     if (this.checked) {
@@ -997,10 +1145,6 @@ checkboxLoteSi.addEventListener('change', function() {
     }
 });
 
-
-
-// Llamamos a la función inicial para configurar correctamente el estado inicial
-actualizarSumatoria();
 
 // Agrega un evento de clic al botón
 botonVerIngresos.addEventListener('click', () => {
@@ -1022,8 +1166,8 @@ botonCerrarModal.addEventListener('click', function () {
 
 ////cerrar el modal cuando se hace clic fuera del modal...
 modalVerExistencias.addEventListener('click', function (event) {
-    if (event.target === asignarOficialModal) {
-        asignarOficialModal.style.display = 'none';
+    if (event.target === modalVerExistencias) {
+        modalVerExistencias.style.display = 'none';
         document.body.classList.remove('modal-open');
         //buscarDependencia();
     }

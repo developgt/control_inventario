@@ -12,17 +12,58 @@ use Model\Mdep;
 use MVC\Router;
 use Model\Guarda;
 use Model\Medida;
+use Model\Usuario;
 use Model\Movimiento;
 use Model\Producto;
 
 class MovimientoController
 {
 
-    public static function index(Router $router)
-    {
+    // public static function index(Router $router)
+    // {
 
 
-        $router->render('movimiento/index', []);
+    //     $router->render('movimiento/index', []);
+    // }
+
+
+    public static function index(Router $router){
+        isAuth();
+        try {
+            $usuario = Usuario::fetchFirst("
+            
+            SELECT
+            per_catalogo,
+            TRIM(per_nom1) || ' ' || TRIM(per_nom2) || ' ' || TRIM(per_ape1) || ' ' || TRIM(per_ape2) as nombre,
+            per_desc_empleo as empleo,
+            dep_desc_lg as dependencia,
+            gra_desc_md as grado
+        FROM
+            mper
+        INNER JOIN
+            morg ON per_plaza = org_plaza
+        INNER JOIN
+            mdep ON org_dependencia = dep_llave
+        INNER JOIN
+            grados ON per_grado = gra_codigo
+        WHERE
+            per_catalogo = user;
+
+            ");
+            
+        } catch (Exception $e) {
+            getHeadersApi();
+            echo json_encode([
+                "detalle" => $e->getMessage(),       
+                "mensaje" => "Error de conexión bd",
+        
+                "codigo" => 5,
+            ]);
+            exit;
+        }
+        $router->render('movimiento/index', [
+            'usuario' => $usuario,
+        ]);
     }
 
 
@@ -44,10 +85,29 @@ class MovimientoController
         }
     }
 
+    public static function buscarDependenciaInternaAPI()
+
+    {
+        $sql = "SELECT dep_llave, dep_desc_md FROM mper, morg, mdep where per_plaza = org_plaza and org_dependencia= dep_llave and per_catalogo = user";
+        try {
+            $dependencias = Mdep::fetchArray($sql);
+
+            // Establece el tipo de contenido de la respuesta a JSON
+            header('Content-Type: application/json');
+
+            // Convierte el array a JSON y envíalo como respuesta
+            echo json_encode($dependencias);
+        } catch (Exception $e) {
+            // En caso de error, envía una respuesta vacía
+            echo json_encode([]);
+        }
+    }
+
+
 
     public static function buscarAlmacenesAPI()
     {
-        $sql = "select alma_nombre, alma_id from inv_almacenes, mper, morg, mdep where per_plaza = org_plaza and org_dependencia= dep_llave and alma_unidad = dep_llave and per_catalogo = 665133
+        $sql = "select alma_nombre, alma_id from inv_almacenes, mper, morg, mdep where per_plaza = org_plaza and org_dependencia= dep_llave and alma_unidad = dep_llave and per_catalogo = user
         and alma_situacion = 1";
         try {
             $almacen = Almacen::fetchArray($sql);
@@ -203,6 +263,36 @@ class MovimientoController
         }
     }
 
+    public static function buscarProductoModalAPI()
+    {
+
+        $almaSeleccionadoId = $_GET['almaSeleccionId'];
+
+
+
+        $sql = "SELECT pro_id, pro_nom_articulo, inv_uni_med.uni_nombre AS pro_medida, 
+                inv_almacenes.alma_nombre AS pro_almacen_id
+                FROM inv_producto
+                JOIN inv_uni_med ON inv_producto.pro_medida = inv_uni_med.uni_id
+                JOIN inv_almacenes ON inv_producto.pro_almacen_id = inv_almacenes.alma_id
+                WHERE inv_almacenes.alma_id = $almaSeleccionadoId AND inv_producto.pro_situacion = 1";
+
+        try {
+
+            $producto = Producto::fetchArray($sql);
+
+            header('Content-Type: application/json');
+
+            echo json_encode($producto);
+        } catch (Exception $e) {
+            echo json_encode([
+                'detalle' => $e->getMessage(),
+                'mensaje' => 'Ocurrió un error',
+                'codigo' => 0
+            ]);
+        }
+    }
+
 
     public static function guardarAPI()
     {
@@ -262,10 +352,12 @@ class MovimientoController
         $det_pro_id = $_GET['det_pro_id'] ?? '';
         $det_lote = $_GET['det_lote'] ?? '';
         $det_estado = $_GET['det_estado'] ?? '';
+        $det_fecha_vence = $_GET['det_fecha_vence'] ?? '';
 
 
-        $sql = "SELECT det_cantidad_lote from inv_deta_movimientos where det_pro_id = $det_pro_id and det_situacion = 1 and det_lote = '$det_lote' and det_estado = $det_estado
-        and det_id = (select max(det_id) from  inv_deta_movimientos where det_pro_id = $det_pro_id and det_situacion = 1 and det_lote = '$det_lote' and det_estado = $det_estado)
+
+        $sql = "SELECT det_cantidad_lote from inv_deta_movimientos where det_pro_id = $det_pro_id and det_situacion = 1 and det_lote = '$det_lote' and det_estado = $det_estado and det_fecha_vence = '$det_fecha_vence'
+        and det_id = (select max(det_id) from  inv_deta_movimientos where det_pro_id = $det_pro_id and det_situacion = 1 and det_lote = '$det_lote' and det_estado = $det_estado and det_fecha_vence = '$det_fecha_vence' )
         group by det_cantidad_lote";
 
 
@@ -288,9 +380,17 @@ class MovimientoController
     {
         try {
 
-            $movimiento = new Detalle($_POST);
-            $resultado = $movimiento->crear();
+            
+        $datosDetalle = $_POST;
 
+       
+        if (empty($datosDetalle['det_fecha_vence'])) {
+            $datosDetalle['det_fecha_vence'] = '1999/05/07';
+        }
+
+     
+        $movimiento = new Detalle($datosDetalle);
+        $resultado = $movimiento->crear();
 
             if ($resultado['resultado'] == 1) {
                 header('Content-Type: application/json');
@@ -311,6 +411,53 @@ class MovimientoController
         } catch (Exception $e) {
             header('Content-Type: application/json');
 
+            echo json_encode([
+                'detalle' => $e->getMessage(),
+                'mensaje' => 'Ocurrió un error',
+                'codigo' => 0
+            ]);
+        }
+    }
+
+
+    public static function buscarExistenciasAPI()
+    {
+
+        $producto = $_GET['det_pro'] ?? '';
+
+
+        $sql = "
+        SELECT
+        d.det_id,
+        d.det_pro_id,
+        d.det_mov_id,
+        p.pro_id,
+        d.det_lote,
+        d.det_estado,
+        m.mov_tipo_trans,
+        d.det_fecha_vence,
+        e.est_descripcion,
+        d.det_cantidad_existente,
+        d.det_cantidad_lote,
+        p.pro_nom_articulo,
+        u.uni_nombre AS pro_medida_nombre,
+        m.mov_tipo_mov
+    FROM inv_deta_movimientos d
+    INNER JOIN inv_producto p ON d.det_pro_id = p.pro_id
+    LEFT JOIN inv_uni_med u ON p.pro_medida = u.uni_id
+    INNER JOIN inv_movimientos m ON d.det_mov_id = m.mov_id
+    INNER JOIN inv_estado e ON d.det_estado = e.est_id
+    WHERE d.det_pro_id = $producto AND det_situacion = 1 AND mov_tipo_mov = 'I'
+    ORDER BY d.det_id ASC
+    ";
+      
+
+        try {
+
+            $estado = Detalle::fetchArray($sql);
+
+            echo json_encode($estado);
+        } catch (Exception $e) {
             echo json_encode([
                 'detalle' => $e->getMessage(),
                 'mensaje' => 'Ocurrió un error',

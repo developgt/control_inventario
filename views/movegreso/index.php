@@ -1,4 +1,4 @@
-<div class="container bg-light border rounded mx-auto mt-2" id="mov_movimiento">
+<!-- <div class="container bg-light border rounded mx-auto mt-2" id="mov_movimiento">
     <div class="row">
         <div class="col-lg-4 mb-4">
             <div class="card mt-3 mb-3" id="verExistenciasBody">
@@ -50,7 +50,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 <div class="container bg-light border rounded mx-auto mt-2" id="mov_movimiento">
     <div class="row justify-content-center">
         <div class="col-lg-8 mb-4">
@@ -65,7 +65,7 @@
                             <div class="col">
                                 <div class="form-group">
                                     <label for="mov_tipo_trans"><i class="bi bi-shield-check me-2""></i>Seleccione el tipo de transacción</label>
-                                    <div class="d-flex align-items-center">
+                                    <div class=" d-flex align-items-center">
                                             <span class="input-group-text"><i class="bi bi-arrow-right-circle"></i></span>
                                             <select name="mov_tipo_trans" id="mov_tipo_trans" class="form-select" required>
                                                 <option value="">SELECCIONE...</option>
@@ -188,6 +188,9 @@
                     <div class="col">
                         <button type="button" id="btnCancelar" class="btn btn-danger w-100">Cancelar</button>
                     </div>
+                    <div class="col">
+                        <button type="button" id="btnVerIngresos" class="btn btn-success w-100">VER INGRESOS</button>
+                    </div>
                 </div>
                 </form>
             </div>
@@ -195,6 +198,76 @@
     </div>
 </div>
 </div>
+<!-- <-- modal para mostrar la vista de existencias -->
+<div class="modal fade" id="verExistencias" name="verExistencias" tabindex="-1" role="dialog" aria-labelledby="verExistenciasLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="verExistenciasLabel">Ver existencias</h5>
+                <button type="button" class="close btn btn-danger" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Salir de esta ventana</span>
+                </button>
+            </div>
+            <div class="modal-body" id="verExistenciasBody">
+                <div class="container bg-light border rounded mx-auto mt-2">
+                    <div class="row">
+                        <div class="col-lg-4 mb-4">
+                            <div class="card mt-3 mb-3" id="verExistenciasBody">
+                                <h3 class="text-center mt-4 mb-4 bg-primary text-white p-3 border rounded">Realizar Egresos</h3>
+                                <div class="row justify-content-center mb-5">
+                                    <form class="col-lg-11 border rounded bg-light p-3" id="formularioExistencia">
+                                        <!-- <div class="row mb-3">
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <label class="sm-4" for="mov_alma">Seleccione el almacén del que realizara el egreso</label>
+                                                    <div class="d-flex align-items-center">
+                                                        <span class="input-group-text"><i class="bi bi-arrow-right-circle"></i></span>
+                                                        <select name="mov_alma" id="mov_alma" class="form-select" required>
+                                                            <option value="">SELECCIONE...</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div> -->
+                                        <div class="row mb-3">
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <label class="sm-4" for="det_pro">Seleccione el producto</label>
+                                                    <div class="d-flex align-items-center">
+                                                        <span class="input-group-text"><i class="bi bi-box"></i></span>
+                                                        <select name="det_pro" id="det_pro" class="form-select" required>
+                                                            <option value="">SELECCIONE...</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col">
+                                                <button type="button" id="btnBuscarExistencias" class="btn btn-info w-100">Buscar</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-8 mb-3">
+                            <div class="card mt-2 mb-2" id="verExistenciasBody">
+                                <h3 class="text-center mt-4 mb-4 bg-primary text-white p-3 border rounded">Existencias de Productos de acuerdo al almacén seleccionado</h3>
+                                <div class="col table-responsive">
+                                    <table id="tablaExistencias" class="table table-striped table-bordered table-hover table-light">
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="container bg-light border rounded mx-auto mt-2" id="mov_detalle">
     <div class="row justify-content-center"> <!-- aqui empieza la siguiente div para el formulario de detalle -->
         <div class="col-lg-9">
@@ -244,11 +317,18 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col md-4">
+                                <div class="col md-4" id="fechaCampo">
                                     <label for="det_fecha_vence">Seleccione la fecha de vencimiento</label>
                                     <div class="input-group">
                                         <span class="input-group-text"><i class="bi bi-box"></i></span>
                                         <input type="date" name="det_fecha_vence" id="det_fecha_vence" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="col md-4" id="sinFecha">
+                                    <label for="det_fecha_vence">Sin fecha</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-box"></i></span>
+                                        <input type="text"  class="form-control" placeholder="SIN FECHA" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -295,9 +375,9 @@
                                     <div class="col">
                                         <button type="button" id="btnAnterior" class="btn btn-warning w-100">Anterior</button>
                                     </div>
-                                    <div class="col">
+                                    <!-- <div class="col">
                                         <button type="button" id="btnVerIngresos" class="btn btn-success w-100">VER INGRESOS</button>
-                                    </div>
+                                    </div> -->
                                     <div class="col">
                                         <button type="button" id="btnBuscarDetalle" class="btn btn-info w-100">Buscar</button>
                                     </div>

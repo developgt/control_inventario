@@ -102,7 +102,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col">
+                    <div class="col" id="dep_externa">
                         <div class="form-group">
                             <label for="mov_proce_destino">Seleccione la procedencia</label>
                             <div class="d-flex align-items-center">
@@ -141,6 +141,17 @@
             </div>
         </div>
     </div>
+    <!-- <div class="col-lg-4">
+        <!-- <div class="card" style="background-color: rgba(0, 0, 255, 0.2);">
+            <div class="card-body">
+                <h5 class="card-title">Detalle de Ingresos</h5>
+                <p class="card-text">Haz clic en el botón para ver el detalle de ingresos.</p>
+                <button type="button" id="btnVerIngresos" class="btn btn-success w-100">VER INGRESOS</button>
+            </div>
+        </div> -->
+
+
+    <!-- </div> -->
 </div>
 </div>
 <div class="container bg-light border rounded mx-auto mt-2" id="mov_detalle">
@@ -153,7 +164,7 @@
                         <input type="hidden" name="det_id" id="det_id">
                         <input type="text" name="det_mov_id" id="det_mov_id">
                         <div class="row mb-3">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <label for="det_pro_id">Seleccione el producto</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-box"></i></span>
@@ -162,7 +173,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <label for="tiene_lote" class="form-label">¿El INSUMO tiene No. de lote o Serie?</label>
                                 <div class="d-flex">
                                     <div class="form-check me-3">
@@ -175,84 +186,95 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row mb-3">
-                                <div class="col md-4">
-                                    <label for="det_lote">Ingrese el lote</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="bi bi-box"></i></span>
-                                        <input type="text" name="det_lote" id="det_lote" class="form-control" placeholder="Lote">
+                            <div class="col md-4" id="campoLote">
+                                <label for="det_lote">Ingrese el lote</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-box"></i></span>
+                                    <input type="text" name="det_lote" id="det_lote" class="form-control" placeholder="Lote">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for="det_estado">Seleccione el estado</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-box"></i></span>
+                                    <select name="det_estado" id="det_estado" class="form-select" required>
+                                        <option value="">SELECCIONE...</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="tiene_fecja" class="form-label">¿El Insumo tiene Fecha de vencimiento?</label>
+                                <div class="d-flex">
+                                    <div class="form-check me-3">
+                                        <input class="form-check-input" type="checkbox" id="tiene_fecha_si" value="si">
+                                        <label class="form-check-label" for="tiene_fecha_si">Sí</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="tiene_fecha_no" value="no">
+                                        <label class="form-check-label" for="tiene_fecha_no">No</label>
                                     </div>
                                 </div>
-                                <div class="col md-4">
-                                    <label for="det_estado">Seleccione el estado</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="bi bi-box"></i></span>
-                                        <select name="det_estado" id="det_estado" class="form-select" required>
-                                            <option value="">SELECCIONE...</option>
-                                        </select>
-                                    </div>
+                            </div>
+                            <div class="col md-4" id="fechaCampo">
+                                <label for="det_fecha_vence">Seleccione la fecha de vencimiento</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-box"></i></span>
+                                    <input type="date" name="det_fecha_vence" id="det_fecha_vence" class="form-control">
                                 </div>
-                                <div class="col md-4">
-                                    <label for="det_fecha_vence">Seleccione la fecha de vencimiento</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="bi bi-box"></i></span>
-                                        <input type="date" name="det_fecha_vence" id="det_fecha_vence" class="form-control" required>
-                                    </div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label for="det_cantidad_existente">Ingrese la Cantidad</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-card-text"></i></span>
+                                    <input type="number" name="det_cantidad" id="det_cantidad" class="form-control" placeholder="Cantidad" required>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <label for="det_cantidad_existente">Cantidad Existente</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-card-text"></i></span>
+                                    <input type="number" name="det_cantidad_existente" id="det_cantidad_existente" class="form-control" placeholder="Cantidad" readonly>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <label for="det_cantidad">Cantidad Lote</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-card-text"></i></span>
+                                    <input type="number" name="det_cantidad_lote" id="det_cantidad_lote" class="form-control" placeholder="Cantidad" readonly>
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col">
-                                    <label for="det_cantidad_existente">Ingrese la Cantidad</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="bi bi-card-text"></i></span>
-                                        <input type="number" name="det_cantidad" id="det_cantidad" class="form-control" placeholder="Cantidad" required>
-                                    </div>
+                                    <label for="det_observaciones">Escriba observaciones</label>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-file-earmark-text"></i></span>
+                                    <input type="text" name="det_observaciones" id="det_observaciones" class="form-control" placeholder="Observaciones" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <button type="submit" form="formularioDetalle" id="btnGuardarDetalle" class="btn btn-primary w-100">Guardar</button>
                                 </div>
                                 <div class="col">
-                                    <label for="det_cantidad_existente">Cantidad Existente</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="bi bi-card-text"></i></span>
-                                        <input type="number" name="det_cantidad_existente" id="det_cantidad_existente" class="form-control" placeholder="Cantidad" readonly>
-                                    </div>
+                                    <button type="button" id="btnModificarDetalle" class="btn btn-warning w-100">Modificar</button>
                                 </div>
                                 <div class="col">
-                                    <label for="det_cantidad">Cantidad Lote</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="bi bi-card-text"></i></span>
-                                        <input type="number" name="det_cantidad_lote" id="det_cantidad_lote" class="form-control" placeholder="Cantidad" readonly>
-                                    </div>
+                                    <button type="button" id="btnAnterior" class="btn btn-warning w-100">Anterior</button>
                                 </div>
-                                <div class="row mb-3">
-                                    <div class="col">
-                                        <label for="det_observaciones">Escriba observaciones</label>
-                                    </div>
+                                <div class="col">
+                                    <button type="button" id="btnVerIngresos" class="btn btn-success w-100">VER INGRESOS</button>
                                 </div>
-                                <div class="mb-3">
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="bi bi-file-earmark-text"></i></span>
-                                        <input type="text" name="det_observaciones" id="det_observaciones" class="form-control" placeholder="Observaciones" required>
-                                    </div>
+                                <div class="col">
+                                    <button type="button" id="btnCancelarDetalle" class="btn btn-danger w-100">Cancelar</button>
                                 </div>
-                                <div class="row">
-                                    <div class="col">
-                                        <button type="submit" form="formularioDetalle" id="btnGuardarDetalle" class="btn btn-primary w-100">Guardar</button>
-                                    </div>
-                                    <div class="col">
-                                        <button type="button" id="btnModificarDetalle" class="btn btn-warning w-100">Modificar</button>
-                                    </div>
-                                    <div class="col">
-                                        <button type="button" id="btnAnterior" class="btn btn-warning w-100">Anterior</button>
-                                    </div>
-                                    <div class="col">
-                                        <button type="button" id="btnVerIngresos" class="btn btn-success w-100">VER INGRESOS</button>
-                                    </div>
-                                    <div class="col">
-                                        <button type="button" id="btnBuscarDetalle" class="btn btn-info w-100">Buscar</button>
-                                    </div>
-                                    <div class="col">
-                                        <button type="button" id="btnCancelarDetalle" class="btn btn-danger w-100">Cancelar</button>
-                                    </div>
-                                </div>
+                            </div>
                     </form>
                 </div>
             </div>
@@ -277,7 +299,7 @@
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="verExistenciasLabel">Asignar Oficial</h5>
+                <h5 class="modal-title" id="verExistenciasLabel">Ver Ingresos</h5>
                 <button type="button" class="close btn btn-danger" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                     <span class="sr-only">Salir de esta ventana</span>
@@ -302,7 +324,20 @@
                         </div>
                         <div class="row mb-3">
                             <div class="col">
-                                <button type="button" id="btnBuscarAsignar" class="btn btn-info w-100">Buscar</button>
+                                <div class="form-group">
+                                    <label class="sm-4" for="det_pro">Seleccione el producto</label>
+                                    <div class="d-flex align-items-center">
+                                        <span class="input-group-text"><i class="bi bi-box"></i></span>
+                                        <select name="det_pro" id="det_pro" class="form-select" required>
+                                            <option value="">SELECCIONE...</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <button type="button" id="btnBuscarExistencias" class="btn btn-info w-100">Buscar</button>
                             </div>
                         </div>
                     </form>
@@ -312,7 +347,7 @@
                     <h3 class="text-center mt-4 mb-4 bg-light p-3 border rounded">Ingresos Realizados</h3>
                     <div class="row justify-content-center">
                         <div class="table-responsive">
-                            <table id="tablaGuarda" class="table table-striped table-bordered table-hover table-light w-auto">
+                            <table id="tablaExistencias" class="table table-striped table-bordered table-hover table-light w-auto">
                             </table>
                         </div>
                     </div>

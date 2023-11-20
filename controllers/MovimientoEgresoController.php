@@ -13,15 +13,57 @@ use MVC\Router;
 use Model\Guarda;
 use Model\Medida;
 use Model\Producto;
+use Model\Usuario;
 
 class MovimientoEgresoController
 {
 
-    public static function index(Router $router)
-    {
+    // public static function index(Router $router)
+    // {
 
 
-        $router->render('movegreso/index', []);
+    //     $router->render('movegreso/index', []);
+    // }
+
+
+    
+    public static function index(Router $router){
+        isAuth();
+        try {
+            $usuario = Usuario::fetchFirst("
+            
+            SELECT
+            per_catalogo,
+            TRIM(per_nom1) || ' ' || TRIM(per_nom2) || ' ' || TRIM(per_ape1) || ' ' || TRIM(per_ape2) as nombre,
+            per_desc_empleo as empleo,
+            dep_desc_lg as dependencia,
+            gra_desc_md as grado
+        FROM
+            mper
+        INNER JOIN
+            morg ON per_plaza = org_plaza
+        INNER JOIN
+            mdep ON org_dependencia = dep_llave
+        INNER JOIN
+            grados ON per_grado = gra_codigo
+        WHERE
+            per_catalogo = user;
+
+            ");
+            
+        } catch (Exception $e) {
+            getHeadersApi();
+            echo json_encode([
+                "detalle" => $e->getMessage(),       
+                "mensaje" => "Error de conexión bd",
+        
+                "codigo" => 5,
+            ]);
+            exit;
+        }
+        $router->render('movegreso/index', [
+            'usuario' => $usuario,
+        ]);
     }
 
 
@@ -46,7 +88,7 @@ class MovimientoEgresoController
 
     public static function buscarAlmacenesAPI()
     {
-        $sql = "select alma_nombre, alma_id from inv_almacenes, mper, morg, mdep where per_plaza = org_plaza and org_dependencia= dep_llave and alma_unidad = dep_llave and per_catalogo = 665133
+        $sql = "select alma_nombre, alma_id from inv_almacenes, mper, morg, mdep where per_plaza = org_plaza and org_dependencia= dep_llave and alma_unidad = dep_llave and per_catalogo = user
         and alma_situacion = 1";
         try {
             $almacen = Almacen::fetchArray($sql);
@@ -149,43 +191,26 @@ class MovimientoEgresoController
     public static function buscarExistenciasAPI()
     {
 
-
-        $almacen = $_GET['mov_alma'] ?? '';
-        $producto = $_GET['det_pro_id'] ?? '';
+        $producto = $_GET['det_pro'] ?? '';
 
 
-
-
-        $sql = "SELECT
-        det_pro_id,
-        det_lote,
-        det_estado,
-        det_fecha_vence,
-        est_descripcion,
-        det_cantidad_existente,
-        det_cantidad_lote,
-        pro_nom_articulo,
-        pro_medida_nombre
-    FROM (
-        SELECT
-            d.det_pro_id,
-            d.det_lote,
-            d.det_estado,
-            d.det_fecha_vence,
-            e.est_descripcion,
-            d.det_cantidad_existente,
-            d.det_cantidad_lote,
-            p.pro_nom_articulo,
-            u.uni_nombre AS pro_medida_nombre,
-            ROW_NUMBER() OVER (PARTITION BY d.det_lote, d.det_estado ORDER BY d.det_cantidad_lote DESC) AS NumeroFila
+        $sql = "
+        SELECT d.*,
+               p.pro_id,
+               e.est_descripcion,
+               p.pro_nom_articulo,
+               u.uni_nombre AS pro_medida_nombre
         FROM inv_deta_movimientos d
-        INNER JOIN inv_producto p ON d.det_pro_id = p.pro_id
+        INNER JOIN (
+            SELECT MAX(DET_ID) AS max_det_id
+            FROM inv_deta_movimientos
+            WHERE det_pro_id = $producto AND det_situacion = 1
+            GROUP BY det_pro_id, det_lote, det_estado, det_fecha_vence
+        ) max_det ON d.DET_ID = max_det.max_det_id
+        LEFT JOIN inv_producto p ON d.det_pro_id = p.pro_id
         LEFT JOIN inv_uni_med u ON p.pro_medida = u.uni_id
-        INNER JOIN inv_movimientos m ON d.det_mov_id = m.mov_id
-        INNER JOIN inv_estado e ON d.det_estado = e.est_id
-        WHERE m.mov_alma_id = $almacen AND d.det_pro_id = $producto
-    ) AS DetallesNumerados
-    WHERE NumeroFila = 1;";
+        LEFT JOIN inv_estado e ON d.det_estado = e.est_id
+        ORDER BY d.det_id ASC";
 
       
 
