@@ -12,6 +12,8 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.0/dist/sweetalert2.all.min.js"></script>
 </head>
 <style>
+  
+body {zoom: 90%;}
 
 .all {
   display: flex;
@@ -50,7 +52,6 @@
   will-change: transform;
   color: black; 
   text-shadow: 0 0 5px rgba(100, 100, 255, .6);
-  font-size: 18px; 
   text-align: center; 
 }
 

@@ -207,8 +207,18 @@ class AlmacenController
 
 
 
-        $sql = "select alma_nombre, alma_unidad, alma_descripcion, alma_id from inv_almacenes, mper, morg, mdep where per_plaza = org_plaza and org_dependencia= dep_llave and alma_unidad = dep_llave and per_catalogo = user
-        and alma_situacion = 1";
+        $sql = " SELECT DISTINCT
+        alm.alma_nombre AS alma_nombre,
+        alm.alma_descripcion AS alma_descripcion,
+        alm.alma_id AS alma_id,
+        alm.alma_clase AS alma_clase
+      FROM 
+        inv_guarda_almacen ga
+        JOIN inv_almacenes alm ON ga.guarda_almacen = alm.alma_id
+      WHERE 
+        ga.guarda_catalogo = user
+        AND ga.guarda_situacion = 1
+        AND alm.alma_situacion = 1";
 
         if ($alma_nombre != '') {
             $alma_nombre = strtolower($alma_nombre);
@@ -248,6 +258,7 @@ class AlmacenController
             });
             $alma_id = $_POST['alma_id'];
             $alma_nombre = $_POST['alma_nombre'];
+            $alma_clase = $_POST['alma_clase'];
             $alma_unidad = $_POST['alma_unidad'];
             $alma_descripcion = $_POST['alma_descripcion'];
 
@@ -257,6 +268,7 @@ class AlmacenController
             $almacen = new Almacen([
                 'alma_id' => $alma_id,
                 'alma_nombre' => $alma_nombre,
+                'alma_clase' => $alma_clase,
                 'alma_descripcion' => $alma_descripcion,
                 'alma_unidad' => $alma_unidad,
             ]);

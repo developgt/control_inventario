@@ -173,6 +173,12 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="col">
+                                <label for="det_uni_med" class="form-label">Seleccione la unidad de medida</label>
+                                <select name="det_uni_med" id="det_uni_med" class="form-select">
+                                    <option value="">SELECCIONE...</option>
+                                </select>
+                            </div>
                             <div class="col-md-4">
                                 <label for="tiene_lote" class="form-label">¿El INSUMO tiene No. de lote o Serie?</label>
                                 <div class="d-flex">

@@ -7,6 +7,7 @@ import { data } from "jquery";
 
 //const para la vista 
 const formulario = document.getElementById('formularioAlmacen');
+const alma_clase = document.getElementById('alma_clase')
 const btnGuardar = document.getElementById('btnGuardar');
 const btnBuscar = document.getElementById('btnBuscar');
 const btnModificar = document.getElementById('btnModificar');
@@ -70,12 +71,13 @@ const datatable = new Datatable('#tablaAlmacen', {
             title: 'DESCRIPCION',
             data: 'alma_descripcion'
         },
+
         {
             title: 'MODIFICAR',
             data: 'alma_id',
             searchable: false,
             orderable: false,
-            render: (data, type, row, meta) => `<button class="btn btn-warning" data-id='${row["alma_id"]}' data-nombre='${row["alma_nombre"]}' data-descripcion='${row["alma_descripcion"]}'>Modificar</button>`
+            render: (data, type, row, meta) => `<button class="btn btn-warning" data-id='${row["alma_id"]}' data-nombre='${row["alma_nombre"]}' data-clase='${row["alma_clase"]}' data-descripcion='${row["alma_descripcion"]}'>Modificar</button>`
         },
         {
             title: 'ELIMINAR',
@@ -83,6 +85,10 @@ const datatable = new Datatable('#tablaAlmacen', {
             searchable: false,
             orderable: false,
             render: (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Eliminar</button>`
+        },
+        {
+            title: 'NOMBRE',
+            data: 'alma_clase'
         },
 
     ],
@@ -92,6 +98,13 @@ const datatable = new Datatable('#tablaAlmacen', {
         className: 'col-1'
         //width: "400%"
       },
+      {  
+        targets: [5], 
+        visible: false,
+        searchable: false,
+        //width: "400%"
+      },
+
 
     ],
 });
@@ -101,13 +114,15 @@ const datatable = new Datatable('#tablaAlmacen', {
 const traeDatos = (e) => {
     const button = e.target;
     const alma_id = button.dataset.id;
+    const alma_clase = button.dataset.clase;
     const alma_nombre = button.dataset.nombre;
     const alma_descripcion = button.dataset.descripcion;
 
     const dataset = {
         alma_id: alma_id,
         alma_nombre: alma_nombre,
-        alma_descripcion: alma_descripcion
+        alma_descripcion: alma_descripcion,
+        alma_clase: alma_clase
     };
     modalVerRegistros.style.display = 'none';
     document.body.classList.remove('modal-open');
@@ -119,6 +134,7 @@ const colocarDatos = (dataset) => {
     formulario.alma_nombre.value = dataset.alma_nombre;
     formulario.alma_descripcion.value = dataset.alma_descripcion;
     formulario.alma_id.value = dataset.alma_id;
+    formulario.alma_clase.value = dataset.alma_clase;
 
     btnGuardar.disabled = true;
     btnGuardar.parentElement.style.display = 'none';
@@ -141,6 +157,8 @@ const cancelarAccion = () => {
     btnCancelar.disabled = true;
     btnCancelar.parentElement.style.display = 'none';
     actualizarDependencia();
+    
+
   
 };
 
@@ -240,6 +258,9 @@ const guardar = async (evento) => {
         })
         return
     }
+
+       // Guarda el valor actual del campo alma_clase
+       const claseValue = document.getElementById('alma_clase').value;
     const body = new FormData(formulario)
     body.delete('alma_id')
     const url = '/control_inventario/API/almacen/guardar';
@@ -261,6 +282,7 @@ const guardar = async (evento) => {
             case 1:
                 formulario.reset();
                 icon = 'success'
+                document.getElementById('alma_clase').value = claseValue;
                 //buscar();
                 break;
 
@@ -283,7 +305,7 @@ const guardar = async (evento) => {
     }
     actualizarDependencia();
    
-}
+};
 
 
 
@@ -389,13 +411,13 @@ const modificar = async () => {
         });
         return;
     }
-
+    const claseValue = document.getElementById('alma_clase').value;
     const body = new FormData(formulario);
     body.delete('guarda_almacen');
     body.delete('guarda_catalogo');
     body.delete('guarda_id');
     // body.delete('alma_unidad');
-    body.delete('guarda_nombre')
+    body.delete('guarda_nombre');
     //body.append('alma_id', alma_id.value);
     const url = '/control_inventario/API/almacen/modificar';
     const config = {
@@ -413,7 +435,7 @@ const modificar = async () => {
             case 1:
                 formulario.reset();
                 icon = 'success';
-                buscar();
+                //buscar();
                 cancelarAccion();
                 break;
             case 0:
@@ -430,11 +452,12 @@ const modificar = async () => {
     } catch (error) {
         console.log(error)
     }
-    formulario.reset();
+    //formulario.reset();
     actualizarDependencia();
     buscar();
     modalVerRegistros.classList.add('show');
     modalVerRegistros.style.display = 'block';
+   
 };
 
 
@@ -470,7 +493,47 @@ const buscarOficiales = async () => {
         }
 };
 
+let alma_clase_value;
 
+document.addEventListener('DOMContentLoaded', function () {
+ 
+    
+    // Obtiene el valor de localStorage
+    alma_clase_value = localStorage.getItem('alma_clase');
+
+    // Verifica si el valor existe y actualiza el campo
+    if (alma_clase_value) {
+        const inputAlmaClase = formulario.alma_clase;
+        inputAlmaClase.value = alma_clase_value;
+        
+
+          // Limpia alma_clase_value antes de abandonar la página
+        window.addEventListener('beforeunload', function () {
+        alma_clase_value = null;
+        localStorage.removeItem('alma_clase');
+    });
+    }
+});
+
+// // Función para guardar el valor de alma_clase en localStorage
+// const guardarAlmaClase = (alma_clase_value) => {
+//     localStorage.setItem('alma_clase', alma_clase_value);
+// }
+
+// // Función para obtener el valor de alma_clase de localStorage
+// const obtenerAlmaClase = () => {
+//     return localStorage.getItem('alma_clase');
+// }
+
+// const guardarAlmaClaseDespuesDeReset = () => {
+//     const alma_clase_input = formulario.alma_clase;
+//     const alma_clase_value = alma_clase_input.value;
+//     guardarAlmaClase(alma_clase_value);
+// };
+// // Función para limpiar el valor de alma_clase en localStorage
+// const limpiarAlmaClase = () => {
+//     localStorage.removeItem('alma_clase');
+// }
 
 
 
@@ -501,7 +564,6 @@ btnBuscar.addEventListener('click', () => {
 botonCerrarModal.addEventListener('click', function () {
     // Cierra el modal
     modalVerRegistros.style.display = 'none';
-    cancelarAccion();
     actualizarDependencia();
 
 });
@@ -510,7 +572,6 @@ botonCerrarModal.addEventListener('click', function () {
 modalVerRegistros.addEventListener('click', function (event) {
     if (event.target === modalVerRegistros) {
         modalVerRegistros.style.display = 'none';
-        cancelarAccion();
         actualizarDependencia();
      
     }

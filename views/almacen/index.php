@@ -7,7 +7,6 @@
         padding: 20px;
         margin-top: 10px;
         background-color: beige;
-        /* Color beige */
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         /* Sombra */
     }
@@ -16,7 +15,6 @@
         padding: 20px;
         margin: 10px;
         background-color: #f2f2f2;
-        /* Color de fondo */
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         /* Sombra */
 
@@ -24,13 +22,10 @@
 
     .encabezado-inventario {
         background-color: #007bff;
-        /* Color de fondo */
         color: #ffffff;
-        /* Color del texto */
         padding: 20px;
         margin-top: 10px;
         border-radius: 10px;
-        /* Bordes redondeados */
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         /* Sombra */
     }
@@ -74,10 +69,12 @@
     }
 
     .mi-tabla {
-        width: 100%;
+        width: 110%;
         border-collapse: collapse;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-        /* Añade una sombra alrededor de la tabla */
+        margin-left: auto;
+        margin-right: auto;
+    
     }
 </style>
 <div class="container border rounded bg-white nuevo-contenedor">
@@ -86,17 +83,32 @@
             <h1 class="text-center mt-2 mb-2 encabezado-inventario">Creación de Inventario</h1>
         </div>
         <div class="row justify-content-center mb-2">
-            <form class="col-lg-8 border rounded bg-light p-3 mt-1" id="formularioAlmacen">
+            <form class="col-lg-9 border rounded bg-light p-3 mt-1" id="formularioAlmacen">
                 <input type="hidden" name="alma_id" id="alma_id">
                 <div class="row mb-3">
-                    <div class="col">
+                    <div class="col-lg-4">
                         <label for="alma_nombre"><i class="bi bi-archive-fill me-2"></i>Nombre del Inventario</label>
                         <input type="text" name="alma_nombre" id="alma_nombre" class="form-control">
                     </div>
-                    <div class="col">
+                    <div class="col-lg-4">
                         <label for="alma_unidad"><i class="bi bi-shield-shaded me-2"></i>Dependencia</label>
                         <input type="hidden" id="alma_unidad" name="alma_unidad" class="form-control">
                         <input type="text" id="alma_unidad_id" class="form-control readonly" readonly>
+                    </div>
+                    <div class="col-lg-4">
+                    <label for="alma_clase"><i class="bi bi-shield-shaded me-2"></i>Clases</label>
+                        <select name="alma_clase" id="alma_clase" class="form-select" >
+                            <option value="">SELECCIONE...</option>
+                            <option value="1">Alimentos y Comestibles</option>
+                            <option value="2">Vestuario y Equipo Individual</option>
+                            <option value="3">Carburantes y Lubricantes</option>
+                            <option value="4">Material de Construcción</option>
+                            <option value="5">Artículos Personales</option>
+                            <option value="6">Artículos Terminados</option>
+                            <option value="7">Repuestos y Accesorios</option>
+                            <option value="8">Apoyo Asuntos Civiles</option>
+                            <option value="9">Material Capturado/Recuperable</option>
+                        </select>
                     </div>
                 </div>
                 <input type="hidden" name="guarda_id" id="guarda_id">
@@ -151,7 +163,7 @@
                     <div class="container border rounded bg-white mt-1 tabla-container nuevo-contenedor">
                         <h1 class="text-center mt-4 mb-4 encabezado-inventario">Inventarios Registrados</h1>
                         <div class="row justify-content-center">
-                            <div class="col-lg-10">
+                            <div class="col-lg-12">
                                 <div class="table">
                                     <table id="tablaAlmacen" class="table table-striped table-bordered table-light mi-tabla">
                                     </table>
