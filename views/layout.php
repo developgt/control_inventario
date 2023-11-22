@@ -17,9 +17,6 @@
         <a class="navbar-brand" href="#">
             <img src="<?= asset('./images/min.png') ?>" width="35px'" alt="min">
         </a>
-        <a class="navbar-brand" href="#">
-            <p class="card-text fw-bold"> <?= $usuario['dependencia'] ?> </p>
-        </a>
         <div class="collapse navbar-collapse" id="navbarToggler">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0" style="margin: 0;">
                 <li class="nav-item">
@@ -36,6 +33,9 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" aria-current="page" href="/control_inventario/almacen"><i class="bi bi bi-building-fill-check me-2"></i>Inventario</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="/control_inventario/kardex"><i class="bi bi bi-card-list me-2"></i>Kardex por Producto</a>
                 </li>
             </ul>
             <ul class="navbar-nav me-0 mb-2 mb-lg-0">

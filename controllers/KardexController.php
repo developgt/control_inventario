@@ -7,7 +7,9 @@ use Model\Usuario;
 use Model\Guarda;
 use Model\Almacen;
 use Model\Producto;
+use Model\Movimiento;
 use MVC\Router;
+
 
 class KardexController {
     public static function index(Router $router){

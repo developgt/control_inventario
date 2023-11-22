@@ -15,15 +15,6 @@
 </head>
 <style>
 
-.carousel-inner img {
-      width: 100%;
-      height: 100%;
-    }
-
-    .carousel-item img {
-      height: 400px; 
-      object-fit: cover; 
-    }
 
     #almacenAsignado {
       text-align: left;
@@ -48,7 +39,6 @@
                 </figure>
                 <br><br><br><br>
                     <button class="btn btn-primary btn-block" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" >Generar Registros </button>
-                    <a  href="/control_inventario/guardalmacen"><button class="btn btn-warning btn-block"  style="margin-top: 20px;">Regresar Almacen</button></a>
                     <a  href="/control_inventario/"><button class="btn btn-info btn-block"  style="margin-top: 20px;"> Menu Principal</button></a>
                     <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
                           <div class="offcanvas-header">
@@ -101,9 +91,23 @@
     <form class="col-lg-8 border bg-light p-3" id="formularioKardex">
         <div class="row mb-3">
             <div class="col">
+                <label for="kardex_producto">Nombre del Inventario:</label>
+                <select name="kardex_producto" id="kardex_producto" class="form-control">
+                    <option value="">Seleccione el Inventario</option>
+                </select>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col">
                 <label for="kardex_producto">Nombre del Producto:</label>
                 <select name="kardex_producto" id="kardex_producto" class="form-control">
                     <option value="">Seleccione el Producto</option>
+                </select>
+            </div>
+            <div class="col">
+                <label for="kardex_producto">Unidad de Medida:</label>
+                <select name="kardex_producto" id="kardex_producto" class="form-control">
+                    <option value="">Seleccione la Unidad de Medida</option>
                 </select>
             </div>
         </div>
