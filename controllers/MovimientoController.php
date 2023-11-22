@@ -107,8 +107,7 @@ class MovimientoController
 
     public static function buscarAlmacenesAPI()
     {
-        $sql = "select alma_nombre, alma_id from inv_almacenes, mper, morg, mdep where per_plaza = org_plaza and org_dependencia= dep_llave and alma_unidad = dep_llave and per_catalogo = user
-        and alma_situacion = 1";
+        $sql = "select alma_id, alma_nombre,alma_clase from inv_almacenes, inv_guarda_almacen where alma_id = guarda_almacen and guarda_catalogo = user and guarda_situacion = 1";
         try {
             $almacen = Almacen::fetchArray($sql);
 
@@ -240,12 +239,11 @@ class MovimientoController
 
 
 
-        $sql = "SELECT pro_id, pro_nom_articulo, inv_uni_med.uni_nombre AS pro_medida, 
-                inv_almacenes.alma_nombre AS pro_almacen_id
-                FROM inv_producto
-                JOIN inv_uni_med ON inv_producto.pro_medida = inv_uni_med.uni_id
-                JOIN inv_almacenes ON inv_producto.pro_almacen_id = inv_almacenes.alma_id
-                WHERE inv_almacenes.alma_id = $almaSeleccionadoId AND inv_producto.pro_situacion = 1";
+        $sql = "SELECT pro_id, pro_nom_articulo, 
+        inv_almacenes.alma_nombre AS pro_almacen_id
+        FROM inv_producto
+        JOIN inv_almacenes ON inv_producto.pro_clase_id = inv_almacenes.alma_clase
+        WHERE inv_almacenes.alma_id = $almaSeleccionadoId AND inv_producto.pro_situacion = 1";
 
         try {
 
@@ -293,6 +291,27 @@ class MovimientoController
         }
     }
 
+    public static function buscarUnidadesAPI()
+    {
+        $almaSeleccionadoId = $_GET['almaSeleccionadoId'];
+
+        $sql = "SELECT uni_nombre, uni_id 
+        FROM inv_uni_med
+        JOIN inv_almacenes ON inv_uni_med.uni_clase = inv_almacenes.alma_clase
+        WHERE inv_almacenes.alma_id = $almaSeleccionadoId AND uni_situacion = 1";
+        try {
+            $medida = Medida::fetchArray($sql);
+
+            // Establece el tipo de contenido de la respuesta a JSON
+            header('Content-Type: application/json');
+
+            // Convierte el array a JSON 
+            echo json_encode($medida);
+        } catch (Exception $e) {
+            // En caso de error, envía una respuesta vacía
+            echo json_encode([]);
+        }
+    }
 
     public static function guardarAPI()
     {
@@ -322,14 +341,95 @@ class MovimientoController
         }
     }
 
+    public static function buscarDetalleMovimientoAPI()
+    {
+        $det_mov_id = $_GET['det_mov_id'] ?? '';
+      
+
+        $sql = "  SELECT m.*, d.*, e.est_descripcion, u.uni_nombre, p.pro_nom_articulo
+        FROM inv_movimientos AS m
+        JOIN inv_deta_movimientos AS d ON m.mov_id = d.det_mov_id
+        LEFT JOIN inv_estado AS e ON d.det_estado = e.est_id
+        LEFT JOIN inv_uni_med AS u ON d.det_uni_med = u.uni_id
+        LEFT JOIN inv_producto AS p ON d.det_pro_id = p.pro_id
+        WHERE d.det_mov_id = $det_mov_id";
+
+        try {
+
+            $detalle = Detalle::fetchArray($sql);
+
+            echo json_encode($detalle);
+        } catch (Exception $e) {
+            echo json_encode([
+                'detalle' => $e->getMessage(),
+                'mensaje' => 'Ocurrió un error',
+                'codigo' => 0
+            ]);
+        }
+    }
+
+    
+    public static function buscarDetalleIngresadoAPI()
+    {
+        $det_mov_id = $_GET['det_mov_id'] ?? '';
+      
+
+        $sql = "SELECT m.*, 
+              a.alma_nombre, 
+              d.dep_desc_md,
+              -- Datos de la persona que entrega
+              trim(ge.gra_desc_ct) || ' DE ' || trim(ae.arm_desc_md) || ' ' || 
+              trim(pe.per_ape1) || ' ' || trim(pe.per_ape2) || ', ' || 
+              trim(pe.per_nom1) || ', ' || trim(pe.per_nom2) as mov_perso_entrega_nom,
+              -- Datos de la persona que recibe
+              trim(gr.gra_desc_ct) || ' DE ' || trim(ar.arm_desc_md) || ' ' || 
+              trim(pr.per_ape1) || ' ' || trim(pr.per_ape2) || ', ' || 
+              trim(pr.per_nom1) || ', ' || trim(pr.per_nom2) as mov_perso_recibe_nom,
+              -- Datos de la persona responsable
+              trim(g.gra_desc_ct) || ' DE ' || trim(arm.arm_desc_md) || ' ' || 
+              trim(per.per_ape1) || ' ' || trim(per.per_ape2) || ', ' || 
+              trim(per.per_nom1) || ', ' || trim(per.per_nom2) as mov_perso_respon_nom
+       FROM inv_movimientos AS m
+       JOIN inv_almacenes AS a ON m.mov_alma_id = a.alma_id
+       LEFT JOIN mdep AS d ON a.alma_unidad = d.dep_llave
+       -- Datos de la persona que entrega
+       LEFT JOIN mper AS pe ON m.mov_perso_entrega = pe.per_catalogo
+       LEFT JOIN grados AS ge ON pe.per_grado = ge.gra_codigo
+       LEFT JOIN armas AS ae ON pe.per_arma = ae.arm_codigo
+       -- Datos de la persona que recibe
+       LEFT JOIN mper AS pr ON m.mov_perso_recibe = pr.per_catalogo
+       LEFT JOIN grados AS gr ON pr.per_grado = gr.gra_codigo
+       LEFT JOIN armas AS ar ON pr.per_arma = ar.arm_codigo
+       -- Datos de la persona responsable
+       LEFT JOIN mper AS per ON m.mov_perso_respon = per.per_catalogo
+       LEFT JOIN grados AS g ON per.per_grado = g.gra_codigo
+       LEFT JOIN armas AS arm ON per.per_arma = arm.arm_codigo
+       WHERE m.mov_situacion = 1 AND m.mov_id = $det_mov_id";
+
+        try {
+
+            $detalle = Detalle::fetchArray($sql);
+
+            echo json_encode($detalle);
+        } catch (Exception $e) {
+            echo json_encode([
+                'detalle' => $e->getMessage(),
+                'mensaje' => 'Ocurrió un error',
+                'codigo' => 0
+            ]);
+        }
+    }
+
+
     /// para buscar la cantidad del formulario detalle 
 
     public static function buscarCantidadAPI()
     {
         $det_pro_id = $_GET['det_pro_id'] ?? '';
+        $det_uni_med = $_GET['det_uni_med'] ?? '';
 
-        $sql = "   SELECT det_cantidad_existente from inv_deta_movimientos where det_pro_id = $det_pro_id and det_situacion = 1 
-        and det_id = (select max(det_id) from  inv_deta_movimientos where det_pro_id = $det_pro_id and det_situacion = 1)
+        $sql = "SELECT det_cantidad_existente from inv_deta_movimientos where det_pro_id = $det_pro_id and det_situacion = 1 and det_uni_med = '$det_uni_med'
+        and det_id = (select max(det_id) from  inv_deta_movimientos where det_pro_id = $det_pro_id and det_situacion = 1 and det_uni_med = '$det_uni_med')
         group by det_cantidad_existente";
 
         try {
@@ -350,14 +450,15 @@ class MovimientoController
     public static function buscarCantidadLoteAPI()
     {
         $det_pro_id = $_GET['det_pro_id'] ?? '';
+        $det_uni_med = $_GET['det_uni_med'] ?? '';
         $det_lote = $_GET['det_lote'] ?? '';
         $det_estado = $_GET['det_estado'] ?? '';
         $det_fecha_vence = $_GET['det_fecha_vence'] ?? '';
 
 
 
-        $sql = "SELECT det_cantidad_lote from inv_deta_movimientos where det_pro_id = $det_pro_id and det_situacion = 1 and det_lote = '$det_lote' and det_estado = $det_estado and det_fecha_vence = '$det_fecha_vence'
-        and det_id = (select max(det_id) from  inv_deta_movimientos where det_pro_id = $det_pro_id and det_situacion = 1 and det_lote = '$det_lote' and det_estado = $det_estado and det_fecha_vence = '$det_fecha_vence' )
+        $sql = "SELECT det_cantidad_lote from inv_deta_movimientos where det_pro_id = $det_pro_id and det_situacion = 1 and det_uni_med = '$det_uni_med' and det_lote = '$det_lote' and det_estado = $det_estado and det_fecha_vence = '$det_fecha_vence'
+        and det_id = (select max(det_id) from  inv_deta_movimientos where det_pro_id = $det_pro_id and det_situacion = 1 and det_uni_med = '$det_uni_med' and det_lote = '$det_lote' and det_estado = $det_estado and det_fecha_vence = '$det_fecha_vence' )
         group by det_cantidad_lote";
 
 

@@ -1,3 +1,50 @@
+<style>
+.table-responsive {
+    margin: 0 auto;
+}
+
+.table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #212529;
+}
+
+.table th,
+.table td {
+    padding: 0.75rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+}
+
+.table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.table tbody + tbody {
+    border-top: 2px solid #dee2e6;
+}
+
+h5 {
+    text-align: center;
+    background-color: #f8f9fa; /* Color de fondo claro */
+    padding: 10px;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    margin-bottom: 20px; /* Espacio entre la cabecera y la tabla */
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.table-hover tbody tr:hover {
+    color: #212529;
+    background-color: rgba(0, 0, 0, 0.075);
+}
+
+
+</style>
 <div class="container bg-light border rounded mx-auto mt-2" id="mov_movimiento">
     <div class="row justify-content-center">
         <div class="col-lg-8 mb-4">
@@ -289,15 +336,27 @@
 </div>
 
 
-<div class="container border rounded bg-white mt-5">
-    <h1 class="text-center mt-4 mb-4 bg-light p-3 border rounded">Productos registrados</h1>
+<div class="container border rounded bg-white mt-5" id="DatosMovimiento">
     <div class="row justify-content-center">
-        <div class="col table-responsive">
-            <table id="tablaProducto" class="table table-striped table-bordered table-hover table-light">
-            </table>
+        <div class="col-12">
+            <h5 class="text-center mt-4 mb-1 bg-light p-3 border rounded">Ingresos realizados</h5>
+            <div class="table-responsive">
+                <table id="tablaMovimientos" class="table table-striped table-bordered table-hover table-light mb-1 w-100">
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <h5 class="text-center mt-4 mb-1 bg-light p-3 border rounded">Insumos ingresados</h5>
+            <div class="table-responsive">
+                <table id="tablaDetalles" class="table table-striped table-bordered table-hover table-light w-100">
+                </table>
+            </div>
         </div>
     </div>
 </div>
+
 
 
 <!-- <-- modal para mostrar la vista para asignar guarda almacén -->

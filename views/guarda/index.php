@@ -48,4 +48,74 @@
         </div>
     </div>
 </div>
+
+
+
+<h2>Factura de Movimiento</h2>
+<table>
+    <tr>
+      <td>mov_id</td>
+      <td>4</td>
+      <td>mov_tipo_mov</td>
+      <td>I</td>
+      <td>mov_tipo_trans</td>
+      <td>E</td>
+    </tr>
+    <tr>
+      <td>mov_fecha</td>
+      <td>2023-11-11</td>
+      <td>mov_alma_id</td>
+      <td>19</td>
+      <td>mov_proce_destino</td>
+      <td>2160</td>
+    </tr>
+    <tr>
+      <td>mov_perso_entrega</td>
+      <td>635433</td>
+      <td>mov_perso_recibe</td>
+      <td>665133</td>
+      <td>mov_perso_respon</td>
+      <td>665133</td>
+    </tr>
+    <tr>
+      <td>mov_descrip</td>
+      <td>EJEMPLO</td>
+    </tr>
+  </table>
+  <h2>Detalles del Movimiento</h2>
+  <table>
+    <tr>
+      <th>det_id</th>
+      <th>det_mov_id</th>
+      <th>det_pro_id</th>
+      <th>det_uni_med</th>
+      <th>det_estado</th>
+      <th>det_fecha_vence</th>
+      <th>det_lote</th>
+      <th>det_cantidad</th>
+      <th>det_cantidad_lote</th>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>4</td>
+      <td>6</td>
+      <td>11</td>
+      <td>1</td>
+      <td>2023-11-11</td>
+      <td>001</td>
+      <td>10.00</td>
+      <td>20.00</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>4</td>
+      <td>7</td>
+      <td>5</td>
+      <td>2</td>
+      <td>2023-11-11</td>
+      <td>701</td>
+      <td>110.00</td>
+      <td>110.00</td>
+    </tr>
+  </table>
     <script src="<?= asset('./build/js/guarda/index.js') ?>"></script>

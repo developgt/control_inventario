@@ -76,6 +76,11 @@
         margin-right: auto;
     
     }
+
+    /* Estilo para ocultar el desplegable DEL SELECT */
+    #alma_clase {
+        pointer-events: none;
+    }
 </style>
 <div class="container border rounded bg-white nuevo-contenedor">
     <div class="row justify-content-center mt-1 mb-1">
@@ -86,19 +91,14 @@
             <form class="col-lg-9 border rounded bg-light p-3 mt-1" id="formularioAlmacen">
                 <input type="hidden" name="alma_id" id="alma_id">
                 <div class="row mb-3">
-                    <div class="col-lg-4">
+                    <div class="col-lg-6">
                         <label for="alma_nombre"><i class="bi bi-archive-fill me-2"></i>Nombre del Inventario</label>
                         <input type="text" name="alma_nombre" id="alma_nombre" class="form-control">
                     </div>
-                    <div class="col-lg-4">
-                        <label for="alma_unidad"><i class="bi bi-shield-shaded me-2"></i>Dependencia</label>
-                        <input type="hidden" id="alma_unidad" name="alma_unidad" class="form-control">
-                        <input type="text" id="alma_unidad_id" class="form-control readonly" readonly>
-                    </div>
-                    <div class="col-lg-4">
+                    <div class="col-lg-6">
                     <label for="alma_clase"><i class="bi bi-shield-shaded me-2"></i>Clases</label>
-                        <select name="alma_clase" id="alma_clase" class="form-select" >
-                            <option value="">SELECCIONE...</option>
+                        <select name="alma_clase" id="alma_clase" class="form-select" size="1">
+                            <option value="">SELECCIONE LA CLASE EN "REGISTRAR INVENTARIO"</option>
                             <option value="1">Alimentos y Comestibles</option>
                             <option value="2">Vestuario y Equipo Individual</option>
                             <option value="3">Carburantes y Lubricantes</option>
@@ -113,20 +113,25 @@
                 </div>
                 <input type="hidden" name="guarda_id" id="guarda_id">
                 <div class="row mb-3">
-                    <div class="col-sm-4">
+                    <div class="col">
+                        <label for="alma_descripcion"><i class="bi bi-file-earmark-text-fill me-2"></i>Descripción</label>
+                        <input type="text" name="alma_descripcion" id="alma_descripcion" class="form-control">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-2">
                         <label for="guarda_catalogo"><i class="bi bi-bookmark-check-fill me-2"></i>Catálogo</label>
                         <input type="text" name="guarda_catalogo" id="guarda_catalogo" class="form-control readonly" readonly>
                     </div>
-                    <div class="col">
+                    <div class="col-lg-6">
                         <label for="guarda_nombre"><i class="bi bi-person-fill me-2"></i>Grado y Nombre del Oficial</label>
                         <input type="text" name="guarda_nombre" id="guarda_nombre" class="form-control readonly" readonly>
                     </div>
                     <input type="hidden" name="guarda_almacen" id="guarda_almacen">
-                </div>
-                <div class="row mb-3">
-                    <div class="col">
-                        <label for="alma_descripcion"><i class="bi bi-file-earmark-text-fill me-2"></i>Descripción</label>
-                        <input type="text" name="alma_descripcion" id="alma_descripcion" class="form-control">
+                    <div class="col-lg-4">
+                        <label for="alma_unidad"><i class="bi bi-shield-shaded me-2"></i>Dependencia</label>
+                        <input type="hidden" id="alma_unidad" name="alma_unidad" class="form-control">
+                        <input type="text" id="alma_unidad_id" class="form-control readonly" readonly>
                     </div>
                 </div>
                 <div class="row mb-3">
