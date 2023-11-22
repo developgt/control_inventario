@@ -50,53 +50,55 @@ class KardexController {
             'usuario' => $usuario,
          ]);
        }
+// funcion para traer los almacenes
 
-       public static function buscarProducto($almacenNombre)
-       {
-           try {
-               // Obtener el id del almacén basado en el nombre
-               $almacenId = self::obtenerIdAlmacenPorNombre($almacenNombre);
-       
-               // Verificar si se obtuvo un id de almacén válido
-               if ($almacenId !== false) {
-                   // Consulta SQL para obtener los productos asociados al almacén
-                   $sql = "SELECT p.pro_nom_articulo
-                           FROM inv_producto p
-                           JOIN inv_almacenes a ON p.pro_almacen_id = a.alma_id
-                           WHERE a.alma_id = :almacenId";
-       
-                   // Ejecutar la consulta SQL y obtener el resultado
-                   $productos = Producto::fetchArray($sql, [':almacenId' => $almacenId]);
-       
-                   // Verificar si se obtuvieron resultados
-                   if (!empty($productos)) {
-                       // Devolver la respuesta como un array asociativo
-                       echo json_encode(['productos' => $productos]);
-                   } else {
-                       // Si no hay productos asociados al almacén, devolver un mensaje indicándolo
-                       echo json_encode([
-                           'detalle' => 'No se encontraron productos asociados al almacén.',
-                           'mensaje' => 'No hay productos',
-                           'codigo' => 1
-                       ]);
-                   }
-               } else {
-                   // Si no se pudo obtener el id del almacén, devolver un mensaje de error
-                   echo json_encode([
-                       'detalle' => 'No se pudo obtener el id del almacén.',
-                       'mensaje' => 'Ocurrió un error',
-                       'codigo' => 0
-                   ]);
-               }
-           } catch (Exception $e) {
-               echo json_encode([
-                   'detalle' => $e->getMessage(),
-                   'mensaje' => 'Ocurrió un error',
-                   'codigo' => 0
-               ]);
-           }
-       }
-              
-   
-       
+
+public static function buscarAlmacen()
+{
+
+    $sql = "
+    SELECT 
+    inv_almacenes.alma_nombre AS nombre_almacen,
+    inv_producto.pro_nom_articulo AS nombre_producto,
+    inv_producto.pro_id AS id_producto,
+    inv_deta_movimientos.*,
+    inv_movimientos.*,
+    inv_almacenes.*,
+    inv_uni_med.uni_nombre AS nombre_unidad_medida 
+    FROM 
+        inv_almacenes
+    JOIN 
+        inv_movimientos ON inv_almacenes.alma_id = inv_movimientos.mov_alma_id
+    JOIN 
+        inv_deta_movimientos ON inv_movimientos.mov_id = inv_deta_movimientos.det_mov_id
+    JOIN 
+        inv_producto ON inv_deta_movimientos.det_pro_id = inv_producto.pro_id
+    JOIN
+        mper ON mper.per_catalogo = user
+    JOIN
+        inv_uni_med ON inv_uni_med.uni_id = inv_deta_movimientos.det_uni_med 
+    WHERE 
+        mper.per_catalogo = user;
+";
+
+    try {
+      
+        // Ejecutar la consulta SQL para obtener nombres de almacenes para el usuario.
+        $almacenes = Almacen::fetchArray($sql);
+        
+        // Devolver la respuesta como un array asociativo
+        echo json_encode(['almacenes' => $almacenes]);
+    } catch (Exception $e) {
+        echo json_encode([
+            'detalle' => $e->getMessage(),
+            'mensaje' => 'Ocurrió un error',
+            'codigo' => 0
+        ]);
+    }
+    //console.log(data);
+}
+
+/////////////////////////////////
+
+
 }

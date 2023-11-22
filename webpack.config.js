@@ -16,7 +16,7 @@ module.exports = {
     'js/movegreso/index' : './src/js/movegreso/index.js',
     'js/gestion/index' : './src/js/gestion/index.js',
     'js/guardalmacen/index' : './src/js/guardalmacen/index.js',
-    'js/kardex/index' : './src/js/kardex/index.js',
+    'js/kardex/index' : './src/js/kardex/index.js'
 
   },
   output: {

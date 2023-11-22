@@ -22,6 +22,10 @@
       font-size: 14px;
     }
 
+    .small {
+  font-size: 14px;
+  margin-bottom: 5vh;
+}
 
 </style>
 <body>
@@ -29,55 +33,21 @@
 <div class="row mt-0">
     <div class="col-lg-2">
         <div class="contenido-izquierdo" style="background-color: black; color: white; padding: 20px;">
-            <div class="card-body text-center">
-                <img id="fotoUsuario" class="card-img-top" src="./images/header.jpg" alt="header">
-                <br><br>
-                <p class="card-text fw-bold"> <?= $usuario['grado'] .' '. $usuario['nombre'] ?> </p>
-                <p>Nombre del Almacén:</p>
-                <figure>
-                <p id="nombreAlmacen"></p>
-                </figure>
-                <br><br><br><br>
-                    <button class="btn btn-primary btn-block" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" >Generar Registros </button>
-                    <a  href="/control_inventario/"><button class="btn btn-info btn-block"  style="margin-top: 20px;"> Menu Principal</button></a>
-                    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
-                          <div class="offcanvas-header">
-                            <h5 class="offcanvas-title" id="offcanvasRightLabel">Menu Principal del Guardalmacen</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                          </div>
-                      <div class="offcanvas-body">      
-                          <div class="container mt-5">
-                            <div class="row">
-                              <div class="col-md-12 mb-3">
-                                <button class="btn btn-primary btn-block" type="button">
-                                  <i class="bi bi-plus"></i> Registrar Ingreso
-                                </button>
-                              </div>
-                              <div class="col-md-12 mb-3">
-                                <button class="btn btn-primary btn-block" type="button">
-                                  <i class="bi bi-arrow-down-left"></i> Registrar Egreso
-                                </button>
-                              </div>
-                              <div class="col-md-12 mb-3">
-                                <a href="/control_inventario/kardex"><button class="btn btn-primary btn-block" type="button" >
-                                <i class="bi bi-archive" ></i> Kardex por Producto
-                                </button></a>
-                              </div>
-                              <div class="col-md-12 mb-3">
-                                <button class="btn btn-primary btn-block" type="button">
-                                  <i class="bi bi-person"></i> Atención al Usuario
-                                </button>
-                              </div>
-                              <div class="col-md-12 mb-3">
-                                <button class="btn btn-danger btn-block" type="button">
-                                  <i class="bi bi-door-closed"></i> Cerrar Sesión
-                                </button>
-                              </div>
-                          </div>
-                      </div>
-                    </div>
-              </div>
-            </div>
+        <div class="card-body text-center">
+        <img id="fotoUsuario" class="card-img-top" src="./images/header.jpg" alt="header">
+        <br><br>
+        <p class="card-text fw-bold"> <?= $usuario['grado'] .' '. $usuario['nombre'] ?> </p>
+        <p class="card-text fw-bold"> <?= $usuario['empleo'] ?> </p>
+        <figure>
+        <blockquote id='miBloqueCita' class="blockquote small">
+        "La preparación es la clave del éxito en cualquier batalla. 
+        Tener los suministros adecuados en el momento adecuado puede cambiar el curso de la historia". 
+        </blockquote>
+          <figcaption class="blockquote-footer text-muted">
+            Dwight D. Eisenhower
+                </figcaption>
+        </figure>
+      </div>
         </div>
     </div>
 
@@ -91,8 +61,8 @@
     <form class="col-lg-8 border bg-light p-3" id="formularioKardex">
         <div class="row mb-3">
             <div class="col">
-                <label for="kardex_producto">Nombre del Inventario:</label>
-                <select name="kardex_producto" id="kardex_producto" class="form-control">
+                <label for="kardex_almacen">Nombre del Inventario:</label>
+                <select name="kardex_almacen" id="kardex_almacen" class="form-control">
                     <option value="">Seleccione el Inventario</option>
                 </select>
             </div>
@@ -105,8 +75,8 @@
                 </select>
             </div>
             <div class="col">
-                <label for="kardex_producto">Unidad de Medida:</label>
-                <select name="kardex_producto" id="kardex_producto" class="form-control">
+                <label for="kardex_medida">Unidad de Medida:</label>
+                <select name="kardex_medida" id="kardex_medida" class="form-control">
                     <option value="">Seleccione la Unidad de Medida</option>
                 </select>
             </div>
