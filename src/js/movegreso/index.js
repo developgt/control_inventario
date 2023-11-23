@@ -6,6 +6,13 @@ import { lenguaje } from "../lenguaje";
 import { data } from "jquery";
 
 
+////formulario busqueda////////////
+const btnMovimiento = document.getElementById('btnMovimientos');
+const formularioBusqueda = document.getElementById('formularioBusqueda');
+const datosMovimiento = document.getElementById('DatosMovimiento')
+const btnIngreso = document.getElementById('btnRealizarIngreso');
+const divIngresoMovimiento = document.getElementById('movimiento_busqueda');
+
 ////formulario movimiento//////////
 const formulario = document.getElementById('formularioMovimiento');
 const btnGuardar = document.getElementById('btnGuardar');
@@ -67,6 +74,12 @@ const fechaCampo = document.getElementById('fechaCampo');
 const sinFecha = document.getElementById('sinFecha');
 const sinFechaInput = document.getElementById('sin_fecha')
 
+const det_mov_id = document.getElementById('det_mov_id');
+
+
+const botonImprimir = document.getElementById('btnImprimir');
+
+
 //////formulario existencias//////////////////
 const formularioExistencia = document.getElementById('formularioExistencia');
 const mov_alma = document.getElementById('mov_alma');
@@ -92,6 +105,7 @@ let almacenes = []; // se define almacenes como un array vacio...
 let dependencias = [];
 // Oculta el elemento div card formulario detalle
 movDetalleDiv.style.display = "none";
+movMovimientoDiv.style.display = "none";
 sinFecha.style.display = "none";
 
 btnModificarDetalle.disabled = true
@@ -1221,8 +1235,6 @@ const guardar = async (evento) => {
                 modalVerExistencias.classList.add('show');
                 modalVerExistencias.style.display = 'block';
                 document.body.classList.add('modal-open');
-                buscarDetalleIngresado();
-
                 //buscar();
                 break;
 
@@ -1488,8 +1500,156 @@ function mostrarDependencia() {
     }
 }
 
+//////////////función buscar para imprimir recibo
+
+const buscarRecibo = async () => {
+    let det_mov_id = formularioDetalle.det_mov_id.value;
+
+    const url = `/control_inventario/API/egresoreporte/buscarRecibo?det_mov_id=${det_mov_id}`;
+    const config = {
+        method: 'GET',
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+        console.log(data);
+
+        if (data && data.length > 0) {
+            generarPDF(data);
+       
+        } else {
+            Toast.fire({
+                title: 'No se encontraron registros',
+                icon: 'info',
+            });
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+
+////////////////generar pdf para entregar hoja de responsabilidad/////////////
+
+const generarPDF = async (datos) => {
+    const url = `/control_inventario/egresoreporte/generarPDF`;
+
+    const config = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(datos),
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+
+        if (respuesta.ok) {
+            const blob = await respuesta.blob();
+
+            if (blob) {
+                const urlBlob = window.URL.createObjectURL(blob);
+
+                // Abre el PDF en una nueva ventana o pestaña
+                window.open(urlBlob, '_blank');
+            } else {
+                console.error('No se pudo obtener el blob del PDF.');
+            }
+        } else {
+            console.error('Error al generar el PDF.');
+        }
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+
+
+
+///////////funciones para el formulario de busqueda de ingresos
+
+////para buscar almacenes en el modal/////////////
+
+const buscarAlmacenesMovimientos = async () => {
+    // Verificar si los elementos del formulario existen antes de acceder a sus propiedades
+    if (formularioBusqueda.alma_nombre && formularioBusqueda.alma_id) {
+        let alma_nombre = formularioBusqueda.alma_nombre.value;
+        let alma_id = formularioBusqueda.alma_id.value;
+    }
+    const url = `/control_inventario/API/movimiento/buscarAlmacenesMovimientos`;
+    const config = {
+        method: 'GET'
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+        console.log('data de almacenes', data); // Imprimir datos en la consola
+
+        almacenes = data;
+        // Limpiar el contenido del select
+        formularioBusqueda.mov_alma.innerHTML = '';
+
+        // Agregar opción predeterminada
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = 'SELECCIONE...';
+        formularioBusqueda.mov_alma.appendChild(defaultOption);
+        // Iterar sobre cada objeto en el arreglo y crear opciones para el select
+        data.forEach(almacen => {
+            const option = document.createElement('option');
+            option.value = almacen.alma_id;
+            option.textContent = almacen.alma_nombre;
+            formularioBusqueda.mov_alma.appendChild(option);
+        });
+
+
+
+        //contador = 1;
+        //datatable.clear().draw();
+    } catch (error) {
+        console.log(error);
+    }
+    //formularioModal.reset();
+};
+
+//////////////función buscar para imprimir recibo
+
+const buscarMovimientos = async () => {
+    let mov_alma = formularioBusqueda.mov_alma.value;
+
+    const url = `/control_inventario/API/movegreso/buscarMovimientos?mov_alma=${mov_alma}`;
+    const config = {
+        method: 'GET',
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+        console.log(data);
+
+        datatableMovimiento.clear().draw();
+        if (data) {
+            contadorMovimiento = 1;
+            datatableMovimiento.rows.add(data).draw();
+
+        } else {
+            Toast.fire({
+                title: 'No se encontraron registros',
+                icon: 'info',
+            });
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+botonImprimir.addEventListener('click', buscarRecibo);
 
 buscarAlmacenes();
+buscarAlmacenesMovimientos();
 //buscarDependencia();
 buscarEstados();
 establecerFechaActual();
@@ -1501,10 +1661,20 @@ mov_perso_entrega.addEventListener('input', buscarOficiales);
 mov_perso_recibe.addEventListener('input', buscarOficialesRecibe);
 mov_perso_respon.addEventListener('input', buscarOficialesResponsable);
 btnBuscarExistencias.addEventListener('click', buscarExistencias);
+btnMovimiento.addEventListener('click', buscarMovimientos);
 formulario.addEventListener('submit', guardar);
 formularioDetalle.addEventListener('submit', guardarDetalle);
 ///evento para detectar el cambio del select 
 select.addEventListener('change', mostrarDependencia);
+
+det_mov_id.addEventListener('input', buscarDetalleMovimiento);
+
+
+btnIngreso.addEventListener('click', function() {
+    divIngresoMovimiento.style.display = 'none';
+    datosMovimiento.style.display = 'none';
+    movMovimientoDiv.style.display = 'block';
+});
 
   
     btnSiguiente.addEventListener('click', function(event) {

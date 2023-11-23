@@ -6,6 +6,12 @@ import { lenguaje } from "../lenguaje";
 import { data } from "jquery";
 
 
+////formulario busqueda////////////
+const btnMovimiento = document.getElementById('btnMovimientos');
+const mov_alma = document.getElementById('mov_alma')
+const formularioBusqueda = document.getElementById('formularioBusqueda');
+
+
 ////formulario movimiento//////////
 const formulario = document.getElementById('formularioMovimiento');
 const btnGuardar = document.getElementById('btnGuardar');
@@ -85,8 +91,9 @@ const botonCerrarModal = document.querySelector('.modal-header .close');
 const formularioModal = document.getElementById('formularioExistencia');
 const btnBuscarExistencias = document.getElementById('btnBuscarExistencias');
 const det_pro = document.getElementById('det_pro');
-const DatosMovimiento = document.getElementById('DatosMovimiento')
-
+const datosMovimiento = document.getElementById('DatosMovimiento')
+const btnIngreso = document.getElementById('btnRealizarIngreso');
+const divIngresoMovimiento = document.getElementById('movimiento_busqueda');
 
 
 let almaSeleccionId;
@@ -100,6 +107,7 @@ let medida = [];
 
 // Oculta el elemento div card formulario detalle
 movDetalleDiv.style.display = "none";
+movMovimientoDiv.style.display = "none";
 campoLote.style.display = "none";
 fechaCampo.style.display = "none";
 //DatosMovimiento.style.display = "none";
@@ -524,8 +532,8 @@ const datatableMovimiento = new Datatable('#tablaMovimientos', {
             data: 'dep_desc_md'
         },
         {
-            title: 'Descripcion',
-            data: 'mov_descrip'
+            title: 'Estado del Ingreso',
+            data: 'mov_situacion'
         },
         {
             title: 'EDITAR DETALLE',
@@ -1196,8 +1204,8 @@ const guardar = async (evento) => {
                 // Mostrar el formulario de detalle
                 movDetalleDiv.style.display = 'block';
 
-                buscarDetalleIngresado();
                 break;
+               
 
             case 0:
                 icon = 'error'
@@ -1408,6 +1416,85 @@ const guardarDetalle = async (evento) => {
   
 };
 
+
+///////////funciones para el formulario de busqueda de ingresos
+
+////para buscar almacenes en el modal/////////////
+
+const buscarAlmacenesMovimientos = async () => {
+    // Verificar si los elementos del formulario existen antes de acceder a sus propiedades
+    if (formularioBusqueda.alma_nombre && formularioBusqueda.alma_id) {
+        let alma_nombre = formularioBusqueda.alma_nombre.value;
+        let alma_id = formularioBusqueda.alma_id.value;
+    }
+    const url = `/control_inventario/API/movimiento/buscarAlmacenesMovimientos`;
+    const config = {
+        method: 'GET'
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+        console.log('data de almacenes', data); // Imprimir datos en la consola
+
+        almacenes = data;
+        // Limpiar el contenido del select
+        formularioBusqueda.mov_alma.innerHTML = '';
+
+        // Agregar opción predeterminada
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = 'SELECCIONE...';
+        formularioBusqueda.mov_alma.appendChild(defaultOption);
+        // Iterar sobre cada objeto en el arreglo y crear opciones para el select
+        data.forEach(almacen => {
+            const option = document.createElement('option');
+            option.value = almacen.alma_id;
+            option.textContent = almacen.alma_nombre;
+            formularioBusqueda.mov_alma.appendChild(option);
+        });
+
+
+
+        //contador = 1;
+        //datatable.clear().draw();
+    } catch (error) {
+        console.log(error);
+    }
+    //formularioModal.reset();
+};
+
+//////////////función buscar para imprimir recibo
+
+const buscarMovimientos = async () => {
+    let mov_alma = formularioBusqueda.mov_alma.value;
+
+    const url = `/control_inventario/API/movimiento/buscarMovimientos?mov_alma=${mov_alma}`;
+    const config = {
+        method: 'GET',
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+        console.log(data);
+
+        datatableMovimiento.clear().draw();
+        if (data) {
+            contadorMovimiento = 1;
+            datatableMovimiento.rows.add(data).draw();
+
+        } else {
+            Toast.fire({
+                title: 'No se encontraron registros',
+                icon: 'info',
+            });
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 /////////////////////////////////////////////////////////////
 ///////////FUNCIONES PARA EL MODAL///////////////////////////
 
@@ -1576,6 +1663,7 @@ select.addEventListener('change', mostrarDependencia);
 establecerFechaActual();
 buscarAlmacenes();
 buscarAlmacenesModal();
+buscarAlmacenesMovimientos();
 //buscarDependencia();
 buscarEstados();
 
@@ -1592,6 +1680,7 @@ mov_perso_respon.addEventListener('input', buscarOficialesResponsable);
 formulario.addEventListener('submit', guardar);
 formularioDetalle.addEventListener('submit', guardarDetalle);
 btnBuscarExistencias.addEventListener('click', buscarExistencias);
+btnMovimiento.addEventListener('click', buscarMovimientos);
 datatableDetalle.on('click', '.btn-warning', traeDatosDetalle );
 datatableDetalle.on('click', '.btn-danger', eliminar);
 
@@ -1637,7 +1726,13 @@ detLoteInput.addEventListener('input', buscarCantidadLote);
 detFechaInput.addEventListener('input', buscarCantidadLote);
 detEstadoSelect.addEventListener('input', buscarCantidadLote);
 det_mov_id.addEventListener('input', buscarDetalleMovimiento);
-det_mov_id.addEventListener('input', buscarDetalleIngresado);
+
+
+btnIngreso.addEventListener('click', function() {
+    divIngresoMovimiento.style.display = 'none';
+    datosMovimiento.style.display = 'none';
+    movMovimientoDiv.style.display = 'block';
+});
 
 
 //buscarProducto();

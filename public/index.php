@@ -19,6 +19,7 @@ use Controllers\GestionController;
 use Controllers\GuardalmacenController;
 use Controllers\KardexController;
 use Controllers\ReporteController;
+use Controllers\ReporteEgresoController;
 
 $router = new Router();
 $router->setBaseURL('/' . $_ENV['APP_NAME']);
@@ -75,6 +76,7 @@ $router->get('/API/movimiento/buscarOficiales', [MovimientoController::class, 'b
 $router->get('/API/movimiento/buscarOficialesRecibe', [MovimientoController::class, 'buscarOficialesRecibeAPI']);
 $router->get('/API/movimiento/buscarOficialesResponsable', [MovimientoController::class, 'buscarOficialesResponsableAPI']);
 $router->get('/API/movimiento/buscarAlmacenes', [MovimientoController::class, 'buscarAlmacenesAPI']);
+$router->get('/API/movimiento/buscarAlmacenesMovimientos', [MovimientoController::class, 'buscarAlmacenesMovimientosAPI']);
 $router->get('/API/movimiento/buscarEstados', [MovimientoController::class, 'buscarEstadosAPI']);
 $router->get('/API/movimiento/buscarProducto', [MovimientoController::class, 'buscarProductoAPI']);
 $router->get('/API/movimiento/buscarProductoModal', [MovimientoController::class, 'buscarProductoModalAPI']);
@@ -86,6 +88,7 @@ $router->get('/API/movimiento/buscarCantidadLote', [MovimientoController::class,
 $router->get('/API/movimiento/buscarUnidades', [MovimientoController::class, 'buscarUnidadesAPI']);
 $router->get('/API/movimiento/buscarDetalleMovimiento', [MovimientoController::class, 'buscarDetalleMovimientoAPI']);
 $router->get('/API/movimiento/buscarDetalleIngresado', [MovimientoController::class, 'buscarDetalleIngresadoAPI']);
+$router->get('/API/movimiento/buscarMovimientos', [MovimientoController::class, 'buscarMovimientosAPI']);
 $router->post('/API/movimiento/guardar', [MovimientoController::class,'guardarAPI'] );
 $router->post('/API/movimiento/guardarDetalle', [MovimientoController::class,'guardarDetalleAPI']);
 $router->post('/API/movimiento/eliminar', [MovimientoController::class,'eliminarAPI'] );
@@ -100,12 +103,21 @@ $router->get('/API/movegreso/buscarOficialesResponsable', [MovimientoEgresoContr
 $router->get('/API/movegreso/buscarAlmacenes', [MovimientoEgresoController::class, 'buscarAlmacenesAPI']);
 $router->get('/API/movegreso/buscarDependencia', [MovimientoEgresoController::class, 'buscarDependenciaAPI']);
 $router->get('/API/movegreso/buscarExistencias', [MovimientoEgresoController::class, 'buscarExistenciasAPI']);
+$router->get('/API/movegreso/buscarMovimientos', [MovimientoEgresoController::class, 'buscarMovimientosAPI']);
 
-/////IMPRIMIR PDF DE VALE DE INGRESO O EGRESO
+
+/////IMPRIMIR PDF DE VALE DE INGRESO al inventario
 
 $router->get('/pdf', [ReporteController::class,'pdf']);
 $router->post('/reporte/generarPDF', [ReporteController::class, 'generarPDF']);
 $router->get('/API/reporte/buscarRecibo', [ReporteController::class, 'buscarReciboAPI']);
+
+
+///imprimir vale de egreso al inventario 
+
+$router->get('/pdf', [ReporteEgresoController::class,'pdf']);
+$router->post('/egresoreporte/generarPDF', [ReporteEgresoController::class, 'generarPDF']);
+$router->get('/API/egresoreporte/buscarRecibo', [ReporteEgresoController::class, 'buscarReciboAPI']);
 
 
 

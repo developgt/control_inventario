@@ -10,6 +10,7 @@ use Model\Estado;
 use Model\Mper;
 use Model\Mdep;
 use MVC\Router;
+use Model\Movimiento;
 use Model\Guarda;
 use Model\Medida;
 use Model\Producto;
@@ -225,5 +226,68 @@ class MovimientoEgresoController
         }
     }
 
+    public static function buscarMovimientosAPI()
+    {
+
+        $almaSeleccionadoId = $_GET['mov_alma'];
+
+        $sql = "    
+        SELECT m.*, 
+        a.alma_nombre, 
+        d.dep_desc_md,
+        -- Datos de la persona que entrega
+        trim(ge.gra_desc_ct) || ' DE ' || trim(ae.arm_desc_md) || ' ' || 
+        trim(pe.per_ape1) || ' ' || trim(pe.per_ape2) || ', ' || 
+        trim(pe.per_nom1) || ', ' || trim(pe.per_nom2) as mov_perso_entrega_nom,
+        -- Datos de la persona que recibe
+        trim(gr.gra_desc_ct) || ' DE ' || trim(ar.arm_desc_md) || ' ' || 
+        trim(pr.per_ape1) || ' ' || trim(pr.per_ape2) || ', ' || 
+        trim(pr.per_nom1) || ', ' || trim(pr.per_nom2) as mov_perso_recibe_nom,
+        -- Datos de la persona responsable
+        trim(g.gra_desc_ct) || ' DE ' || trim(arm.arm_desc_md) || ' ' || 
+        trim(per.per_ape1) || ' ' || trim(per.per_ape2) || ', ' || 
+        trim(per.per_nom1) || ', ' || trim(per.per_nom2) as mov_perso_respon_nom
+        FROM inv_movimientos AS m
+        JOIN inv_almacenes AS a ON m.mov_alma_id = a.alma_id
+        LEFT JOIN mdep AS d ON a.alma_unidad = d.dep_llave
+        LEFT JOIN inv_guarda_almacen AS ga ON a.alma_id = ga.guarda_almacen 
+        -- Datos de la persona que entrega
+        LEFT JOIN mper AS pe ON m.mov_perso_entrega = pe.per_catalogo
+        LEFT JOIN grados AS ge ON pe.per_grado = ge.gra_codigo
+        LEFT JOIN armas AS ae ON pe.per_arma = ae.arm_codigo
+        -- Datos de la persona que recibe
+        LEFT JOIN mper AS pr ON m.mov_perso_recibe = pr.per_catalogo
+        LEFT JOIN grados AS gr ON pr.per_grado = gr.gra_codigo
+        LEFT JOIN armas AS ar ON pr.per_arma = ar.arm_codigo
+        -- Datos de la persona responsable
+        LEFT JOIN mper AS per ON m.mov_perso_respon = per.per_catalogo
+        LEFT JOIN grados AS g ON per.per_grado = g.gra_codigo
+        LEFT JOIN armas AS arm ON per.per_arma = arm.arm_codigo
+        WHERE m.mov_situacion = 1 
+        AND ga.guarda_almacen = a.alma_id 
+        AND ga.guarda_catalogo = user
+        AND ga.guarda_situacion = 1
+        AND m.mov_tipo_mov = 'E'";
+
+        if ($almaSeleccionadoId != '') {
+            $almaSeleccionadoId = ($almaSeleccionadoId);
+            $sql .= " AND a.alma_id = $almaSeleccionadoId ";
+         }
+
+        try {
+
+            $movimiento = Movimiento::fetchArray($sql);
+
+            header('Content-Type: application/json');
+
+            echo json_encode($movimiento);
+        } catch (Exception $e) {
+            echo json_encode([
+                'detalle' => $e->getMessage(),
+                'mensaje' => 'Ocurrió un error',
+                'codigo' => 0
+            ]);
+        }
+    }
 
 }

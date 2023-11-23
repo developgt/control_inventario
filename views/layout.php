@@ -46,25 +46,32 @@
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="/control_inventario/almacen"><i class="bi bi bi-building-fill-check me-2"></i>Inventario</a>
                     </li>
-                    <div class="nav-item dropdown ">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                            <i class="bi bi-gear me-2"></i>Egreso e Ingreso
+                    <li>
+                        <a class="nav-link" aria-current="page" href="/control_inventario/movimiento"><i class="bi bi bi-clipboard-data-fill me-2""></i>Gestión de Ingreso</a>
+                    </li>
+                    <li>
+                        <a class="nav-link" aria-current="page" href="/control_inventario/movegreso"><i class="bi bi bi-clipboard-data-fill me-2""></i>Gestión de Egreso</a>
+                    </li>
+                    <!-- GESTION DE INVENTARIOS -->
+                    <!-- <div class="nav-item dropdown ">
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                            <i class="bi bi bi-building-fill-check me-2"></i>Gestión de Inventarios
                         </a>
                         <ul class="dropdown-menu  dropdown-menu-dark " id="dropwdownRevision" style="margin: 0;">
                             <li>
-                                <a class="dropdown-item nav-link text-white " href="/control_inventario/movimiento"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Realizar Ingreso al Inventario</a>
+                                <a class="nav-link" aria-current="page" href="/control_inventario/movimiento"><i class="bi bi-file-music-fill me-2"></i>Gestión de Ingreso</a>
                             </li>
                             <li>
-                                <a class="dropdown-item nav-link text-white " href="/control_inventario/movegreso"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Realizar Egreso del Inventario</a>
+                                <a class="nav-link" aria-current="page" href="/control_inventario/movegreso"><i class="bi bi-bookmark-star-fill me-2"></i>Gestión de Egreso</a>
                             </li>
                         </ul>
-                    </div>
+                    </div> -->
                 </ul>
-                < <ul class="navbar-nav me-0 mb-2 mb-lg-0">
+                <ul class="navbar-nav me-0 mb-2 mb-lg-0">
                     <li class="nav-item">
                         <a href="/login/logout" class="btn btn-danger"><i class="bi bi-x-lg me-2"></i>Cerrar Sesión</a>
                     </li>
-                    </ul>
+                </ul>
             </div>
 
         </div>

@@ -57,6 +57,44 @@
         /* Sombra */
     }
 
+    
+    .tabla-contenedor {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .busqueda-contenedor {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+    
+    .card {
+        border: none;
+        border-radius: 10px;
+    }
+    .card-body {
+        padding: 2rem;
+    }
+    .form-select {
+        margin-left: 0.5rem;
+    }
+    .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+    .btn-success:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+    }
+    .btn-ingreso {
+        position: absolute;
+        right: 25px; /* Ajustar según necesidad */
+        top: 120px; /* Ajustar según necesidad */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+
+    }
+
     #formularioMovimiento {
         padding: 20px;
         margin: auto;
@@ -74,6 +112,7 @@
         /* Sombra */
 
     }
+
     #formularioDetalle {
         padding: 20px;
         margin: auto;
@@ -97,6 +136,23 @@
         background-color: #0056b3;
         /* Cambio de color al pasar el mouse */
     }
+
+    
+    .encabezado-busqueda {
+    background-color: #e9ecef; /* Un gris claro que no compite con el azul del encabezado principal */
+    color: #495057; /* Un color oscuro para el texto que garantiza legibilidad */
+    padding: 20px;
+    margin-top: 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Un sombreado más suave */
+    border: 1px solid #dee2e6; /* Un borde sutil para definir los límites del encabezado */
+    transition: background-color 0.3s; /* Suaviza la transición de color al pasar el mouse */
+}
+
+.encabezado-busqueda:hover {
+    background-color: #dde1e6; /* Un tono ligeramente más oscuro para el hover, manteniéndolo suave */
+    /* No es necesario un cambio drástico de color al pasar el mouse, solo un toque sutil */
+}
 
     /* Estilo para el fondo oscuro del modal */
     .modal-with-backdrop:before {
@@ -137,11 +193,8 @@
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         margin-left: auto;
         margin-right: auto;
-    
+
     }
-
-    
-
 </style>
 <!-- <div class="container bg-light border rounded mx-auto mt-2" id="mov_movimiento">
     <div class="row">
@@ -196,6 +249,49 @@
         </div>
     </div>
 </div> -->
+<div class="container bg-light border rounded mx-auto mt-2 busqueda-contenedor" id="movimiento_busqueda">
+    <div class="row justify-content-center">
+        <div class="col-12 mb-4">
+            <div class="card mb-4 mt-4">
+                <h2 class="card-title text-center p-3 encabezado-inventario">Gestione su inventario</h2>
+                <div class="card-body">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-lg-9">
+                            <form class="border rounded bg-light p-3" id="formularioBusqueda">
+                                <h5 class="card-title text-center p-3 encabezado-busqueda">Ver Egresos</h5>
+                                <div class="mb-3">
+                                    <label for="mov_alma" class="form-label">Seleccione el inventario</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-arrow-right-circle"></i></span>
+                                        <select name="mov_alma" id="mov_alma" class="form-select">
+                                            <option value="">SELECCIONE...</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button type="button" id="btnMovimientos" class="btn btn-info w-100">VER EGRESOS</button>
+                            </form>
+                        </div>
+                        <div class="col-lg-3 d-flex justify-content-end">
+                            <button type="button" id="btnRealizarIngreso" class="btn btn-success btn-ingreso">REALIZAR EGRESO</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container border rounded mt-2 bg-white tabla-contenedor" id="DatosMovimiento">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <h5 class="text-center mt-4 mb-1 bg-light p-3 border rounded">Ingresos realizados</h5>
+            <div class="table-responsive">
+                <table id="tablaMovimientos" class="table table-striped table-bordered table-hover table-light mb-1 w-100">
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="container bg-light border rounded mx-auto mt-2 nuevo-contenedor" id="mov_movimiento">
     <div class="row justify-content-center">
         <div class="col-lg-8 mb-4">
@@ -547,16 +643,7 @@
 </div>
 
 
-<div class="container border rounded mt-2 bg-light nuevo-contenedor" id="DatosMovimiento">
-    <div class="row justify-content-center"> 
-        <div class="col-12">
-            <h5 class="text-center mt-4 mb-1 bg-light p-3 border rounded">Egresos realizados</h5>
-            <div class="table-responsive">
-                <table id="tablaMovimientos" class="table table-striped table-bordered table-hover table-light mb-1 w-100">
-                </table>
-            </div>
-        </div>
-    </div>
+<div class="container border rounded mt-2 bg-light nuevo-contenedor" id="DatosDetalle">
     <div class="row justify-content-center">
         <div class="col-12">
             <h5 class="text-center mt-4 mb-1 bg-light p-3 border rounded">Insumos retirados</h5>
@@ -564,6 +651,13 @@
                 <table id="tablaDetalles" class="table table-striped table-bordered table-hover table-light w-100">
                 </table>
             </div>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-lg-3">
+            <button type="button" id="btnImprimir" class="btn btn-primary w-100">
+                <i class="bi bi-printer"></i> Imprimir
+            </button>
         </div>
     </div>
 </div>

@@ -95,7 +95,7 @@
     <div class="report-header">
         <h1 class="report-title">Reporte de Movimientos</h1>
         <div class="ingreso">
-            <span class="left">No. de ingreso: <?= htmlspecialchars($datos[0]->mov_id) ?></span>
+            <span class="left">No. de egreso: <?= htmlspecialchars($datos[0]->mov_id) ?></span>
         </div>
         <div class="fecha">
             <span class="right">Fecha del Reporte: <?= date("d/m/Y") ?></span>
@@ -123,7 +123,7 @@
                 <tr>
                     <td><?= $contador++ ?></td>
                     <td><?= htmlspecialchars($movimiento->alma_nombre) ?></td>
-                    <td><?= $movimiento->mov_tipo_trans == 'I' ? 'Ingreso Interno' : ($movimiento->mov_tipo_trans == 'E' ? 'Ingreso Externo' : htmlspecialchars($movimiento->mov_tipo_trans)) ?></td>
+                    <td><?= $movimiento->mov_tipo_trans == 'I' ? 'Egreso Interno' : ($movimiento->mov_tipo_trans == 'E' ? 'Egreso Externo' : htmlspecialchars($movimiento->mov_tipo_trans)) ?></td>
                     <td><?= htmlspecialchars($movimiento->mov_fecha) ?></td>
                     <td><?= htmlspecialchars($movimiento->pro_nom_articulo) ?></td>
                     <td><?= htmlspecialchars($movimiento->est_descripcion) ?></td>

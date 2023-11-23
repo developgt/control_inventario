@@ -7,7 +7,7 @@ use MVC\Router;
 use Model\Detalle;
 use Exception;
 
-class ReporteController
+class ReporteEgresoController
 {
     // Método para generar el PDF
     public static function pdf(Router $router)
@@ -21,9 +21,9 @@ class ReporteController
         ]);
         $mpdf->SetMargins(30, 35, 25);
 
-        $html = $router->load('reporte/pdf');
-        $htmlHeader = $router->load('reporte/header');
-        $htmlFooter = $router->load('reporte/footer');
+        $html = $router->load('egresoreporte/pdf');
+        $htmlHeader = $router->load('egresoreporte/header');
+        $htmlFooter = $router->load('egresoreporte/footer');
 
         $mpdf->SetHTMLHeader($htmlHeader);
         $mpdf->SetHTMLFooter($htmlFooter);
@@ -127,9 +127,9 @@ class ReporteController
             ]);
             $mpdf->SetMargins(30, 35, 25);
 
-            $html = $router->load('reporte/pdf', ['datos' => $datos]);
-            $htmlHeader = $router->load('reporte/header');
-            $htmlFooter = $router->load('reporte/footer');
+            $html = $router->load('egresoreporte/pdf', ['datos' => $datos]);
+            $htmlHeader = $router->load('egresoreporte/header');
+            $htmlFooter = $router->load('egresoreporte/footer');
 
             $mpdf->SetHTMLHeader($htmlHeader);
             $mpdf->SetHTMLFooter($htmlFooter);
