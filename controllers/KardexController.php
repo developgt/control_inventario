@@ -133,10 +133,7 @@ WHERE
             'codigo' => 0
         ]);
     }
-    //console.log(data);
+    // console.log(data);
 }
-
-/////////////////////////////////
-
 
 }
