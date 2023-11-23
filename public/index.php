@@ -18,6 +18,7 @@ use Controllers\MenuController;
 use Controllers\GestionController;
 use Controllers\GuardalmacenController;
 use Controllers\KardexController;
+use Controllers\ReporteKardexController;
 
 
 $router = new Router();
@@ -108,5 +109,9 @@ $router->get('/API/guardalmacen/buscar', [GuardalmacenController::class, 'buscar
 
 $router->get('/kardex', [KardexController::class, 'index']);
 $router->get('/API/kardex/buscar', [KardexController::class, 'buscarAlmacen']);
-// Comprueba y valida las rutas, que existan y les asigna las funciones del Controlador
+
+
+$router->get('/pdf', [ReporteKardexController::class, 'pdf']);
+$router->get('/pdf/buscar', [ReporteKardexController::class, 'pdf']);
+
 $router->comprobarRutas();

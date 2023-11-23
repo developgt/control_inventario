@@ -159,7 +159,6 @@ function mostrarModal(data) {
     modalExistente.remove();
   }
 
-  // Crear el contenido de la tabla
 // Crear el contenido de la tabla
 const tablaContenido = data.map((almacen) => (
   `<tr>
@@ -238,3 +237,26 @@ const modalHTML = `
   // Mostrar el modal
   modal.show();
 }
+
+// Obtener referencia al botón de imprimir
+const btnImprimir = document.getElementById('btnImprimir');
+
+// Añadir un evento de clic al botón de imprimir
+btnImprimir.addEventListener('click', () => {
+  // Obtener los valores seleccionados de los selectores
+  const almacenSeleccionado = document.getElementById('kardex_almacen').value;
+  const productoSeleccionado = document.getElementById('kardex_producto').value;
+  const medidaSeleccionada = document.getElementById('kardex_medida').value;
+
+  // Verificar si se han seleccionado todos los campos
+  if (almacenSeleccionado && productoSeleccionado && medidaSeleccionada) {
+    // Construir la URL con los parámetros necesarios
+    const urlReporteKardex = `/control_inventario/views/kardex/reportekardex.php?almacen=${almacenSeleccionado}&producto=${productoSeleccionado}&medida=${medidaSeleccionada}`;
+
+    // Abrir una nueva ventana o pestaña con la URL del reporte
+    window.open(urlReporteKardex, '_blank');
+  } else {
+    // Mostrar un mensaje indicando que se deben seleccionar todos los campos
+    alert('Por favor, seleccione todos los campos antes de imprimir.');
+  }
+});
