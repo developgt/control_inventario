@@ -85,11 +85,9 @@ class MovimientoEgresoController
         }
     }
 
-
     public static function buscarAlmacenesAPI()
     {
-        $sql = "select alma_nombre, alma_id from inv_almacenes, mper, morg, mdep where per_plaza = org_plaza and org_dependencia= dep_llave and alma_unidad = dep_llave and per_catalogo = user
-        and alma_situacion = 1";
+        $sql = "select alma_id, alma_nombre,alma_clase from inv_almacenes, inv_guarda_almacen where alma_id = guarda_almacen and guarda_catalogo = user and guarda_situacion = 1";
         try {
             $almacen = Almacen::fetchArray($sql);
 
@@ -194,23 +192,22 @@ class MovimientoEgresoController
         $producto = $_GET['det_pro'] ?? '';
 
 
-        $sql = "
-        SELECT d.*,
-               p.pro_id,
-               e.est_descripcion,
-               p.pro_nom_articulo,
-               u.uni_nombre AS pro_medida_nombre
-        FROM inv_deta_movimientos d
-        INNER JOIN (
-            SELECT MAX(DET_ID) AS max_det_id
-            FROM inv_deta_movimientos
-            WHERE det_pro_id = $producto AND det_situacion = 1
-            GROUP BY det_pro_id, det_lote, det_estado, det_fecha_vence
-        ) max_det ON d.DET_ID = max_det.max_det_id
-        LEFT JOIN inv_producto p ON d.det_pro_id = p.pro_id
-        LEFT JOIN inv_uni_med u ON p.pro_medida = u.uni_id
-        LEFT JOIN inv_estado e ON d.det_estado = e.est_id
-        ORDER BY d.det_id ASC";
+        $sql = "SELECT d.*,
+        p.pro_id,
+        e.est_descripcion,
+        p.pro_nom_articulo,
+        u.uni_nombre 
+ FROM inv_deta_movimientos d
+ INNER JOIN (
+     SELECT MAX(DET_ID) AS max_det_id
+     FROM inv_deta_movimientos
+     WHERE det_pro_id = $producto AND det_situacion = 1
+     GROUP BY det_pro_id, det_lote, det_estado, det_fecha_vence
+ ) max_det ON d.DET_ID = max_det.max_det_id
+ LEFT JOIN inv_producto p ON d.det_pro_id = p.pro_id
+ LEFT JOIN inv_uni_med u ON d.det_uni_med = u.uni_id
+ LEFT JOIN inv_estado e ON d.det_estado = e.est_id
+ ORDER BY d.det_id ASC";
 
       
 

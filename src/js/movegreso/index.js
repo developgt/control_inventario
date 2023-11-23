@@ -56,6 +56,7 @@ const movDetalleDiv = document.getElementById('mov_detalle');
 
 //CONST PARA LOS INPUTS 
 const detProIdSelect = document.getElementById('det_pro_id');
+const detUniSelect = document.getElementById('det_uni_med');
 const detLoteInput = document.getElementById('det_lote');
 const detFechaInput = document.getElementById('det_fecha_vence');
 const detEstadoSelect = document.getElementById('det_estado');
@@ -64,6 +65,7 @@ const detCantidadExistenteInput = document.getElementById('det_cantidad_existent
 const detCantidadLoteInput = document.getElementById('det_cantidad_lote');
 const fechaCampo = document.getElementById('fechaCampo');
 const sinFecha = document.getElementById('sinFecha');
+const sinFechaInput = document.getElementById('sin_fecha')
 
 //////formulario existencias//////////////////
 const formularioExistencia = document.getElementById('formularioExistencia');
@@ -77,12 +79,14 @@ const checkboxLoteSi = document.getElementById('tiene_lote_si');
 
 ///////////// para el modal///////
 const botonVerIngresos = document.getElementById('btnVerIngresos');
+const botonRetirarMas = document.getElementById('btnRetirarMas');
 const modalVerExistencias = document.getElementById('verExistencias');
 const botonCerrarModal = document.querySelector('.modal-header .close');
 const formularioModal = document.getElementById('formularioExistencia');
 
 let almaSeleccionadoId;// para guardar el id del almacen seleccionado
 let producto = [];
+let medida = [];
 let estado = [];// se define estado como un array vacio...
 let almacenes = []; // se define almacenes como un array vacio...
 let dependencias = [];
@@ -123,12 +127,16 @@ const datatable = new Datatable('#tablaExistencias', {
             data: 'det_estado'
         },
         {
+            title: 'Unidad de medida',
+            data: 'det_uni_med'
+        },
+        {
             title: 'Producto',
             data: 'pro_nom_articulo'
         },
         {
             title: 'Medida',
-            data: 'pro_medida_nombre'
+            data: 'uni_nombre'
         },
         {
             title: 'Lote',
@@ -155,7 +163,7 @@ const datatable = new Datatable('#tablaExistencias', {
             data: 'det_id',
             searchable: false,
             orderable: false,
-            render: (data, type, row, meta) => `<button class="btn btn-warning"  data-proid='${row["pro_id"]}' data-producto='${row["det_pro_id"]}' data-lote='${row["det_lote"]}' data-estado='${row["det_estado"]}' data-fecha='${row["det_fecha_vence"]}'>Retirar</button>`
+            render: (data, type, row, meta) => `<button class="btn btn-warning"  data-proid='${row["pro_id"]}' data-producto='${row["det_pro_id"]}' data-lote='${row["det_lote"]}' data-estado='${row["det_estado"]}' data-fecha='${row["det_fecha_vence"]}' data-medida='${row["det_uni_med"]}'>Retirar</button>`
         },
         {
             title: 'ELIMINAR',
@@ -167,7 +175,7 @@ const datatable = new Datatable('#tablaExistencias', {
     ],
     columnDefs: [
         {
-            targets: [1, 2, 3, 11],
+            targets: [1, 2, 3, 4, 12],
             visible: false, 
             width: 0,
             searchable: false,
@@ -186,6 +194,7 @@ const traeDatos = (e) => {
     const lote = button.dataset.lote;
     const estado = button.dataset.estado;
     const fecha = button.dataset.fecha;
+    const medida = button.dataset.medida;
 
     if (fecha === '1999-05-07') {
         // Si la fecha de vencimiento es '1999-05-7', oculta fechaCampo y muestra sinFecha
@@ -204,6 +213,7 @@ const traeDatos = (e) => {
         det_lote: lote,
         det_estado: estado,
         det_fecha_vence: fecha,
+        det_uni_med: medida,
        
 
     };  
@@ -229,6 +239,7 @@ const colocarDatos = (dataset) => {
     formularioDetalle.det_pro_id.value = dataset.det_pro_id;
     formularioDetalle.det_lote.value = dataset.det_lote;
     formularioDetalle.det_estado.value = dataset.det_estado;
+    formularioDetalle.det_uni_med.value = dataset.det_uni_med;
     formularioDetalle.det_fecha_vence.value = dataset.det_fecha_vence;
 
     // btnGuardar.disabled = true;
@@ -253,6 +264,403 @@ const cancelarAccion = () => {
     btnCancelar.parentElement.style.display = 'none';
 };
 
+
+
+
+// /////////datatable para mostrar el detalle de ingreso al inventario/////////
+
+// //////////DATATABLE//////////////////////////////////////////////////////
+
+let contadorDetalle = 1;
+
+const datatableDetalle = new Datatable('#tablaDetalles', {
+    language: lenguaje,
+    data: null,
+    columns: [
+        {
+            title: 'NO',
+            render: () => contadorDetalle++
+        },
+        {
+            title: 'ID',
+            data: 'det_id'
+        },
+        {
+            title: 'Producto',
+            data: 'det_pro_id'
+        },
+        {
+            title: 'Estado del insumo',
+            data: 'det_estado'
+        },
+        {
+            title: 'Estado del insumo',
+            data: 'det_uni_med'
+        },
+        {
+            title: 'Producto',
+            data: 'pro_nom_articulo'
+        },
+        {
+            title: 'Medida',
+            data: 'uni_nombre'
+        },
+        {
+            title: 'Lote',
+            data: 'det_lote'
+        },
+        {
+            title: 'Estado del insumo',
+            data: 'est_descripcion'
+        },
+        {
+            title: 'Fecha de Vencimiento',
+            data: 'det_fecha_vence',
+            render: function (data) {
+                // Verifica si la fecha es '7/05/1999' y muestra 'Sin fecha de vencimiento'
+                return (data === '1999-05-07') ? 'Sin fecha de vencimiento' : data;
+            }
+        },
+        {
+            title: 'Cantidad Ingresada',
+            data: 'det_cantidad'
+        },
+        {
+            title: 'Cantidad Existente Por lote',
+            data: 'det_cantidad_lote'
+        },
+        {
+            title: 'Observaciones',
+            data: 'det_observaciones'
+            },
+        {
+            title: 'EDITAR DETALLE',
+            data: 'det_id',
+            searchable: false,
+            orderable: false,
+            render: (data, type, row, meta) => `<button class="btn btn-warning" data-id='${row["det_id"]}'data-producto='${row["det_pro_id"]}' data-lote='${row["det_lote"]}' data-estado='${row["det_estado"]}' data-fecha='${row["det_fecha_vence"]}' data-medida='${row["det_uni_med"]}' data-cantidad='${row["det_cantidad"]}' data-observaciones='${row["det_observaciones"]}'>Editar</button>`
+        },
+        {
+            title: 'ELIMINAR',
+            data: 'det_id',
+            searchable: false,
+            orderable: false,
+            render: (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Eliminar</button>`
+        }
+    ],
+    columnDefs: [
+        {
+            targets: [1, 2, 3, 4],
+            visible: false, 
+            searchable: false,
+            
+        }
+      
+    ]
+});
+
+//// PARA TRAER LOS DATOS 
+const traeDatosDetalle = (e) => {
+    const button = e.target;
+    const producto = button.dataset.producto;
+    const lote = button.dataset.lote;
+    const estado = button.dataset.estado;
+    const fecha = button.dataset.fecha;
+    const medida = button.dataset.medida;
+    const observaciones = button.dataset.observaciones;
+    const cantidad = button.dataset.cantidad;
+    const id = button.dataset.id
+
+    if (lote === 'SIN/L') {
+       
+        checkboxLoteSi.checked = false;
+        checkboxLoteNo.checked = true;
+        
+    } else {
+        checkboxLoteNo.checked = false;
+        checkboxLoteSi.checked = true;
+       }
+
+       if (fecha === '1999-05-07') {
+        checkboxFechaSi.checked = false;
+        checkboxFechaNo.checked = true;
+    } else {
+        checkboxFechaNo.checked = false;
+        checkboxFechaSi.checked = true;
+       }
+       
+    const dataset = {
+        //pro_id: proid,
+        det_pro_id: producto,
+        det_lote: lote,
+        det_estado: estado,
+        det_fecha_vence: fecha,
+        det_uni_med: medida,
+        det_observaciones: observaciones,
+        det_cantidad: cantidad,
+        det_id: id,
+    };  
+    console.log('Datos en traeDatos:', dataset);
+    // campoLote.style.display = 'block';
+    // fechaCampo.style.display = 'block';
+        colocarDatosDetalle(dataset);
+        buscarCantidad();
+        buscarCantidadLote();
+       
+};
+
+const colocarDatosDetalle = (dataset) => {
+    console.log('Datos en colocarDatos:', dataset);
+
+
+    //formularioDetalle.pro_id.value = datasetDetalle.pro_id;
+    formularioDetalle.det_pro_id.value = dataset.det_pro_id;
+    formularioDetalle.det_lote.value = dataset.det_lote;
+    formularioDetalle.det_estado.value = dataset.det_estado;
+    formularioDetalle.det_uni_med.value = dataset.det_uni_med;
+    formularioDetalle.det_fecha_vence.value = dataset.det_fecha_vence;
+    formularioDetalle.det_observaciones.value = dataset.det_observaciones;
+    formularioDetalle.det_cantidad.value = dataset.det_cantidad;
+    formularioDetalle.det_id.value = dataset.det_id;
+
+
+    btnGuardarDetalle.disabled = true;
+    btnGuardarDetalle.parentElement.style.display = 'none';
+    btnModificarDetalle.disabled = false;
+    btnModificarDetalle.parentElement.style.display = '';
+    btnCancelarDetalle.disabled = false;
+    btnCancelarDetalle.parentElement.style.display = '';
+};
+
+const cancelarAccionDetalle = () => {
+    formularioDetalle.reset();
+    btnGuardarDetalle.disabled = false;
+    btnGuardarDetalle.parentElement.style.display = '';
+    btnModificarDetalle.disabled = true;
+    btnModificarDetalle.parentElement.style.display = 'none';
+    btnCancelarDetalle.disabled = true;
+    btnCancelarDetalle.parentElement.style.display = 'none';
+    campoLote.style.display = "none";
+    fechaCampo.style.display = "none";
+};
+
+
+
+
+let contadorMovimiento;
+
+const datatableMovimiento = new Datatable('#tablaMovimientos', {
+    language: lenguaje,
+    data: null,
+    columns: [
+        {
+            title: 'NO',
+            render: () => contadorMovimiento++
+        },
+        // Columnas del movimiento
+        {
+            title: 'ID MOVIMIENTO',
+            data: 'mov_id',
+        },
+        {
+            title: 'ID del inventario',
+            data: 'mov_alma_id'
+        },
+        {
+            title: 'ID del inventario',
+            data: 'mov_tipo_mov'
+        },
+        {
+            title: 'Persona que Entregó',
+            data: 'mov_perso_entrega'
+        },
+        {
+            title: 'Persona que Recibio',
+            data: 'mov_perso_recibe'
+        },
+        {
+            title: 'Persona Responsable',
+            data: 'mov_perso_respon'
+        },
+        {
+            title: 'Procedencia o destino',
+            data: 'mov_proce_destino'
+        },
+        {
+            title: 'Inventario del que Egreso',
+            data: 'alma_nombre'
+        },
+        {
+            title: 'Datos de quien Entregó',
+            data: 'mov_perso_entrega_nom'
+        },
+        {
+            title: 'Datos de quien Recibio',
+            data: 'mov_perso_recibe_nom'
+        },
+        {
+            title: 'Datos del Responsable',
+            data: 'mov_perso_respon_nom'
+        },
+        {
+            title: 'Fecha de Egreso',
+            data: 'mov_fecha'
+        },
+        {
+            title: 'Tipo de transaccion',
+            data: 'mov_tipo_trans',
+            render: function (data) {
+                return (data === 'I') ? 'EGRESO INTERNO' : (data === 'E') ? 'EGRESO EXTERNO' : data;
+            }
+        },
+        {
+            title: 'Destino',
+            data: 'dep_desc_md'
+        },
+        {
+            title: 'Descripcion',
+            data: 'mov_descrip'
+        },
+        {
+            title: 'EDITAR DETALLE',
+            data: 'det_id',
+            searchable: false,
+            orderable: false,
+            render: (data, type, row, meta) => `<button class="btn btn-warning"  data-proid='${row["pro_id"]}' data-producto='${row["det_pro_id"]}' data-lote='${row["det_lote"]}' data-estado='${row["det_estado"]}' data-fecha='${row["det_fecha_vence"]}'>Editar</button>`
+        },
+        {
+            title: 'ELIMINAR',
+            data: 'det_id',
+            searchable: false,
+            orderable: false,
+            render: (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Eliminar</button>`
+        }
+     ],
+     columnDefs: [
+        {
+            targets: [1, 2, 3, 4, 5, 6,7],
+            visible: false, 
+            searchable: false,
+            
+        }
+    ]
+   
+});
+
+
+////funcion para cambiar de situacion un detalle
+
+const eliminar = async (e) => {
+    const button = e.target;
+    const id = button.dataset.id;
+    const det_id = document.getElementById('det_id');
+    const valor = det_id.value;
+
+
+
+
+    if (await confirmacion('warning', '¿Desea eliminar este registro?')) {
+        const body = new FormData();
+        body.append('det_id', id);
+        const url = '/control_inventario/API/movimiento/eliminar';
+        const config = {
+            method: 'POST',
+            body
+        };
+        try {
+            //await buscarDependencia();
+            const respuesta = await fetch(url, config);
+            const data = await respuesta.json();
+            console.log(data);
+            const { codigo, mensaje, detalle } = data;
+            let icon = 'info';
+            switch (codigo) {
+                case 1:
+                    icon = 'success';
+                    buscarDetalleMovimiento();
+                    break;
+                case 0:
+                    icon = 'error';
+                    console.log(detalle);
+                    break;
+                    default:
+                    break;
+            }
+            Toast.fire({
+                icon,
+                text: mensaje
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    buscarDetalleMovimiento();
+
+
+};
+
+// Modifica la función buscarDetalleMovimiento para manejar la nueva estructura
+const buscarDetalleMovimiento = async () => {
+    let det_mov_id = formularioDetalle.det_mov_id.value;
+
+    const url = `/control_inventario/API/movimiento/buscarDetalleMovimiento?det_mov_id=${det_mov_id}`;
+    const config = {
+        method: 'GET',
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+        console.log(data);
+
+        datatableDetalle.clear().draw();
+        if (data && data.length > 0) {
+            contadorDetalle = 1;
+            datatableDetalle.rows.add(data).draw();
+       
+        } else {
+            Toast.fire({
+                title: 'No se encontraron registros',
+                icon: 'info',
+            });
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+
+
+
+const buscarDetalleIngresado = async () => {
+    let det_mov_id = formularioDetalle.det_mov_id.value;
+
+    const url = `/control_inventario/API/movimiento/buscarDetalleIngresado?det_mov_id=${det_mov_id}`;
+    const config = {
+        method: 'GET',
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+        console.log(data);
+
+        datatableMovimiento.clear().draw();
+        if (data) {
+            contadorMovimiento = 1;
+            datatableMovimiento.rows.add(data).draw();
+           
+        } else {
+            Toast.fire({
+                title: 'No se encontraron registros',
+                icon: 'info',
+            });
+        }
+    } catch (error) {
+        console.log(error);
+    }
+// 
+};
 
 
 
@@ -392,6 +800,7 @@ const buscarOficialesResponsable = async () => {
     typingTimeout = setTimeout(fetchData, 1200);
 
 };
+
 
 
 
@@ -596,6 +1005,7 @@ formulario.mov_alma_id.addEventListener('change', function () {
     // Llamar a buscarProducto pasando el ID del almacén
     buscarProducto();
     buscarProductoDetalle();
+    buscarUnidades();
 });
 
 
@@ -643,6 +1053,47 @@ const buscarProducto = async () => {
         console.log(error);
     }
     formularioExistencia.reset();
+};
+
+const buscarUnidades = async () => {
+    // Verificar si los elementos del formulario existen antes de acceder a sus propiedades
+    if (formularioDetalle.uni_nombre && formularioDetalle.uni_id) {
+        let uni_nombre = formularioDetalle.uni_nombre.value;
+        let uni_id = formularioDetalle.uni_id.value;
+    }
+    const url = `/control_inventario/API/movimiento/buscarUnidades?almaSeleccionadoId=${almaSeleccionadoId}`;
+    const config = {
+        method: 'GET'
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+        console.log('data de medidas', data); // Imprimir datos en la consola
+
+        medida = data;
+        // Limpiar el contenido del select
+        formularioDetalle.det_uni_med.innerHTML = '';
+
+        // Agregar opción predeterminada
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = 'SELECCIONE...';
+        formularioDetalle.det_uni_med.appendChild(defaultOption);
+        // Iterar sobre cada objeto en el arreglo y crear opciones para el select
+        data.forEach(medida => {
+            const option = document.createElement('option');
+            option.value = medida.uni_id;
+            option.textContent = medida.uni_nombre;
+            formularioDetalle.det_uni_med.appendChild(option);
+        });
+
+        //contador = 1;
+        //datatable.clear().draw();
+    } catch (error) {
+        console.log(error);
+    }
+    
 };
 
 const buscarProductoDetalle = async () => {
@@ -770,6 +1221,7 @@ const guardar = async (evento) => {
                 modalVerExistencias.classList.add('show');
                 modalVerExistencias.style.display = 'block';
                 document.body.classList.add('modal-open');
+                buscarDetalleIngresado();
 
                 //buscar();
                 break;
@@ -791,6 +1243,7 @@ const guardar = async (evento) => {
     } catch (error) {
         console.log(error);
     }
+    buscarDetalleIngresado();
 
 }
 
@@ -805,6 +1258,7 @@ const buscarCantidadLote = async () => {
 
 
     let det_pro_id = detProIdSelect.value;
+    let det_uni_med = detUniSelect.value;
     let det_lote = detLoteInput.value;
     let det_estado = detEstadoSelect.value;
     let det_fecha_vence = detFechaInput.value;
@@ -817,7 +1271,7 @@ const buscarCantidadLote = async () => {
     //             //return;
     //         }
 
-    const url = `/control_inventario/API/movimiento/buscarCantidadLote?det_pro_id=${det_pro_id}&det_lote=${det_lote}&det_estado=${det_estado}&det_fecha_vence=${det_fecha_vence}`;
+    const url = `/control_inventario/API/movimiento/buscarCantidadLote?det_pro_id=${det_pro_id}&det_uni_med=${det_uni_med}&det_lote=${det_lote}&det_estado=${det_estado}&det_fecha_vence=${det_fecha_vence}`;
 
 
     const config = {
@@ -865,8 +1319,10 @@ const buscarCantidad = async () => {
 
 
     let det_pro_id = detProIdSelect.value;
+    let det_uni_med = detUniSelect.value;
 
-    const url = `/control_inventario/API/movimiento/buscarCantidad?det_pro_id=${det_pro_id}`;
+
+    const url = `/control_inventario/API/movimiento/buscarCantidad?det_pro_id=${det_pro_id}&det_uni_med=${det_uni_med}`;
 
 
     const config = {
@@ -916,13 +1372,15 @@ const buscarCantidad = async () => {
 const guardarDetalle = async (evento) => {
     evento.preventDefault();
 
-    if (!validarFormulario(formularioDetalle, ['det_id', 'det_lote'])) {
+    if (!validarFormulario(formularioDetalle, ['det_id', 'det_lote', 'sin_fecha'])) {
         Toast.fire({
             icon: 'info',
             text: 'Debe llenar todos los datos'
         })
         return
     }
+      //  // Guarda el valor actual del campo det_mov_id
+      const detMovIdValue = document.getElementById('det_mov_id').value;
     const body = new FormData(formularioDetalle)
     body.delete('det_id')
     //  const url = '/control_inventario/API/movimiento/guardarDetalle';
@@ -946,6 +1404,9 @@ const guardarDetalle = async (evento) => {
             case 1:
                 formularioDetalle.reset();
                 icon = 'success'
+                  // Restaura el valor del campo det_mov_id
+                  document.getElementById('det_mov_id').value = detMovIdValue;
+                buscarDetalleMovimiento();
                 break;
 
             case 0:
@@ -972,6 +1433,7 @@ const guardarDetalle = async (evento) => {
 
         console.log('Respuesta completa:', await error.text());
     }
+    buscarDetalleMovimiento();
   
 };
 
@@ -1075,7 +1537,9 @@ select.addEventListener('change', mostrarDependencia);
 //EVENTOS PARA BUSCAR LA CANTIDAD EXISTENTE
 
 detProIdSelect.addEventListener('input', buscarCantidad);
+detUniSelect.addEventListener('input', buscarCantidad);
 detProIdSelect.addEventListener('input', buscarCantidadLote);
+detUniSelect.addEventListener('input', buscarCantidadLote);
 detLoteInput.addEventListener('input', buscarCantidadLote);
 detEstadoSelect.addEventListener('input', buscarCantidadLote);
 datatable.on('click', '.btn-warning', traeDatos );
@@ -1151,9 +1615,16 @@ botonVerIngresos.addEventListener('click', () => {
     // Abre el modal al hacer clic en el botón
     modalVerExistencias.classList.add('show');
     modalVerExistencias.style.display = 'block';
-    document.body.classList.add('modal-open');
+  
 });
 
+// Agrega un evento de clic al botón
+botonRetirarMas.addEventListener('click', () => {
+    // Abre el modal al hacer clic en el botón
+    modalVerExistencias.classList.add('show');
+    modalVerExistencias.style.display = 'block';
+  
+});
 //////////evento para cerrar el modal haciendo clic
 
 botonCerrarModal.addEventListener('click', function () {

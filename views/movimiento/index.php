@@ -1,58 +1,156 @@
 <style>
-.table-responsive {
-    margin: 0 auto;
-}
+    .table-responsive {
+        margin: 0 auto;
+    }
 
-.table {
-    width: 100%;
-    margin-bottom: 1rem;
-    color: #212529;
-}
+    .table {
+        width: 100%;
+        margin-bottom: 1rem;
+        color: #212529;
+    }
 
-.table th,
-.table td {
-    padding: 0.75rem;
-    vertical-align: top;
-    border-top: 1px solid #dee2e6;
-}
+    .table th,
+    .table td {
+        padding: 0.75rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+    }
 
-.table thead th {
-    vertical-align: bottom;
-    border-bottom: 2px solid #dee2e6;
-}
+    .table thead th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #dee2e6;
+    }
 
-.table tbody + tbody {
-    border-top: 2px solid #dee2e6;
-}
+    .table tbody+tbody {
+        border-top: 2px solid #dee2e6;
+    }
 
-h5 {
-    text-align: center;
-    background-color: #f8f9fa; /* Color de fondo claro */
-    padding: 10px;
-    border: 1px solid #dee2e6;
-    border-radius: 0.25rem;
-    margin-bottom: 20px; /* Espacio entre la cabecera y la tabla */
-}
+    h5 {
+        text-align: center;
+        background-color: #f8f9fa;
+        /* Color de fondo claro */
+        padding: 10px;
+        border: 1px solid #dee2e6;
+        border-radius: 0.25rem;
+        margin-bottom: 20px;
+        /* Espacio entre la cabecera y la tabla */
+    }
 
-.table-striped tbody tr:nth-of-type(odd) {
-    background-color: rgba(0, 0, 0, 0.05);
-}
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
 
-.table-hover tbody tr:hover {
-    color: #212529;
-    background-color: rgba(0, 0, 0, 0.075);
-}
+    .table-hover tbody tr:hover {
+        color: #212529;
+        background-color: rgba(0, 0, 0, 0.075);
+    }
 
 
+    .readonly {
+        background-color: rgba(173, 216, 230, 0.5);
+    }
+
+    .nuevo-contenedor {
+        padding: 20px;
+        margin-top: 10px;
+        background-color: beige;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+        min-height: 100vh;
+        justify-content: center;
+    }
+
+    #formularioMovimiento {
+        padding: 20px;
+        margin: auto;
+        background-color: #f2f2f2;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+
+    }
+
+    #formularioExistencia {
+        padding: 20px;
+        margin: auto;
+        background-color: #f2f2f2;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        /* Sombra */
+
+    }
+
+    #formularioDetalle {
+        padding: 20px;
+        margin: auto;
+        background-color: #f2f2f2;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        /* Sombra */
+
+    }
+
+    .encabezado-inventario {
+        background-color: #007bff;
+        color: #ffffff;
+        padding: 20px;
+        margin-top: 10px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        /* Sombra */
+    }
+
+    .encabezado-inventario:hover {
+        background-color: #0056b3;
+        /* Cambio de color al pasar el mouse */
+    }
+
+    /* Estilo para el fondo oscuro del modal */
+    .modal-with-backdrop:before {
+        content: "";
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1030;
+        background-color: #000;
+        opacity: 0.5;
+    }
+
+    /* Estilo para el modal */
+    .modal-with-backdrop .modal-content {
+        z-index: 1031;
+        /* Asegura que el modal esté sobre el fondo oscuro */
+    }
+
+    /* Estilo para el encabezado del modal */
+    .custom-modal-header {
+        background: linear-gradient(to right, rgba(70, 130, 180, 0.8), rgba(30, 144, 255, 0.8));
+        color: #fff;
+        border-bottom: 2px solid #fff;
+
+    }
+
+    /* Estilo para el título del modal */
+    .custom-modal-title {
+        margin: 0;
+
+    }
+
+    .mi-tabla {
+        width: 110%;
+        border-collapse: collapse;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        margin-left: auto;
+        margin-right: auto;
+
+    }
 </style>
 <div class="container bg-light border rounded mx-auto mt-2" id="mov_movimiento">
     <div class="row justify-content-center">
-        <div class="col-lg-8 mb-4">
+        <div class="col-lg-8 mb-2">
             <div class="card mb-4 mt-4">
-                <h2 class="card-title text-center mb-4 bg-primary text-white p-3 rounded">Formulario para el ingreso al Almacén</h2>
+                <h2 class="card-title text-center mb-4 p-3 rounded encabezado-inventario">Formulario para el ingreso al Almacén</h2>
                 <div class="card-body">
-
-                    <form id="formularioMovimiento">
+                    <form class="col-lg-10 border rounded bg-light p-3" id="formularioMovimiento">
                         <input type="hidden" name="mov_id" id="mov_id">
                         <!-- tipo de movimiento ingreso "I" -->
                         <input type="hidden" value="I" name="mov_tipo_mov" id="mov_tipo_mov">
@@ -205,10 +303,10 @@ h5 {
     <div class="row justify-content-center"> <!-- aqui empieza la siguiente div para el formulario de detalle -->
         <div class="col-lg-9">
             <div class="card mb-4 mt-4"">
-            <h2 class=" card-header bg-primary text-white text-center p-3 rounded">Detalle del Ingreso del Almacén</h2>
+            <h2 class=" card-header text-center p-3 rounded encabezado-inventario">Detalle del Ingreso del Almacén</h2>
                 <div class="card-body">
-                    <form id="formularioDetalle">
-                        <input type="hidden" name="det_id" id="det_id">
+                    <form class="col-lg-10 border rounded bg-light p-3" id="formularioDetalle">
+                        <input type="text" name="det_id" id="det_id">
                         <input type="text" name="det_mov_id" id="det_mov_id">
                         <div class="row mb-3">
                             <div class="col-md-4">
@@ -220,7 +318,7 @@ h5 {
                                     </select>
                                 </div>
                             </div>
-                            <div class="col">
+                            <div class="col-md-4">
                                 <label for="det_uni_med" class="form-label">Seleccione la unidad de medida</label>
                                 <select name="det_uni_med" id="det_uni_med" class="form-select">
                                     <option value="">SELECCIONE...</option>
@@ -355,23 +453,30 @@ h5 {
             </div>
         </div>
     </div>
+    <div class="row justify-content-center">
+        <div class="col-lg-3">
+            <button type="button" id="btnImprimir" class="btn btn-primary w-100">
+                <i class="bi bi-printer"></i> Imprimir
+            </button>
+        </div>
+    </div>
 </div>
 
 
 
 <!-- <-- modal para mostrar la vista para asignar guarda almacén -->
-<div class="modal fade" id="verExistencias" name="verExistencias" tabindex="-1" role="dialog" aria-labelledby="verExistenciasLabel" aria-hidden="true">
+<div class="modal fade modal-with-backdrop" id="verExistencias" name="verExistencias" tabindex="-1" role="dialog" aria-labelledby="verExistenciasLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="verExistenciasLabel">Ver Ingresos</h5>
+            <div class="modal-header custom-modal-header">
+                <h4 class="modal-title custom-modal-title" id="verExistenciasLabel">Ver Ingresos</h4>
                 <button type="button" class="close btn btn-danger" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                     <span class="sr-only">Salir de esta ventana</span>
                 </button>
             </div>
             <div class="modal-body" id="verExistenciasBody">
-                <h3 class="text-center mt-4 mb-4 bg-light p-3 border rounded">Buscar Ingresos</h3>
+                <h3 class="text-center border rounded encabezado-inventario">Buscar Ingresos</h3>
                 <div class="row justify-content-center mb-5">
                     <form class="col-lg-8 border rounded bg-light p-3" id="formularioExistencia">
                         <div class="row mb-3">
@@ -409,7 +514,7 @@ h5 {
                 </div>
                 <!-- <div class="container border rounded bg-white mt-5"> -->
                 <div class="container d-flex flex-column align-items-center justify-content-center border rounded bg-white mt-5">
-                    <h3 class="text-center mt-4 mb-4 bg-light p-3 border rounded">Ingresos Realizados</h3>
+                    <h3 class="text-center mt-4 mb-4  p-3 border rounded encabezado-inventario">Ingresos Realizados</h3>
                     <div class="row justify-content-center">
                         <div class="table-responsive">
                             <table id="tablaExistencias" class="table table-striped table-bordered table-hover table-light w-auto">

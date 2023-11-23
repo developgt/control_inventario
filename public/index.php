@@ -18,7 +18,7 @@ use Controllers\MenuController;
 use Controllers\GestionController;
 use Controllers\GuardalmacenController;
 use Controllers\KardexController;
-
+use Controllers\ReporteController;
 
 $router = new Router();
 $router->setBaseURL('/' . $_ENV['APP_NAME']);
@@ -88,6 +88,8 @@ $router->get('/API/movimiento/buscarDetalleMovimiento', [MovimientoController::c
 $router->get('/API/movimiento/buscarDetalleIngresado', [MovimientoController::class, 'buscarDetalleIngresadoAPI']);
 $router->post('/API/movimiento/guardar', [MovimientoController::class,'guardarAPI'] );
 $router->post('/API/movimiento/guardarDetalle', [MovimientoController::class,'guardarDetalleAPI']);
+$router->post('/API/movimiento/eliminar', [MovimientoController::class,'eliminarAPI'] );
+
 
 //rutas para manejar la vista de movimiento de la tabla INV_MOVIMIENTOS (egresos)
 
@@ -99,8 +101,21 @@ $router->get('/API/movegreso/buscarAlmacenes', [MovimientoEgresoController::clas
 $router->get('/API/movegreso/buscarDependencia', [MovimientoEgresoController::class, 'buscarDependenciaAPI']);
 $router->get('/API/movegreso/buscarExistencias', [MovimientoEgresoController::class, 'buscarExistenciasAPI']);
 
+/////IMPRIMIR PDF DE VALE DE INGRESO O EGRESO
+
+$router->get('/pdf', [ReporteController::class,'pdf']);
+$router->post('/reporte/generarPDF', [ReporteController::class, 'generarPDF']);
+$router->get('/API/reporte/buscarRecibo', [ReporteController::class, 'buscarReciboAPI']);
+
+
+
+
+
 $router->get('/', [MenuController::class,'index']);
 $router->get('/API/menu/buscar', [MenuController::class,'buscarAlmacen']);
+
+
+
 
 
 $router->get('/gestion', [GestionController::class,'index']);

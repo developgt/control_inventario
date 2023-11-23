@@ -68,6 +68,8 @@ const det_mov_id = document.getElementById('det_mov_id');
 const campoLote = document.getElementById('campoLote');
 const fechaCampo = document.getElementById('fechaCampo');
 
+const botonImprimir = document.getElementById('btnImprimir');
+
 
 // ////PARA MANEJAR EL CKECK BOX DE SI Y NO DE LOTE 
 
@@ -84,6 +86,7 @@ const formularioModal = document.getElementById('formularioExistencia');
 const btnBuscarExistencias = document.getElementById('btnBuscarExistencias');
 const det_pro = document.getElementById('det_pro');
 const DatosMovimiento = document.getElementById('DatosMovimiento')
+
 
 
 let almaSeleccionId;
@@ -297,6 +300,10 @@ const datatableDetalle = new Datatable('#tablaDetalles', {
             data: 'det_estado'
         },
         {
+            title: 'Estado del insumo',
+            data: 'det_uni_med'
+        },
+        {
             title: 'Producto',
             data: 'pro_nom_articulo'
         },
@@ -321,15 +328,23 @@ const datatableDetalle = new Datatable('#tablaDetalles', {
             }
         },
         {
+            title: 'Cantidad Ingresada',
+            data: 'det_cantidad'
+        },
+        {
             title: 'Cantidad Existente Por lote',
             data: 'det_cantidad_lote'
         },
+        {
+            title: 'Observaciones',
+            data: 'det_observaciones'
+            },
         {
             title: 'EDITAR DETALLE',
             data: 'det_id',
             searchable: false,
             orderable: false,
-            render: (data, type, row, meta) => `<button class="btn btn-warning"  data-proid='${row["pro_id"]}' data-producto='${row["det_pro_id"]}' data-lote='${row["det_lote"]}' data-estado='${row["det_estado"]}' data-fecha='${row["det_fecha_vence"]}'>Editar</button>`
+            render: (data, type, row, meta) => `<button class="btn btn-warning" data-id='${row["det_id"]}'data-producto='${row["det_pro_id"]}' data-lote='${row["det_lote"]}' data-estado='${row["det_estado"]}' data-fecha='${row["det_fecha_vence"]}' data-medida='${row["det_uni_med"]}' data-cantidad='${row["det_cantidad"]}' data-observaciones='${row["det_observaciones"]}'>Editar</button>`
         },
         {
             title: 'ELIMINAR',
@@ -341,7 +356,7 @@ const datatableDetalle = new Datatable('#tablaDetalles', {
     ],
     columnDefs: [
         {
-            targets: [1, 2, 3],
+            targets: [1, 2, 3, 4],
             visible: false, 
             searchable: false,
             
@@ -349,6 +364,93 @@ const datatableDetalle = new Datatable('#tablaDetalles', {
       
     ]
 });
+
+//// PARA TRAER LOS DATOS 
+const traeDatosDetalle = (e) => {
+    const button = e.target;
+    const producto = button.dataset.producto;
+    const lote = button.dataset.lote;
+    const estado = button.dataset.estado;
+    const fecha = button.dataset.fecha;
+    const medida = button.dataset.medida;
+    const observaciones = button.dataset.observaciones;
+    const cantidad = button.dataset.cantidad;
+    const id = button.dataset.id
+
+    if (lote === 'SIN/L') {
+       
+        checkboxLoteSi.checked = false;
+        checkboxLoteNo.checked = true;
+        
+    } else {
+        checkboxLoteNo.checked = false;
+        checkboxLoteSi.checked = true;
+       }
+
+       if (fecha === '1999-05-07') {
+        checkboxFechaSi.checked = false;
+        checkboxFechaNo.checked = true;
+    } else {
+        checkboxFechaNo.checked = false;
+        checkboxFechaSi.checked = true;
+       }
+       
+    const dataset = {
+        //pro_id: proid,
+        det_pro_id: producto,
+        det_lote: lote,
+        det_estado: estado,
+        det_fecha_vence: fecha,
+        det_uni_med: medida,
+        det_observaciones: observaciones,
+        det_cantidad: cantidad,
+        det_id: id,
+    };  
+    console.log('Datos en traeDatos:', dataset);
+    // campoLote.style.display = 'block';
+    // fechaCampo.style.display = 'block';
+        colocarDatosDetalle(dataset);
+        buscarCantidad();
+        buscarCantidadLote();
+       
+};
+
+const colocarDatosDetalle = (dataset) => {
+    console.log('Datos en colocarDatos:', dataset);
+
+
+    //formularioDetalle.pro_id.value = datasetDetalle.pro_id;
+    formularioDetalle.det_pro_id.value = dataset.det_pro_id;
+    formularioDetalle.det_lote.value = dataset.det_lote;
+    formularioDetalle.det_estado.value = dataset.det_estado;
+    formularioDetalle.det_uni_med.value = dataset.det_uni_med;
+    formularioDetalle.det_fecha_vence.value = dataset.det_fecha_vence;
+    formularioDetalle.det_observaciones.value = dataset.det_observaciones;
+    formularioDetalle.det_cantidad.value = dataset.det_cantidad;
+    formularioDetalle.det_id.value = dataset.det_id;
+
+
+    btnGuardarDetalle.disabled = true;
+    btnGuardarDetalle.parentElement.style.display = 'none';
+    btnModificarDetalle.disabled = false;
+    btnModificarDetalle.parentElement.style.display = '';
+    btnCancelarDetalle.disabled = false;
+    btnCancelarDetalle.parentElement.style.display = '';
+};
+
+const cancelarAccionDetalle = () => {
+    formularioDetalle.reset();
+    btnGuardarDetalle.disabled = false;
+    btnGuardarDetalle.parentElement.style.display = '';
+    btnModificarDetalle.disabled = true;
+    btnModificarDetalle.parentElement.style.display = 'none';
+    btnCancelarDetalle.disabled = true;
+    btnCancelarDetalle.parentElement.style.display = 'none';
+    campoLote.style.display = "none";
+    fechaCampo.style.display = "none";
+};
+
+
 
 
 let contadorMovimiento;
@@ -425,6 +527,20 @@ const datatableMovimiento = new Datatable('#tablaMovimientos', {
             title: 'Descripcion',
             data: 'mov_descrip'
         },
+        {
+            title: 'EDITAR DETALLE',
+            data: 'det_id',
+            searchable: false,
+            orderable: false,
+            render: (data, type, row, meta) => `<button class="btn btn-warning"  data-proid='${row["pro_id"]}' data-producto='${row["det_pro_id"]}' data-lote='${row["det_lote"]}' data-estado='${row["det_estado"]}' data-fecha='${row["det_fecha_vence"]}'>Editar</button>`
+        },
+        {
+            title: 'ELIMINAR',
+            data: 'det_id',
+            searchable: false,
+            orderable: false,
+            render: (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Eliminar</button>`
+        }
      ],
      columnDefs: [
         {
@@ -433,12 +549,63 @@ const datatableMovimiento = new Datatable('#tablaMovimientos', {
             searchable: false,
             
         }
-      
     ]
    
 });
 
-// Modifica la función buscarDetalleMovimiento para manejar la nueva estructura
+
+////funcion para cambiar de situacion un detalle
+
+const eliminar = async (e) => {
+    const button = e.target;
+    const id = button.dataset.id;
+    const det_id = document.getElementById('det_id');
+    const valor = det_id.value;
+
+
+
+
+    if (await confirmacion('warning', '¿Desea eliminar este registro?')) {
+        const body = new FormData();
+        body.append('det_id', id);
+        const url = '/control_inventario/API/movimiento/eliminar';
+        const config = {
+            method: 'POST',
+            body
+        };
+        try {
+            //await buscarDependencia();
+            const respuesta = await fetch(url, config);
+            const data = await respuesta.json();
+            console.log(data);
+            const { codigo, mensaje, detalle } = data;
+            let icon = 'info';
+            switch (codigo) {
+                case 1:
+                    icon = 'success';
+                    buscarDetalleMovimiento();
+                    break;
+                case 0:
+                    icon = 'error';
+                    console.log(detalle);
+                    break;
+                    default:
+                    break;
+            }
+            Toast.fire({
+                icon,
+                text: mensaje
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    buscarDetalleMovimiento();
+
+
+};
+
+
 const buscarDetalleMovimiento = async () => {
     let det_mov_id = formularioDetalle.det_mov_id.value;
 
@@ -452,7 +619,7 @@ const buscarDetalleMovimiento = async () => {
         const data = await respuesta.json();
         console.log(data);
 
-        datatable.clear().draw();
+        datatableDetalle.clear().draw();
         if (data && data.length > 0) {
             contadorDetalle = 1;
             datatableDetalle.rows.add(data).draw();
@@ -484,6 +651,7 @@ const buscarDetalleIngresado = async () => {
         const data = await respuesta.json();
         console.log(data);
 
+        datatableMovimiento.clear().draw();
         if (data) {
             contadorMovimiento = 1;
             datatableMovimiento.rows.add(data).draw();
@@ -1028,7 +1196,7 @@ const guardar = async (evento) => {
                 // Mostrar el formulario de detalle
                 movDetalleDiv.style.display = 'block';
 
-                //buscar();
+                buscarDetalleIngresado();
                 break;
 
             case 0:
@@ -1209,7 +1377,7 @@ const guardarDetalle = async (evento) => {
 
                 // Restaura el valor del campo det_mov_id
                 document.getElementById('det_mov_id').value = detMovIdValue;
-                //buscar();
+                buscarDetalleMovimiento();
                 break;
 
             case 0:
@@ -1330,6 +1498,72 @@ function mostrarDependencia() {
        
     }
 }
+//////////////función buscar para imprimir recibo
+
+const buscarRecibo = async () => {
+    let det_mov_id = formularioDetalle.det_mov_id.value;
+
+    const url = `/control_inventario/API/reporte/buscarRecibo?det_mov_id=${det_mov_id}`;
+    const config = {
+        method: 'GET',
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+        console.log(data);
+
+        if (data && data.length > 0) {
+            generarPDF(data);
+       
+        } else {
+            Toast.fire({
+                title: 'No se encontraron registros',
+                icon: 'info',
+            });
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+
+////////////////generar pdf para entregar hoja de responsabilidad/////////////
+
+const generarPDF = async (datos) => {
+    const url = `/control_inventario/reporte/generarPDF`;
+
+    const config = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(datos),
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+
+        if (respuesta.ok) {
+            const blob = await respuesta.blob();
+
+            if (blob) {
+                const urlBlob = window.URL.createObjectURL(blob);
+
+                // Abre el PDF en una nueva ventana o pestaña
+                window.open(urlBlob, '_blank');
+            } else {
+                console.error('No se pudo obtener el blob del PDF.');
+            }
+        } else {
+            console.error('Error al generar el PDF.');
+        }
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+botonImprimir.addEventListener('click', buscarRecibo);
 
 ///evento para detectar el cambio del select 
 select.addEventListener('change', mostrarDependencia);
@@ -1358,6 +1592,10 @@ mov_perso_respon.addEventListener('input', buscarOficialesResponsable);
 formulario.addEventListener('submit', guardar);
 formularioDetalle.addEventListener('submit', guardarDetalle);
 btnBuscarExistencias.addEventListener('click', buscarExistencias);
+datatableDetalle.on('click', '.btn-warning', traeDatosDetalle );
+datatableDetalle.on('click', '.btn-danger', eliminar);
+
+
 
 btnSiguiente.addEventListener('click', function (event) {
     //     // Prevenir el envío normal del formulario

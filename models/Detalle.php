@@ -7,7 +7,7 @@ namespace Model;
 class Detalle extends ActiveRecord
 {
     protected static $tabla = 'inv_deta_movimientos';
-    protected static $columnasDB = ['det_mov_id', 'det_pro_id', 'det_uni_med', 'det_lote', 'det_fecha_vence', 'det_estado', 'det_cantidad', 'det_cantidad_existente', 'det_cantidad_lote', 'det_situacion'];
+    protected static $columnasDB = ['det_mov_id', 'det_pro_id', 'det_uni_med', 'det_lote', 'det_fecha_vence', 'det_estado', 'det_cantidad', 'det_cantidad_existente', 'det_cantidad_lote', 'det_observaciones', 'det_situacion'];
     protected static $idTabla = 'det_id';
 
     public $det_id;
@@ -20,6 +20,7 @@ class Detalle extends ActiveRecord
     public $det_cantidad;
     public $det_cantidad_existente;
     public $det_cantidad_lote;
+    public $det_observaciones;
     public $det_situacion;
 
   
@@ -37,6 +38,7 @@ class Detalle extends ActiveRecord
         $this->det_cantidad = $args['det_cantidad'] ?? '';
         $this->det_cantidad_existente = $args['det_cantidad_existente'] ?? '';
         $this->det_cantidad_lote = $args['det_cantidad_lote'] ?? '';
+        $this->det_observaciones = $args['det_observaciones'] ?? '';
         $this->det_situacion = $args['det_situacion'] ?? 1;
         
     }

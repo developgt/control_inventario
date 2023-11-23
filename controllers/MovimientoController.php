@@ -346,13 +346,13 @@ class MovimientoController
         $det_mov_id = $_GET['det_mov_id'] ?? '';
       
 
-        $sql = "  SELECT m.*, d.*, e.est_descripcion, u.uni_nombre, p.pro_nom_articulo
+        $sql = "SELECT m.*, d.*, e.est_descripcion, u.uni_nombre, p.pro_nom_articulo
         FROM inv_movimientos AS m
         JOIN inv_deta_movimientos AS d ON m.mov_id = d.det_mov_id
         LEFT JOIN inv_estado AS e ON d.det_estado = e.est_id
         LEFT JOIN inv_uni_med AS u ON d.det_uni_med = u.uni_id
         LEFT JOIN inv_producto AS p ON d.det_pro_id = p.pro_id
-        WHERE d.det_mov_id = $det_mov_id";
+        WHERE d.det_mov_id = $det_mov_id AND d.det_situacion = 1";
 
         try {
 
@@ -567,5 +567,32 @@ class MovimientoController
         }
     }
 
+    public static function eliminarAPI() {
+        try {
+            $det_id = $_POST['det_id'];
+            $detalle = Detalle::find($det_id);
+            $detalle->det_situacion = 0;
+            $resultado = $detalle->actualizar();
+    
+            if ($resultado['resultado'] == 1) {
+                echo json_encode([
+                    'mensaje' => "Se ha eliminado el registro con éxito.",
+                    'codigo' => 1
+                ]);
+            } else {
+                echo json_encode([
+                    'mensaje' => "No se pudo eliminar el detalle",
+                    'codigo' => 0
+                ]);
+            }
+        } catch (Exception $e) {
+            echo json_encode([
+                'detalle' => $e->getMessage(),
+                'mensaje' => 'Ocurrió un error',
+                'codigo' => 0
+            ]);
+        }
+    }
+    
 
 }
