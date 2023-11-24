@@ -149,8 +149,6 @@ btnBuscar.addEventListener('click', () => {
   }
 });
 
-
-
 // Función para mostrar el modal con la tabla
 function mostrarModal(data) {
   // Limpiar el contenido del modal anterior si existe
@@ -231,32 +229,86 @@ const modalHTML = `
   // Inicializar el modal con Bootstrap
   const modal = new bootstrap.Modal(resultadoModal);
 
-    // Obtener referencia al botón de imprimir
-    const btnImprimir = document.getElementById('btnImprimir');
-
   // Mostrar el modal
   modal.show();
+
+  // Obtener referencia al botón de imprimir
+  const btnImprimir = document.getElementById('btnImprimir');
+
+  // Añadir un evento de clic al botón de imprimir
+  btnImprimir.addEventListener('click', buscarRecibo);
 }
 
 // Obtener referencia al botón de imprimir
 const btnImprimir = document.getElementById('btnImprimir');
 
-// Añadir un evento de clic al botón de imprimir
-btnImprimir.addEventListener('click', () => {
-  // Obtener los valores seleccionados de los selectores
-  const almacenSeleccionado = document.getElementById('kardex_almacen').value;
-  const productoSeleccionado = document.getElementById('kardex_producto').value;
-  const medidaSeleccionada = document.getElementById('kardex_medida').value;
+/////////////////////////////////////////////////////////
 
-  // Verificar si se han seleccionado todos los campos
-  if (almacenSeleccionado && productoSeleccionado && medidaSeleccionada) {
-    // Construir la URL con los parámetros necesarios
-    const urlReporteKardex = `/control_inventario/views/kardex/reportekardex.php?almacen=${almacenSeleccionado}&producto=${productoSeleccionado}&medida=${medidaSeleccionada}`;
+const buscarRecibo = async () => {
+  let alma_id = document.getElementById('kardex_almacen').value;
+  let pro_id = document.getElementById('kardex_producto').value;
+  let uni_id = document.getElementById('kardex_medida').value;
 
-    // Abrir una nueva ventana o pestaña con la URL del reporte
-    window.open(urlReporteKardex, '_blank');
-  } else {
-    // Mostrar un mensaje indicando que se deben seleccionar todos los campos
-    alert('Por favor, seleccione todos los campos antes de imprimir.');
+  // Imprimir los valores en la consola
+  console.log('ID del almacén:', alma_id);
+  console.log('ID del producto:', pro_id);
+  console.log('ID de la medida:', uni_id);
+
+  const url = `/control_inventario/API/reportekardex/buscarRecibo?alma_id=${alma_id}&pro_id=${pro_id}&uni_id=${uni_id}`;
+  const config = {
+    method: 'GET',
+  };
+
+  try {
+    const respuesta = await fetch(url, config);
+    const data = await respuesta.json();
+    console.log(data);
+
+    if (data && data.length > 0) {
+      generarPDF(data);
+
+    } else {
+      // Toast.fire({
+      //   title: 'No se encontraron registros',
+      //   icon: 'info',
+      // });
+    }
+  } catch (error) {
+    console.log(error);
   }
-});
+};
+
+////////////////generar pdf /////////////
+
+const generarPDF = async (datos) => {
+  const url = `/control_inventario/reportekardex/generarPDF`;
+
+  const config = {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(datos),
+  };
+
+  try {
+      const respuesta = await fetch(url, config);
+
+      if (respuesta.ok) {
+          const blob = await respuesta.blob();
+
+          if (blob) {
+              const urlBlob = window.URL.createObjectURL(blob);
+
+              // Abre el PDF en una nueva ventana o pestaña
+              window.open(urlBlob, '_blank');
+          } else {
+              console.error('No se pudo obtener el blob del PDF.');
+          }
+      } else {
+          console.error('Error al generar el PDF.');
+      }
+  } catch (error) {
+      console.error(error);
+  }
+};

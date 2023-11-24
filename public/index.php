@@ -20,6 +20,7 @@ use Controllers\GuardalmacenController;
 use Controllers\KardexController;
 use Controllers\ReporteController;
 use Controllers\ReporteEgresoController;
+use Controllers\ReporteKardexController;
 
 $router = new Router();
 $router->setBaseURL('/' . $_ENV['APP_NAME']);
@@ -119,16 +120,8 @@ $router->get('/pdf', [ReporteEgresoController::class,'pdf']);
 $router->post('/egresoreporte/generarPDF', [ReporteEgresoController::class, 'generarPDF']);
 $router->get('/API/egresoreporte/buscarRecibo', [ReporteEgresoController::class, 'buscarReciboAPI']);
 
-
-
-
-
 $router->get('/', [MenuController::class,'index']);
 $router->get('/API/menu/buscar', [MenuController::class,'buscarAlmacen']);
-
-
-
-
 
 $router->get('/gestion', [GestionController::class,'index']);
 $router->get('/API/gestion/buscar', [GestionController::class,'buscarAlmacen']);
@@ -138,6 +131,10 @@ $router->get('/API/guardalmacen/buscar', [GuardalmacenController::class, 'buscar
 
 $router->get('/kardex', [KardexController::class, 'index']);
 $router->get('/API/kardex/buscar', [KardexController::class, 'buscarAlmacen']);
+
+$router->get('/kardexpdf', [ReporteKardexController::class,'pdf']);
+$router->post('/reportekardex/generarPDF', [ReporteKardexController::class, 'generarPDF']);
+$router->get('/API/reportekardex/buscarRecibo', [ReporteKardexController::class, 'buscarReciboAPI']);
 
 // Comprueba y valida las rutas, que existan y les asigna las funciones del Controlador
 $router->comprobarRutas();
