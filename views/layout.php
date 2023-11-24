@@ -47,10 +47,13 @@
                         <a class="nav-link" aria-current="page" href="/control_inventario/almacen"><i class="bi bi bi-building-fill-check me-2"></i>Inventario</a>
                     </li>
                     <li>
-                        <a class="nav-link" aria-current="page" href="/control_inventario/movimiento"><i class="bi bi bi-clipboard-data-fill me-2""></i>Gestión de Ingreso</a>
+                        <a class="nav-link" aria-current="page" href="/control_inventario/movimiento"><i class="bi bi-box-arrow-in-down me-2""></i>Gestión de Ingreso</a>
                     </li>
                     <li>
-                        <a class="nav-link" aria-current="page" href="/control_inventario/movegreso"><i class="bi bi bi-clipboard-data-fill me-2""></i>Gestión de Egreso</a>
+                        <a class="nav-link" aria-current="page" href="/control_inventario/movegreso"><i class="bi bi-box-arrow-up me-2""></i>Gestión de Egreso</a>
+                    </li>
+                    <li>
+                        <a class="nav-link" aria-current="page" href="/control_inventario/kardex"><i class="bi bi-archive-fill me-2"></i>Kardex</a>
                     </li>
                     <!-- GESTION DE INVENTARIOS -->
                     <!-- <div class="nav-item dropdown ">
