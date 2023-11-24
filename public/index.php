@@ -110,8 +110,8 @@ $router->get('/API/guardalmacen/buscar', [GuardalmacenController::class, 'buscar
 $router->get('/kardex', [KardexController::class, 'index']);
 $router->get('/API/kardex/buscar', [KardexController::class, 'buscarAlmacen']);
 
-
-$router->get('/pdf', [ReporteKardexController::class, 'pdf']);
-$router->get('/pdf/buscar', [ReporteKardexController::class, 'pdf']);
+$router->get('/kardexpdf', [ReporteKardexController::class,'pdf']);
+$router->post('/reportekardex/generarPDF', [ReporteKardexController::class, 'generarPDF']);
+$router->get('/API/reportekardex/buscarKardex', [ReporteKardexController::class, 'buscarKardexAPI']);
 
 $router->comprobarRutas();

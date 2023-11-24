@@ -260,3 +260,72 @@ btnImprimir.addEventListener('click', () => {
     alert('Por favor, seleccione todos los campos antes de imprimir.');
   }
 });
+
+/////////////////////////////
+
+const buscarKardex = async () => {
+  let alma_id = formularioKardex.alma_id.value;
+  let producto_id = formularioKardex.producto_id.value;
+  let uni_id = formularioKardex.uni_id.value;
+
+  const url = `/control_inventario/API/reportekardex/buscarKardex??almacen=${almacenSeleccionado}&producto=${productoSeleccionado}&medida=${medidaSeleccionada}`;
+  const config = {
+      method: 'GET',
+  };
+
+  try {
+      const respuesta = await fetch(url, config);
+      const data = await respuesta.json();
+      console.log(data);
+
+      if (data && data.length > 0) {
+          generarPDF(data);
+     
+      } else {
+          Toast.fire({
+              title: 'No se encontraron registros',
+              icon: 'info',
+          });
+      }
+  } catch (error) {
+      console.log(error);
+  }
+};
+
+
+////////////////generar pdf para entregar hoja de responsabilidad/////////////
+
+const generarPDF = async (datos) => {
+  const url = `/control_inventario/reportekardex/generarPDF`;
+
+  const config = {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(datos),
+  };
+
+  try {
+      const respuesta = await fetch(url, config);
+
+      if (respuesta.ok) {
+          const blob = await respuesta.blob();
+
+          if (blob) {
+              const urlBlob = window.URL.createObjectURL(blob);
+
+              // Abre el PDF en una nueva ventana o pestaña
+              window.open(urlBlob, '_blank');
+          } else {
+              console.error('No se pudo obtener el blob del PDF.');
+          }
+      } else {
+          console.error('Error al generar el PDF.');
+      }
+  } catch (error) {
+      console.error(error);
+  }
+};
+
+botonImprimir.addEventListener('click', buscarKardex);
