@@ -106,7 +106,7 @@
     <thead>
             <tr>
                 <th>No.</th>
-                <th>Inventario al que Ingreso</th>
+                <th>Inventario del que Egreso</th>
                 <th>Tipo de Movimiento</th>
                 <th>Fecha</th>
                 <th>Nombre del Producto</th>
@@ -114,7 +114,7 @@
                 <th>Unidad de Medida</th>
                 <th>Fecha de Vencimiento</th>
                 <th>Cantidad</th>
-                <th>Procedencia</th>
+                <th>Destino</th>
             </tr>
         </thead>
         <tbody>

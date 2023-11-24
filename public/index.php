@@ -92,6 +92,8 @@ $router->get('/API/movimiento/buscarMovimientos', [MovimientoController::class, 
 $router->post('/API/movimiento/guardar', [MovimientoController::class,'guardarAPI'] );
 $router->post('/API/movimiento/guardarDetalle', [MovimientoController::class,'guardarDetalleAPI']);
 $router->post('/API/movimiento/eliminar', [MovimientoController::class,'eliminarAPI'] );
+$router->post('/API/movimiento/modificar', [MovimientoController::class,'modificarAPI'] );
+
 
 
 //rutas para manejar la vista de movimiento de la tabla INV_MOVIMIENTOS (egresos)

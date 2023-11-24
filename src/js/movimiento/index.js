@@ -4,12 +4,14 @@ import { validarFormulario, Toast, confirmacion } from "../funciones";
 import Datatable from "datatables.net-bs5";
 import { lenguaje } from "../lenguaje";
 import { data } from "jquery";
+import { icon } from "leaflet";
 
 
 ////formulario busqueda////////////
 const btnMovimiento = document.getElementById('btnMovimientos');
 const mov_alma = document.getElementById('mov_alma')
 const formularioBusqueda = document.getElementById('formularioBusqueda');
+const btnRegresarGestion = document.getElementById('btnRegresarGestion');
 
 
 ////formulario movimiento//////////
@@ -533,26 +535,39 @@ const datatableMovimiento = new Datatable('#tablaMovimientos', {
         },
         {
             title: 'Estado del Ingreso',
-            data: 'mov_situacion'
+            'render': function(data, type, row) {
+                if (row.mov_situacion == '1') {
+                    return '<div class="estado-pendiente">PENDIENTE DE INGRESAR</div>';
+                } else if (row.mov_situacion == '2') {
+                    return '<div class="estado-ingresado">INGRESADO</div>';
+                } else {
+                    return data; 
+                }
+            }
         },
         {
-            title: 'EDITAR DETALLE',
-            data: 'det_id',
+            title: 'FINALIZAR INGRESO',
+            data: 'mov_id',
             searchable: false,
             orderable: false,
-            render: (data, type, row, meta) => `<button class="btn btn-warning"  data-proid='${row["pro_id"]}' data-producto='${row["det_pro_id"]}' data-lote='${row["det_lote"]}' data-estado='${row["det_estado"]}' data-fecha='${row["det_fecha_vence"]}'>Editar</button>`
+            render: (data, type, row, meta) => {
+                if (row.mov_situacion == '2') {
+                    return ''; 
+                } 
+            return `<button class="btn btn-success"  data-id='${data}' data-almacen='${row["mov_alma_id"]}' >Continuar Ingreso</button>`
+             }
         },
-        {
-            title: 'ELIMINAR',
-            data: 'det_id',
-            searchable: false,
-            orderable: false,
-            render: (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Eliminar</button>`
-        }
+        // {
+        //     title: 'ELIMINAR',
+        //     data: 'mov_id',
+        //     searchable: false,
+        //     orderable: false,
+        //     render: (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Eliminar</button>`
+        // }
      ],
      columnDefs: [
         {
-            targets: [1, 2, 3, 4, 5, 6,7],
+            targets: [1, 2, 3, 4, 5, 6, 7],
             visible: false, 
             searchable: false,
             
@@ -560,6 +575,45 @@ const datatableMovimiento = new Datatable('#tablaMovimientos', {
     ]
    
 });
+
+
+//// PARA TRAER LOS DATOS 
+const traeDatosFinalizacion = (e) => {
+    const button = e.target;
+    const id = button.dataset.id;
+    const almacen = button.dataset.almacen
+
+    const dataset = {
+        det_mov_id: id,
+        mov_alma_id: almacen, 
+    };  
+    console.log('Datos en traeDatos:', dataset);
+        colocarDatosFinalizacion(dataset);
+        movDetalleDiv.style.display = 'block';
+        movMovimientoDiv.style.display = 'none';
+        divIngresoMovimiento.style.display = 'none';
+        datosMovimiento.style.display = 'none';
+};
+
+const colocarDatosFinalizacion = (dataset) => {
+    console.log('Datos en colocarDatos:', dataset);
+    formularioDetalle.det_mov_id.value = dataset.det_mov_id;
+    formularioMovimiento.mov_alma_id.value = dataset.mov_alma_id;
+    almaSeleccionadoId = dataset.mov_alma_id;
+    buscarProducto();
+    buscarUnidades();
+};
+
+
+const cancelarAccionFinalizacion = () => {
+    formularioDetalle.reset();
+    movDetalleDiv.style.display = 'none';
+    movMovimientoDiv.style.display = 'none';
+    divIngresoMovimiento.style.display = 'block';
+    datosMovimiento.style.display = 'block';
+};
+
+
 
 
 ////funcion para cambiar de situacion un detalle
@@ -1585,6 +1639,65 @@ function mostrarDependencia() {
        
     }
 }
+
+// funcion para modificar un estado
+
+const modificar = async () => {
+  
+    let det_mov_id = formularioDetalle.det_mov_id.value;
+
+    const body = new FormData();
+    body.append('mov_id', det_mov_id);
+        const url = '/control_inventario/API/movimiento/modificar';
+        const config = {
+            method: 'POST',
+            body
+        };
+        try {
+            //await buscarDependencia();
+            const respuesta = await fetch(url, config);
+            const data = await respuesta.json();
+            console.log(data)
+            let icon = 'info'
+
+            const { codigo, mensaje, detalle } = data;
+           
+            switch (codigo) {
+                case 1:
+                    // Swal.fire({
+                    //     title: '¡Proceso Completado!',
+                    //     text: 'Finalizó con éxito el proceso de ingreso al inventario. Su PDF se generará en un momento.',
+                    //     icon: 'success',
+                    //     confirmButtonText: 'Entendido',
+                    //     confirmButtonColor: '#3085d6',
+                    //     timer: 5000, // 5000 milisegundos = 5 segundos
+                    //     timerProgressBar: true, // Muestra una barra de progreso que indica el tiempo restante
+                    //     // No necesitas didOpen para manejar eventos de ratón a menos que quieras pausar y reanudar el temporizador manualmente
+                    //   });
+                   
+                    break;
+                case 0:
+                    icon = 'error';
+                    console.log(detalle);
+                    break;
+                default:
+                    break;
+            }
+            Swal.fire({
+                title: '¡Proceso Completado!',
+                text: 'Finalizó con éxito el proceso de ingreso al inventario. Su PDF se generará en un momento.',
+                icon: 'success',
+                confirmButtonText: 'Entendido',
+                confirmButtonColor: '#3085d6',
+                timer: 8000, 
+                timerProgressBar: true, 
+
+              });
+        } catch (error) {
+            console.log(error);
+        }
+  
+    };
 //////////////función buscar para imprimir recibo
 
 const buscarRecibo = async () => {
@@ -1602,10 +1715,19 @@ const buscarRecibo = async () => {
 
         if (data && data.length > 0) {
             generarPDF(data);
-       
+            modificar();              
+            divIngresoMovimiento.style.display = 'block';
+            movMovimientoDiv.style.display = 'none';
+            datosMovimiento.style.display = 'block';
+            movDetalleDiv.style.display = 'none';
+            datatableMovimiento.clear().draw();
+            formularioDetalle.reset();
+            formularioMovimiento.reset();
+            datatableDetalle.clear().draw();
+        
         } else {
             Toast.fire({
-                title: 'No se encontraron registros',
+                title: 'No se encontraron registros 2',
                 icon: 'info',
             });
         }
@@ -1650,6 +1772,9 @@ const generarPDF = async (datos) => {
     }
 };
 
+
+    
+
 botonImprimir.addEventListener('click', buscarRecibo);
 
 ///evento para detectar el cambio del select 
@@ -1683,6 +1808,7 @@ btnBuscarExistencias.addEventListener('click', buscarExistencias);
 btnMovimiento.addEventListener('click', buscarMovimientos);
 datatableDetalle.on('click', '.btn-warning', traeDatosDetalle );
 datatableDetalle.on('click', '.btn-danger', eliminar);
+datatableMovimiento.on('click', '.btn-success', traeDatosFinalizacion);
 
 
 
@@ -1734,6 +1860,13 @@ btnIngreso.addEventListener('click', function() {
     movMovimientoDiv.style.display = 'block';
 });
 
+
+btnRegresarGestion.addEventListener('click', function() {
+    divIngresoMovimiento.style.display = 'block';
+    movMovimientoDiv.style.display = 'none';
+    datosMovimiento.style.display = 'block';
+
+})
 
 //buscarProducto();
 

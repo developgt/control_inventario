@@ -350,8 +350,8 @@ class MovimientoController
         LEFT JOIN mper AS per ON m.mov_perso_respon = per.per_catalogo
         LEFT JOIN grados AS g ON per.per_grado = g.gra_codigo
         LEFT JOIN armas AS arm ON per.per_arma = arm.arm_codigo
-        WHERE m.mov_situacion = 1 
-        AND ga.guarda_almacen = a.alma_id 
+        WHERE 
+         ga.guarda_almacen = a.alma_id 
         AND ga.guarda_catalogo = user
         AND ga.guarda_situacion = 1
         AND m.mov_tipo_mov = 'I'";
@@ -682,6 +682,35 @@ class MovimientoController
             ]);
         }
     }
+
+
+    public static function modificarAPI() {
+        try {
+            $mov_id = $_POST['mov_id'];
+            $estado = Movimiento::find($mov_id);
+            $estado->mov_situacion = 2;
+            $resultado = $estado->actualizar();
+    
+            if ($resultado['resultado'] == 1) {
+                echo json_encode([
+                    'mensaje' => "Se modifico el registro",
+                    'codigo' => 1
+                ]);
+            } else {
+                echo json_encode([
+                    'mensaje' => "No se pudo modificar",
+                    'codigo' => 0
+                ]);
+            }
+        } catch (Exception $e) {
+            echo json_encode([
+                'detalle' => $e->getMessage(),
+                'mensaje' => 'Ocurrió un error',
+                'codigo' => 0
+            ]);
+        }
+    }
+    
     
 
 }

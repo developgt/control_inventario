@@ -12,6 +12,8 @@ const formularioBusqueda = document.getElementById('formularioBusqueda');
 const datosMovimiento = document.getElementById('DatosMovimiento')
 const btnIngreso = document.getElementById('btnRealizarIngreso');
 const divIngresoMovimiento = document.getElementById('movimiento_busqueda');
+const btnRegresarGestion = document.getElementById('btnRegresarGestion');
+
 
 ////formulario movimiento//////////
 const formulario = document.getElementById('formularioMovimiento');
@@ -532,23 +534,36 @@ const datatableMovimiento = new Datatable('#tablaMovimientos', {
             data: 'dep_desc_md'
         },
         {
-            title: 'Descripcion',
-            data: 'mov_descrip'
+            title: 'Estado del Ingreso',
+            'render': function(data, type, row) {
+                if (row.mov_situacion == '1') {
+                    return '<div class="estado-pendiente">EGRESO PENDIENTE</div>';
+                } else if (row.mov_situacion == '2') {
+                    return '<div class="estado-ingresado">EGRESADO</div>';
+                } else {
+                    return data; 
+                }
+            }
         },
         {
-            title: 'EDITAR DETALLE',
-            data: 'det_id',
+            title: 'FINALIZAR EGRESO',
+            data: 'mov_id',
             searchable: false,
             orderable: false,
-            render: (data, type, row, meta) => `<button class="btn btn-warning"  data-proid='${row["pro_id"]}' data-producto='${row["det_pro_id"]}' data-lote='${row["det_lote"]}' data-estado='${row["det_estado"]}' data-fecha='${row["det_fecha_vence"]}'>Editar</button>`
+            render: (data, type, row, meta) => {
+                if (row.mov_situacion == '2') {
+                    return ''; 
+                }
+                return `<button class="btn btn-success" data-id='${data}' data-almacen='${row["mov_alma_id"]}'>Continuar Egreso</button>`;
+            }
         },
-        {
-            title: 'ELIMINAR',
-            data: 'det_id',
-            searchable: false,
-            orderable: false,
-            render: (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Eliminar</button>`
-        }
+        // {
+        //     title: 'ELIMINAR',
+        //     data: 'det_id',
+        //     searchable: false,
+        //     orderable: false,
+        //     render: (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Eliminar</button>`
+        // }
      ],
      columnDefs: [
         {
@@ -560,6 +575,43 @@ const datatableMovimiento = new Datatable('#tablaMovimientos', {
     ]
    
 });
+
+//// PARA TRAER LOS DATOS 
+const traeDatosFinalizacion = (e) => {
+    const button = e.target;
+    const id = button.dataset.id;
+    const almacen = button.dataset.almacen
+
+    const dataset = {
+        det_mov_id: id,
+        mov_alma_id: almacen, 
+    };  
+    console.log('Datos en traeDatos:', dataset);
+        colocarDatosFinalizacion(dataset);
+        movDetalleDiv.style.display = 'block';
+        movMovimientoDiv.style.display = 'none';
+        divIngresoMovimiento.style.display = 'none';
+        datosMovimiento.style.display = 'none';
+};
+
+const colocarDatosFinalizacion = (dataset) => {
+    console.log('Datos en colocarDatos:', dataset);
+    formularioDetalle.det_mov_id.value = dataset.det_mov_id;
+    formularioMovimiento.mov_alma_id.value = dataset.mov_alma_id;
+    almaSeleccionadoId = dataset.mov_alma_id;
+    buscarProducto();
+    buscarUnidades();
+    buscarProductoDetalle();
+};
+
+
+const cancelarAccionFinalizacion = () => {
+    formularioDetalle.reset();
+    movDetalleDiv.style.display = 'none';
+    movMovimientoDiv.style.display = 'none';
+    divIngresoMovimiento.style.display = 'block';
+    datosMovimiento.style.display = 'block';
+};
 
 
 ////funcion para cambiar de situacion un detalle
@@ -1517,7 +1569,17 @@ const buscarRecibo = async () => {
 
         if (data && data.length > 0) {
             generarPDF(data);
-       
+            modificar();              
+            divIngresoMovimiento.style.display = 'block';
+            movMovimientoDiv.style.display = 'none';
+            datosMovimiento.style.display = 'block';
+            movDetalleDiv.style.display = 'none';
+            datatableMovimiento.clear().draw();
+            formularioDetalle.reset();
+            formularioMovimiento.reset();
+            datatableDetalle.clear().draw();
+        
+
         } else {
             Toast.fire({
                 title: 'No se encontraron registros',
@@ -1646,6 +1708,56 @@ const buscarMovimientos = async () => {
     }
 };
 
+
+
+// funcion para modificar un estado
+
+const modificar = async () => {
+  
+    let det_mov_id = formularioDetalle.det_mov_id.value;
+
+    const body = new FormData();
+    body.append('mov_id', det_mov_id);
+        const url = '/control_inventario/API/movimiento/modificar';
+        const config = {
+            method: 'POST',
+            body
+        };
+        try {
+            //await buscarDependencia();
+            const respuesta = await fetch(url, config);
+            const data = await respuesta.json();
+            console.log(data)
+            let icon = 'info'
+
+            const { codigo, mensaje, detalle } = data;
+           
+            switch (codigo) {
+                case 1:
+                   
+                    break;
+                case 0:
+                    icon = 'error';
+                    console.log(detalle);
+                    break;
+                default:
+                    break;
+            }
+            Swal.fire({
+                title: '¡Proceso Completado!',
+                text: 'Finalizó con éxito el proceso de ingreso al inventario. Su PDF se generará en un momento.',
+                icon: 'success',
+                confirmButtonText: 'Entendido',
+                confirmButtonColor: '#3085d6',
+                timer: 8000, 
+                timerProgressBar: true, 
+              });
+        } catch (error) {
+            console.log(error);
+        }
+  
+    };
+    
 botonImprimir.addEventListener('click', buscarRecibo);
 
 buscarAlmacenes();
@@ -1666,6 +1778,8 @@ formulario.addEventListener('submit', guardar);
 formularioDetalle.addEventListener('submit', guardarDetalle);
 ///evento para detectar el cambio del select 
 select.addEventListener('change', mostrarDependencia);
+datatableMovimiento.on('click', '.btn-success', traeDatosFinalizacion);
+
 
 det_mov_id.addEventListener('input', buscarDetalleMovimiento);
 
@@ -1676,7 +1790,15 @@ btnIngreso.addEventListener('click', function() {
     movMovimientoDiv.style.display = 'block';
 });
 
-  
+
+
+btnRegresarGestion.addEventListener('click', function() {
+    divIngresoMovimiento.style.display = 'block';
+    movMovimientoDiv.style.display = 'none';
+    datosMovimiento.style.display = 'block';
+
+})
+
     btnSiguiente.addEventListener('click', function(event) {
         // Prevenir el envío normal del formulario
         event.preventDefault();

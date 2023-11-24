@@ -263,7 +263,6 @@ class MovimientoEgresoController
         LEFT JOIN mper AS per ON m.mov_perso_respon = per.per_catalogo
         LEFT JOIN grados AS g ON per.per_grado = g.gra_codigo
         LEFT JOIN armas AS arm ON per.per_arma = arm.arm_codigo
-        WHERE m.mov_situacion = 1 
         AND ga.guarda_almacen = a.alma_id 
         AND ga.guarda_catalogo = user
         AND ga.guarda_situacion = 1

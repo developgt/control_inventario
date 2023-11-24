@@ -203,6 +203,16 @@
         margin-right: auto;
 
     }
+
+    .estado-pendiente {
+    color: red;
+
+}
+
+.estado-ingresado {
+    color: green;
+  
+}
 </style>
 <div class="container bg-light border rounded mx-auto mt-2 busqueda-contenedor" id="movimiento_busqueda">
     <div class="row justify-content-center">
@@ -227,7 +237,7 @@
                             </form>
                         </div>
                         <div class="col-lg-3 d-flex justify-content-end">
-                            <button type="button" id="btnRealizarIngreso" class="btn btn-success btn-ingreso">REALIZAR EGRESO</button>
+                            <button type="button" id="btnRealizarIngreso" class="btn btn-success btn-ingreso">REALIZAR INGRESO</button>
                         </div>
                     </div>
                 </div>
@@ -384,6 +394,9 @@
                     <div class="col">
                         <button type="button" id="btnCancelar" class="btn btn-danger w-100">Cancelar</button>
                     </div>
+                    <div class="col">
+                        <button type="button" id="btnRegresarGestion" class="btn btn-danger w-100">Cancelar Ingreso</button>
+                    </div>
                 </div>
                 </form>
             </div>
@@ -409,8 +422,8 @@
             <h2 class=" card-header text-center p-3 rounded encabezado-inventario">Detalle del Ingreso del Almacén</h2>
                 <div class="card-body">
                     <form class="col-lg-10 border rounded bg-light p-3" id="formularioDetalle">
-                        <input type="text" name="det_id" id="det_id">
-                        <input type="text" name="det_mov_id" id="det_mov_id">
+                        <input type="hidden" name="det_id" id="det_id">
+                        <input type="hidden" name="det_mov_id" id="det_mov_id">
                         <div class="row mb-3">
                             <div class="col-md-4">
                                 <label for="det_pro_id">Seleccione el producto</label>
@@ -522,9 +535,9 @@
                                 <div class="col">
                                     <button type="button" id="btnAnterior" class="btn btn-warning w-100">Anterior</button>
                                 </div>
-                                <div class="col">
+                                <!-- <div class="col">
                                     <button type="button" id="btnVerIngresos" class="btn btn-success w-100">VER INGRESOS</button>
-                                </div>
+                                </div> -->
                                 <div class="col">
                                     <button type="button" id="btnCancelarDetalle" class="btn btn-danger w-100">Cancelar</button>
                                 </div>

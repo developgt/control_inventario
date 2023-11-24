@@ -195,6 +195,16 @@
         margin-right: auto;
 
     }
+
+    .estado-pendiente {
+    color: red;
+
+}
+
+.estado-ingresado {
+    color: green;
+  
+}
 </style>
 <!-- <div class="container bg-light border rounded mx-auto mt-2" id="mov_movimiento">
     <div class="row">
@@ -284,7 +294,7 @@
 <div class="container border rounded mt-2 bg-white tabla-contenedor" id="DatosMovimiento">
     <div class="row justify-content-center">
         <div class="col-12">
-            <h5 class="text-center mt-4 mb-1 bg-light p-3 border rounded">Ingresos realizados</h5>
+            <h5 class="text-center mt-4 mb-1 bg-light p-3 border rounded">Egresos realizados</h5>
             <div class="table-responsive">
                 <table id="tablaMovimientos" class="table table-striped table-bordered table-hover table-light mb-1 w-100">
                 </table>
@@ -430,7 +440,10 @@
                         <button type="button" id="btnCancelar" class="btn btn-danger w-100">Cancelar</button>
                     </div>
                     <div class="col">
-                        <button type="button" id="btnVerIngresos" class="btn btn-success w-100">VER INGRESOS</button>
+                        <button type="button" id="btnVerIngresos" class="btn btn-success w-100">Existencias</button>
+                    </div>
+                    <div class="col">
+                        <button type="button" id="btnRegresarGestion" class="btn btn-danger w-100">Cancelar Egreso</button>
                     </div>
                 </div>
                 </form>
@@ -517,7 +530,7 @@
                 <div class="card-body">
                     <form class="col-lg-11 border rounded bg-light p-3" id="formularioDetalle">
                         <input type="hidden" name="det_id" id="det_id">
-                        <input type="text" name="det_mov_id" id="det_mov_id">
+                        <input type="hidden" name="det_mov_id" id="det_mov_id">
                         <div class="row mb-3">
                             <div class="col-md-4">
                                 <label for="det_pro_id">Seleccione el producto</label>
@@ -625,9 +638,9 @@
                                     <!-- <div class="col">
                                         <button type="button" id="btnVerIngresos" class="btn btn-success w-100">VER INGRESOS</button>
                                     </div> -->
-                                    <div class="col">
+                                    <!-- <div class="col">
                                         <button type="button" id="btnBuscarDetalle" class="btn btn-info w-100">Buscar</button>
-                                    </div>
+                                    </div> -->
                                     <div class="col">
                                         <button type="button" id="btnCancelarDetalle" class="btn btn-danger w-100">Cancelar</button>
                                     </div>
