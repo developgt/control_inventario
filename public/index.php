@@ -137,7 +137,7 @@ $router->get('/guardalmacen', [GuardalmacenController::class, 'index']);
 $router->get('/API/guardalmacen/buscar', [GuardalmacenController::class, 'buscarAlmacen']);
 
 $router->get('/kardex', [KardexController::class, 'index']);
-$router->get('/API/kardex/buscar', [KardexController::class, 'buscarProducto']);
+$router->get('/API/kardex/buscar', [KardexController::class, 'buscarAlmacen']);
 
 // Comprueba y valida las rutas, que existan y les asigna las funciones del Controlador
 $router->comprobarRutas();
