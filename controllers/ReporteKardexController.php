@@ -127,35 +127,36 @@ class ReporteKardexController
     }
 }
 
-    // Método para generar el PDF (Revisado)
-    public static function generarPDF(Router $router) 
-    {
-        try {
-            $datos = json_decode(file_get_contents('php://input'));
+public static function generarPDF(Router $router) 
+{
+    try {
 
-            if (!$datos) {
-                throw new Exception("No hay datos para generar el PDF");
-            }
+        $almacenes = json_decode($_POST['almacenes'], true);
 
-            $mpdf = new Mpdf([
-                "orientation" => "P",
-                "default_font_size" => 12,
-                "default_font" => "arial",
-                "format" => "Letter",
-                "mode" => 'utf-8'
-            ]);
-            $mpdf->SetMargins(30, 35, 25);
-
-            $html = $router->load('reportekardex/pdf', ['datos' => $datos]);
-            $htmlHeader = $router->load('reportekardex/header');
-            $htmlFooter = $router->load('reportekardex/footer');
-
-            $mpdf->SetHTMLHeader($htmlHeader);
-            $mpdf->SetHTMLFooter($htmlFooter);
-            $mpdf->WriteHTML($html);
-            $mpdf->Output();
-        } catch (Exception $e) {
-            echo json_encode(['error' => $e->getMessage()]);
+        if (!$almacenes) {
+            throw new Exception("No hay datos para generar el PDF");
         }
+
+        $mpdf = new Mpdf([
+            "orientation" => "P",
+            "default_font_size" => 12,
+            "default_font" => "arial",
+            "format" => "Letter",
+            "mode" => 'utf-8'
+        ]);
+        $mpdf->SetMargins(30, 35, 25);
+
+        $html = $router->load('reportekardex/pdf',  ['almacenes' => $almacenes]);
+        $htmlHeader = $router->load('reportekardex/header');
+        $htmlFooter = $router->load('reportekardex/footer');
+
+        $mpdf->SetHTMLHeader($htmlHeader);
+        $mpdf->SetHTMLFooter($htmlFooter);
+        $mpdf->WriteHTML($html);
+        $mpdf->Output();
+    } catch (Exception $e) {
+        echo json_encode(['error' => $e->getMessage()]);
     }
+}
+
 }

@@ -249,7 +249,6 @@ const buscarRecibo = async () => {
   let pro_id = document.getElementById('kardex_producto').value;
   let uni_id = document.getElementById('kardex_medida').value;
 
-  // Imprimir los valores en la consola
   console.log('ID del almacén:', alma_id);
   console.log('ID del producto:', pro_id);
   console.log('ID de la medida:', uni_id);
@@ -261,54 +260,53 @@ const buscarRecibo = async () => {
 
   try {
     const respuesta = await fetch(url, config);
-    const data = await respuesta.json();
-    console.log(data);
 
-    if (data && data.length > 0) {
-      generarPDF(data);
+    if (respuesta.ok) {
+      const data = await respuesta.json();
 
+      if (data && data.almacenes && data.almacenes.length > 0) {
+        console.log('Número de registros:', data.almacenes.length);
+        await generarPDF(data.almacenes);
+      } else {
+        console.error('No se encontraron registros');
+      }      
     } else {
-      // Toast.fire({
-      //   title: 'No se encontraron registros',
-      //   icon: 'info',
-      // });
+      console.error('Error en la solicitud GET:', respuesta.statusText);
     }
   } catch (error) {
-    console.log(error);
+    console.error('Error en la solicitud GET:', error);
   }
 };
-
-////////////////generar pdf /////////////
 
 const generarPDF = async (datos) => {
   const url = `/control_inventario/reportekardex/generarPDF`;
 
+  const formData = new FormData();
+  formData.append('almacenes', JSON.stringify(datos));
+
   const config = {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(datos),
+    method: 'POST',
+    body: formData,
   };
 
   try {
-      const respuesta = await fetch(url, config);
+    const respuesta = await fetch(url, config);
 
-      if (respuesta.ok) {
-          const blob = await respuesta.blob();
+    if (respuesta.ok) {
+      const blob = await respuesta.blob();
 
-          if (blob) {
-              const urlBlob = window.URL.createObjectURL(blob);
+      if (blob) {
+        const urlBlob = window.URL.createObjectURL(blob);
 
-              // Abre el PDF en una nueva ventana o pestaña
-              window.open(urlBlob, '_blank');
-          } else {
-              console.error('No se pudo obtener el blob del PDF.');
-          }
+        // Abre el PDF en una nueva ventana o pestaña
+        window.open(urlBlob, '_blank');
       } else {
-          console.error('Error al generar el PDF.');
+        console.error('No se pudo obtener el blob del PDF.');
       }
+    } else {
+      console.error('Error al generar el PDF.');
+    }
   } catch (error) {
-      console.error(error);
+    console.error(error);
   }
 };
