@@ -546,26 +546,12 @@ const datatableMovimiento = new Datatable('#tablaMovimientos', {
              }
         },
         {
-            title: 'EDITAR',
-            data: 'mov_id',
-            searchable: false,
-            orderable: false,
-            render: (data, type, row, meta) => `<button class="btn btn-warning" data-id='${data}'>Eliminar</button>`
-        },
-        {
             title: 'VER DETALLES DE ESTE INGRESO',
             data: 'mov_id',
             searchable: false,
             orderable: false,
             render: (data, type, row, meta) => `<button class="btn btn-info" data-id='${data}'>Ver Detalles de Este Ingreso</button>`
         },
-        {
-            title: 'ELIMINAR',
-            data: 'mov_id',
-            searchable: false,
-            orderable: false,
-            render: (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Eliminar</button>`
-        }
      ],
      columnDefs: [
         {
