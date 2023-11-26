@@ -188,7 +188,7 @@
     }
 
     .mi-tabla {
-        width: 110%;
+        width: 100%;
         border-collapse: collapse;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         margin-left: auto;
@@ -302,6 +302,45 @@
         </div>
     </div>
 </div>
+
+
+<!-- <-- modal para mostrar la vista de detalle por ingreso -->
+<div class="modal fade  modal-with-backdrop" id="IngresoDetalle" name="IngresoDetalle" tabindex="-1" role="dialog" aria-labelledby="IngresoDetalleLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header custom-modal-header">
+                <h6 class="modal-title" id="IngresoDetalleLabel">Ver existencias</h6>
+                <button type="button" class="close btn btn-danger" id="botonCerrarIngresoDetalleModal" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Salir de esta ventana</span>
+                </button>
+            </div>
+            <div class="modal-body" id="IngresoDetalleBody">
+                <div class="container bg-light border rounded mx-auto mt-2 nuevo-contenedor">
+                    <div class="row">
+                        <div class="col-lg-12 mb-3">
+                            <div class="card mt-2 mb-2" id="verExistenciasBody">
+                                <h4 class="text-center mt-4 mb-4 p-3 border rounded encabezado-inventario">Insumos Egresados</h4>
+                                <div class="col table-responsive">
+                                    <table id="tablaEgresoDetalle" class="table table-striped table-bordered table-hover table-light mi-tabla">
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="col-lg-6">
+                            <button type="button" id="btnVolverImprimir" value="" class="btn btn-primary w-100">
+                                <i class="bi bi-printer"></i>Imprimir este Egreso
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="container bg-light border rounded mx-auto mt-2 nuevo-contenedor" id="mov_movimiento">
     <div class="row justify-content-center">
         <div class="col-lg-8 mb-4">
@@ -458,7 +497,7 @@
         <div class="modal-content">
             <div class="modal-header custom-modal-header">
                 <h6 class="modal-title" id="verExistenciasLabel">Ver existencias</h6>
-                <button type="button" class="close btn btn-danger" data-dismiss="modal" aria-label="Close">
+                <button type="button" id="botonCerrarModalExistencias" class="close btn btn-danger" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                     <span class="sr-only">Salir de esta ventana</span>
                 </button>
@@ -471,19 +510,6 @@
                                 <h4 class="text-center mt-4 mb-4 p-3 border rounded encabezado-inventario">Realizar Egresos</h4>
                                 <div class="row justify-content-center mb-5">
                                     <form class="col-lg-11 border rounded bg-light p-3" id="formularioExistencia">
-                                        <!-- <div class="row mb-3">
-                                            <div class="col">
-                                                <div class="form-group">
-                                                    <label class="sm-4" for="mov_alma">Seleccione el almacén del que realizara el egreso</label>
-                                                    <div class="d-flex align-items-center">
-                                                        <span class="input-group-text"><i class="bi bi-arrow-right-circle"></i></span>
-                                                        <select name="mov_alma" id="mov_alma" class="form-select" required>
-                                                            <option value="">SELECCIONE...</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div> -->
                                         <div class="row mb-3">
                                             <div class="col">
                                                 <div class="form-group">
@@ -547,7 +573,7 @@
                                     <option value="">SELECCIONE...</option>
                                 </select>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-4" id="divLote">
                                 <label for="tiene_lote" class="form-label">¿El INSUMO tiene No. de lote o Serie?</label>
                                 <div class="d-flex">
                                     <div class="form-check me-3">
@@ -635,12 +661,12 @@
                                     <div class="col">
                                         <button type="button" id="btnAnterior" class="btn btn-warning w-100">Anterior</button>
                                     </div>
-                                    <!-- <div class="col">
+                                    <div class="col">
                                         <button type="button" id="btnVerIngresos" class="btn btn-success w-100">VER INGRESOS</button>
-                                    </div> -->
-                                    <!-- <div class="col">
+                                    </div>
+                                    <div class="col">
                                         <button type="button" id="btnBuscarDetalle" class="btn btn-info w-100">Buscar</button>
-                                    </div> -->
+                                    </div>
                                     <div class="col">
                                         <button type="button" id="btnCancelarDetalle" class="btn btn-danger w-100">Cancelar</button>
                                     </div>
@@ -654,7 +680,62 @@
         </div>
     </div>
 </div>
-
+<!-- <-- modal para mostrar la vista de existencias -->
+<!-- <div class="modal fade  modal-with-backdrop" id="verExistencias" name="verExistencias" tabindex="-1" role="dialog" aria-labelledby="verExistenciasLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header custom-modal-header">
+                <h6 class="modal-title" id="verExistenciasLabel">Ver existencias</h6>
+                <button type="button" id="botonCerrarModalExistencias" class="close btn btn-danger" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Salir de esta ventana</span>
+                </button>
+            </div>
+            <div class="modal-body" id="verExistenciasBody">
+                <div class="container bg-light border rounded mx-auto mt-2 nuevo-contenedor">
+                    <div class="row">
+                        <div class="col-lg-4 mb-4">
+                            <div class="card mt-3 mb-3" id="verExistenciasBody">
+                                <h4 class="text-center mt-4 mb-4 p-3 border rounded encabezado-inventario">Realizar Egresos</h4>
+                                <div class="row justify-content-center mb-5">
+                                    <form class="col-lg-11 border rounded bg-light p-3" id="formularioExistencia">
+                                        <div class="row mb-3">
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <label class="sm-4" for="det_pro">Seleccione el producto</label>
+                                                    <div class="d-flex align-items-center">
+                                                        <span class="input-group-text"><i class="bi bi-box"></i></span>
+                                                        <select name="det_pro" id="det_pro" class="form-select" required>
+                                                            <option value="">SELECCIONE...</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col">
+                                                <button type="button" id="btnBuscarExistencias" class="btn btn-info w-100">Buscar</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-8 mb-3">
+                            <div class="card mt-2 mb-2" id="verExistenciasBody">
+                                <h4 class="text-center mt-4 mb-4 p-3 border rounded encabezado-inventario">Existencias de Productos de acuerdo al almacén seleccionado</h4>
+                                <div class="col table-responsive">
+                                    <table id="tablaExistencias" class="table table-striped table-bordered table-hover table-light mi-tabla">
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> -->
 
 <div class="container border rounded mt-2 bg-light nuevo-contenedor" id="DatosDetalle">
     <div class="row justify-content-center">

@@ -77,6 +77,7 @@ const campoLote = document.getElementById('campoLote');
 const fechaCampo = document.getElementById('fechaCampo');
 
 const botonImprimir = document.getElementById('btnImprimir');
+const botonVolverImprimir = document.getElementById('btnVolverImprimir');
 
 
 // ////PARA MANEJAR EL CKECK BOX DE SI Y NO DE LOTE 
@@ -99,6 +100,7 @@ const divIngresoMovimiento = document.getElementById('movimiento_busqueda');
 
 
 let almaSeleccionId;
+let IdMovimiento;
 let almaSeleccionadoId;// para guardar el id del almacen seleccionado
 let estado = [];// se define estado como un array vacio...
 let producto = [];
@@ -134,11 +136,7 @@ const datatable = new Datatable('#tablaExistencias', {
             title: 'NO',
             render: () => contador++
         },
-        {
-            title: 'Producto',
-            data: 'pro_id'
 
-        },
         {
             title: 'ID',
             data: 'det_id'
@@ -164,7 +162,7 @@ const datatable = new Datatable('#tablaExistencias', {
         },
         {
             title: 'Medida',
-            data: 'pro_medida_nombre'
+            data: 'uni_nombre'
         },
         {
             title: 'Lote',
@@ -183,27 +181,17 @@ const datatable = new Datatable('#tablaExistencias', {
             }
         },
         {
+            title: 'Cantidad que Ingresó',
+            data: 'det_cantidad'
+        },
+        {
             title: 'Cantidad Existente Por lote',
             data: 'det_cantidad_lote'
         },
-        {
-            title: 'EDITAR DETALLE',
-            data: 'det_id',
-            searchable: false,
-            orderable: false,
-            render: (data, type, row, meta) => `<button class="btn btn-warning"  data-proid='${row["pro_id"]}' data-producto='${row["det_pro_id"]}' data-lote='${row["det_lote"]}' data-estado='${row["det_estado"]}' data-fecha='${row["det_fecha_vence"]}'>Editar</button>`
-        },
-        {
-            title: 'ELIMINAR',
-            data: 'det_id',
-            searchable: false,
-            orderable: false,
-            render: (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Eliminar</button>`
-        }
     ],
     columnDefs: [
         {
-            targets: [1, 2, 3, 4],
+            targets: [1, 2, 3],
             visible: false, 
             width: 0,
             searchable: false,
@@ -333,7 +321,7 @@ const datatableDetalle = new Datatable('#tablaDetalles', {
             title: 'Fecha de Vencimiento',
             data: 'det_fecha_vence',
             render: function (data) {
-                // Verifica si la fecha es '7/05/1999' y muestra 'Sin fecha de vencimiento'
+                // Verifica si la fecha es '7/05/1999' y muestra ...
                 return (data === '1999-05-07') ? 'Sin fecha de vencimiento' : data;
             }
         },
@@ -554,16 +542,30 @@ const datatableMovimiento = new Datatable('#tablaMovimientos', {
                 if (row.mov_situacion == '2') {
                     return ''; 
                 } 
-            return `<button class="btn btn-success"  data-id='${data}' data-almacen='${row["mov_alma_id"]}' >Continuar Ingreso</button>`
+            return `<button class="btn btn-success"  data-id='${data}' data-almacen='${row["mov_alma_id"]}'>Continuar Ingreso</button>`
              }
         },
-        // {
-        //     title: 'ELIMINAR',
-        //     data: 'mov_id',
-        //     searchable: false,
-        //     orderable: false,
-        //     render: (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Eliminar</button>`
-        // }
+        {
+            title: 'EDITAR',
+            data: 'mov_id',
+            searchable: false,
+            orderable: false,
+            render: (data, type, row, meta) => `<button class="btn btn-warning" data-id='${data}'>Eliminar</button>`
+        },
+        {
+            title: 'VER DETALLES DE ESTE INGRESO',
+            data: 'mov_id',
+            searchable: false,
+            orderable: false,
+            render: (data, type, row, meta) => `<button class="btn btn-info" data-id='${data}'>Ver Detalles de Este Ingreso</button>`
+        },
+        {
+            title: 'ELIMINAR',
+            data: 'mov_id',
+            searchable: false,
+            orderable: false,
+            render: (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Eliminar</button>`
+        }
      ],
      columnDefs: [
         {
@@ -576,6 +578,31 @@ const datatableMovimiento = new Datatable('#tablaMovimientos', {
    
 });
 
+
+
+//// PARA TRAER LOS DATOS 
+const traeDatosVerDetalle = (e) => {
+    const button = e.target;
+    const id = button.dataset.id;
+
+    const dataset = {
+        det_mov_id: id,
+    };  
+    console.log('Datos en traeDatos:', dataset);
+        colocarDatosVerDetalle(dataset);
+        modalVerExistencias.classList.add('show');
+        modalVerExistencias.style.display = 'block';
+
+
+};
+
+const colocarDatosVerDetalle = (dataset) => {
+    console.log('Datos en colocarDatos:', dataset);
+    botonVolverImprimir.value = dataset.det_mov_id;
+    IdMovimiento = dataset.det_mov_id;
+    buscarDetallePorIngreso();
+ 
+};
 
 //// PARA TRAER LOS DATOS 
 const traeDatosFinalizacion = (e) => {
@@ -730,12 +757,42 @@ const buscarDetalleIngresado = async () => {
 // 
 };
 
-const buscarExistencias = async () => {
+// const buscarExistencias = async () => {
     
 
-    let det_pro = formularioExistencia.det_pro.value;
+//     let det_pro = formularioExistencia.det_pro.value;
 
-    const url = `/control_inventario/API/movimiento/buscarExistencias?det_pro=${det_pro}`;
+//     const url = `/control_inventario/API/movimiento/buscarExistencias?det_pro=${det_pro}`;
+//     const config = {
+//         method: 'GET'
+//     };
+
+//     try {
+//         const respuesta = await fetch(url, config);
+//         const data = await respuesta.json();
+
+//         datatable.clear().draw();
+//         if (data) {
+//             contador = 1;
+//             datatable.rows.add(data).draw();
+//         } else {
+//             Toast.fire({
+//                 title: 'No se encontraron registros',
+//                 icon: 'info'
+//             });
+//         }
+
+//     } catch (error) {
+//         console.log(error);
+//     }
+
+// };
+
+
+const buscarDetallePorIngreso = async () => {
+    
+
+    const url = `/control_inventario/API/movimiento/buscarDetallePorIngreso?IdMovimiento=${IdMovimiento}`;
     const config = {
         method: 'GET'
     };
@@ -743,6 +800,7 @@ const buscarExistencias = async () => {
     try {
         const respuesta = await fetch(url, config);
         const data = await respuesta.json();
+        console.log(data)
 
         datatable.clear().draw();
         if (data) {
@@ -758,9 +816,7 @@ const buscarExistencias = async () => {
     } catch (error) {
         console.log(error);
     }
-    //formularioExistencia.reset();
-
-    //actualizarDependencia();
+   
 };
 
 
@@ -1473,8 +1529,6 @@ const guardarDetalle = async (evento) => {
 
 ///////////funciones para el formulario de busqueda de ingresos
 
-////para buscar almacenes en el modal/////////////
-
 const buscarAlmacenesMovimientos = async () => {
     // Verificar si los elementos del formulario existen antes de acceder a sus propiedades
     if (formularioBusqueda.alma_nombre && formularioBusqueda.alma_id) {
@@ -1515,7 +1569,7 @@ const buscarAlmacenesMovimientos = async () => {
     } catch (error) {
         console.log(error);
     }
-    //formularioModal.reset();
+   
 };
 
 //////////////función buscar para imprimir recibo
@@ -1554,60 +1608,60 @@ const buscarMovimientos = async () => {
 
 ////para buscar almacenes en el modal/////////////
 
-const buscarAlmacenesModal = async () => {
-    // Verificar si los elementos del formulario existen antes de acceder a sus propiedades
-    if (formularioModal.alma_nombre && formularioModal.alma_id) {
-        let alma_nombre = formularioModal.alma_nombre.value;
-        let alma_id = formularioModal.alma_id.value;
-    }
-    const url = `/control_inventario/API/movimiento/buscarAlmacenes`;
-    const config = {
-        method: 'GET'
-    };
+// const buscarAlmacenesModal = async () => {
+//     // Verificar si los elementos del formulario existen antes de acceder a sus propiedades
+//     if (formularioModal.alma_nombre && formularioModal.alma_id) {
+//         let alma_nombre = formularioModal.alma_nombre.value;
+//         let alma_id = formularioModal.alma_id.value;
+//     }
+//     const url = `/control_inventario/API/movimiento/buscarAlmacenes`;
+//     const config = {
+//         method: 'GET'
+//     };
 
-    try {
-        const respuesta = await fetch(url, config);
-        const data = await respuesta.json();
-        console.log('data de almacenes', data); // Imprimir datos en la consola
+//     try {
+//         const respuesta = await fetch(url, config);
+//         const data = await respuesta.json();
+//         console.log('data de almacenes', data); // Imprimir datos en la consola
 
-        almacenes = data;
-        // Limpiar el contenido del select
-        formularioModal.mov_alma.innerHTML = '';
+//         almacenes = data;
+//         // Limpiar el contenido del select
+//         formularioModal.mov_alma.innerHTML = '';
 
-        // Agregar opción predeterminada
-        const defaultOption = document.createElement('option');
-        defaultOption.value = '';
-        defaultOption.textContent = 'SELECCIONE...';
-        formularioModal.mov_alma.appendChild(defaultOption);
-        // Iterar sobre cada objeto en el arreglo y crear opciones para el select
-        data.forEach(almacen => {
-            const option = document.createElement('option');
-            option.value = almacen.alma_id;
-            option.textContent = almacen.alma_nombre;
-            formularioModal.mov_alma.appendChild(option);
-        });
+//         // Agregar opción predeterminada
+//         const defaultOption = document.createElement('option');
+//         defaultOption.value = '';
+//         defaultOption.textContent = 'SELECCIONE...';
+//         formularioModal.mov_alma.appendChild(defaultOption);
+//         // Iterar sobre cada objeto en el arreglo y crear opciones para el select
+//         data.forEach(almacen => {
+//             const option = document.createElement('option');
+//             option.value = almacen.alma_id;
+//             option.textContent = almacen.alma_nombre;
+//             formularioModal.mov_alma.appendChild(option);
+//         });
 
 
 
-        //contador = 1;
-        //datatable.clear().draw();
-    } catch (error) {
-        console.log(error);
-    }
-    //formularioModal.reset();
-};
+//         //contador = 1;
+//         //datatable.clear().draw();
+//     } catch (error) {
+//         console.log(error);
+//     }
+//     //formularioModal.reset();
+// };
 
 /////////////////////////////almacenar el id//////////////////////////////////////
 // Agregar evento al cambio del select para almacenar el ID del almacén
-formularioModal.mov_alma.addEventListener('change', function () {
-    // Obtener el ID del almacén seleccionado
-    almaSeleccionId = this.value;
+// formularioModal.mov_alma.addEventListener('change', function () {
+//     // Obtener el ID del almacén seleccionado
+//     almaSeleccionId = this.value;
 
-    // Imprimir el valor en la consola para verificar
-    console.log('Alma ID seleccionado:', almaSeleccionId);
+//     // Imprimir el valor en la consola para verificar
+//     console.log('Alma ID seleccionado:', almaSeleccionId);
 
-    buscarProductoModal();
-});
+//     buscarProductoModal();
+// });
 
 
 // // Agregar evento al cambio del select para almacenar el ID del almacén
@@ -1664,17 +1718,7 @@ const modificar = async () => {
            
             switch (codigo) {
                 case 1:
-                    // Swal.fire({
-                    //     title: '¡Proceso Completado!',
-                    //     text: 'Finalizó con éxito el proceso de ingreso al inventario. Su PDF se generará en un momento.',
-                    //     icon: 'success',
-                    //     confirmButtonText: 'Entendido',
-                    //     confirmButtonColor: '#3085d6',
-                    //     timer: 5000, // 5000 milisegundos = 5 segundos
-                    //     timerProgressBar: true, // Muestra una barra de progreso que indica el tiempo restante
-                    //     // No necesitas didOpen para manejar eventos de ratón a menos que quieras pausar y reanudar el temporizador manualmente
-                    //   });
-                   
+  
                     break;
                 case 0:
                     icon = 'error';
@@ -1737,6 +1781,39 @@ const buscarRecibo = async () => {
 };
 
 
+
+//////////////función buscar para imprimir recibo
+
+const buscarRecibo2 = async () => {
+    let det_mov_id = botonVolverImprimir.value;
+    console.log('Valor del botón al iniciar buscarRecibo2:', det_mov_id);
+ 
+
+    const url = `/control_inventario/API/reporte/buscarRecibo2?det_mov_id=${det_mov_id}`;
+    const config = {
+        method: 'GET',
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+        console.log(data);
+
+        if (data && data.length > 0) {
+            generarPDF(data);     
+          
+        
+        } else {
+            Toast.fire({
+                title: 'No se encontraron registros ',
+                icon: 'info',
+            });
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 ////////////////generar pdf para entregar hoja de responsabilidad/////////////
 
 const generarPDF = async (datos) => {
@@ -1776,6 +1853,7 @@ const generarPDF = async (datos) => {
     
 
 botonImprimir.addEventListener('click', buscarRecibo);
+botonVolverImprimir.addEventListener('click', buscarRecibo2);
 
 ///evento para detectar el cambio del select 
 select.addEventListener('change', mostrarDependencia);
@@ -1787,11 +1865,9 @@ select.addEventListener('change', mostrarDependencia);
 ///////////////LLAMAR A LAS FUNCIONES///////////
 establecerFechaActual();
 buscarAlmacenes();
-buscarAlmacenesModal();
-buscarAlmacenesMovimientos();
 //buscarDependencia();
 buscarEstados();
-
+buscarAlmacenesMovimientos();
 //buscarProducto();
 
 
@@ -1804,11 +1880,12 @@ mov_perso_recibe.addEventListener('input', buscarOficialesRecibe);
 mov_perso_respon.addEventListener('input', buscarOficialesResponsable);
 formulario.addEventListener('submit', guardar);
 formularioDetalle.addEventListener('submit', guardarDetalle);
-btnBuscarExistencias.addEventListener('click', buscarExistencias);
+//btnBuscarExistencias.addEventListener('click', buscarExistencias);
 btnMovimiento.addEventListener('click', buscarMovimientos);
 datatableDetalle.on('click', '.btn-warning', traeDatosDetalle );
 datatableDetalle.on('click', '.btn-danger', eliminar);
 datatableMovimiento.on('click', '.btn-success', traeDatosFinalizacion);
+datatableMovimiento.on('click', '.btn-info', traeDatosVerDetalle);
 
 
 
@@ -1970,12 +2047,12 @@ checkboxFechaSi.addEventListener('change', function() {
 actualizarSumatoria();
 
 // Agrega un evento de clic al botón
-botonVerIngresos.addEventListener('click', () => {
-    // Abre el modal al hacer clic en el botón
-    modalVerExistencias.classList.add('show');
-    modalVerExistencias.style.display = 'block';
-    document.body.classList.add('modal-open');
-});
+// botonVerIngresos.addEventListener('click', () => {
+//     // Abre el modal al hacer clic en el botón
+//     modalVerExistencias.classList.add('show');
+//     modalVerExistencias.style.display = 'block';
+//     document.body.classList.add('modal-open');
+// });
 
 //////////evento para cerrar el modal haciendo clic
 

@@ -19,7 +19,5 @@ class Guarda extends ActiveRecord
         $this->guarda_catalogo = $args['guarda_catalogo'] ?? '';
         $this->guarda_almacen = $args['guarda_almacen'] ?? '';
         $this->guarda_situacion = $args['guarda_situacion'] ?? 1;
-
-}
-
+    }
 }

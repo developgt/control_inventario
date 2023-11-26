@@ -33,7 +33,7 @@
         border: 1px solid #dee2e6;
         border-radius: 0.25rem;
         margin-bottom: 20px;
-     
+
     }
 
     .table-striped tbody tr:nth-of-type(odd) {
@@ -61,7 +61,12 @@
         justify-content: center;
     }
 
-    
+    .contenedor-modal {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+
+    }
+
+
     .tabla-contenedor {
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     }
@@ -72,23 +77,27 @@
         justify-content: center;
         padding: 20px;
     }
+
     .encabezado-inventario {
         background-color: #007bff;
         color: white;
         margin-bottom: 0;
     }
 
-  
+
     .card {
         border: none;
         border-radius: 10px;
     }
+
     .card-body {
         padding: 2rem;
     }
+
     .form-select {
         margin-left: 0.5rem;
     }
+
     /* .btn-success {
         background-color: #28a745;
         border-color: #28a745;
@@ -99,8 +108,10 @@
     } */
     .btn-ingreso {
         position: absolute;
-        right: 25px; /* Ajustar según necesidad */
-        top: 120px; /* Ajustar según necesidad */
+        right: 25px;
+        /* Ajustar según necesidad */
+        top: 120px;
+        /* Ajustar según necesidad */
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 
     }
@@ -138,28 +149,34 @@
         margin-top: 10px;
         border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-   
+
     }
 
     .encabezado-busqueda {
-    background-color: #e9ecef; /* Un gris claro que no compite con el azul del encabezado principal */
-    color: #495057; /* Un color oscuro para el texto que garantiza legibilidad */
-    padding: 20px;
-    margin-top: 10px;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Un sombreado más suave */
-    border: 1px solid #dee2e6; /* Un borde sutil para definir los límites del encabezado */
-    transition: background-color 0.3s; /* Suaviza la transición de color al pasar el mouse */
-}
+        background-color: #e9ecef;
+        /* Un gris claro que no compite con el azul del encabezado principal */
+        color: #495057;
+        /* Un color oscuro para el texto que garantiza legibilidad */
+        padding: 20px;
+        margin-top: 10px;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        /* Un sombreado más suave */
+        border: 1px solid #dee2e6;
+        /* Un borde sutil para definir los límites del encabezado */
+        transition: background-color 0.3s;
+        /* Suaviza la transición de color al pasar el mouse */
+    }
 
-.encabezado-busqueda:hover {
-    background-color: #dde1e6; /* Un tono ligeramente más oscuro para el hover, manteniéndolo suave */
-    /* No es necesario un cambio drástico de color al pasar el mouse, solo un toque sutil */
-}
+    .encabezado-busqueda:hover {
+        background-color: #dde1e6;
+        /* Un tono ligeramente más oscuro para el hover, manteniéndolo suave */
+        /* No es necesario un cambio drástico de color al pasar el mouse, solo un toque sutil */
+    }
 
     .encabezado-inventario:hover {
         background-color: #0056b3;
-       
+
     }
 
     /* Estilo para el fondo oscuro del modal */
@@ -196,7 +213,7 @@
     }
 
     .mi-tabla {
-        width: 110%;
+        width: 100%;
         border-collapse: collapse;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         margin-left: auto;
@@ -205,14 +222,14 @@
     }
 
     .estado-pendiente {
-    color: red;
+        color: red;
 
-}
+    }
 
-.estado-ingresado {
-    color: green;
-  
-}
+    .estado-ingresado {
+        color: green;
+
+    }
 </style>
 <div class="container bg-light border rounded mx-auto mt-2 busqueda-contenedor" id="movimiento_busqueda">
     <div class="row justify-content-center">
@@ -257,6 +274,38 @@
         </div>
     </div>
 </div>
+<div class="modal fade modal-with-backdrop" id="verExistencias" tabindex="-1" role="dialog" aria-labelledby="verExistenciasLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header custom-modal-header">
+                <h4 class="modal-title custom-modal-title" id="verExistenciasLabel">Ver Ingresos</h4>
+                <button type="button" class="close btn btn-danger" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Salir de esta ventana</span>
+                </button>
+            </div>
+            <div class="modal-body" id="verExistenciasBody">
+                <div class="container border rounded bg-white mt-5 contenedor-modal">
+                    <h3 class="text-center mt-4 mb-4  p-3 border rounded encabezado-inventario">Ingresos Realizados</h3>
+                    <div class="row justify-content-center">
+                        <div class="col-12 table-responsive">
+                            <table id="tablaExistencias" class="table table-striped table-bordered table-hover mi-tabla table-light">
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center mt-4">
+                        <div class="col-lg-6">
+                            <button type="button" id="btnVolverImprimir" class="btn btn-primary w-100">
+                                <i class="bi bi-printer"></i>Imprimir este Ingreso
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="container bg-light border rounded mx-auto mt-2" id="mov_movimiento">
     <div class="row justify-content-center">
         <div class="col-lg-8 mb-2">
@@ -403,16 +452,14 @@
         </div>
     </div>
     <!-- <div class="col-lg-4">
-        <!-- <div class="card" style="background-color: rgba(0, 0, 255, 0.2);">
+        <div class="card" style="background-color: rgba(0, 0, 255, 0.2);">
             <div class="card-body">
                 <h5 class="card-title">Detalle de Ingresos</h5>
                 <p class="card-text">Haz clic en el botón para ver el detalle de ingresos.</p>
                 <button type="button" id="btnVerIngresos" class="btn btn-success w-100">VER INGRESOS</button>
             </div>
-        </div> -->
-
-
-    <!-- </div> -->
+        </div> 
+    </div> -->
 </div>
 </div>
 <div class="container bg-light border rounded mx-auto mt-2" id="mov_detalle">
@@ -535,9 +582,6 @@
                                 <div class="col">
                                     <button type="button" id="btnAnterior" class="btn btn-warning w-100">Anterior</button>
                                 </div>
-                                <!-- <div class="col">
-                                    <button type="button" id="btnVerIngresos" class="btn btn-success w-100">VER INGRESOS</button>
-                                </div> -->
                                 <div class="col">
                                     <button type="button" id="btnCancelarDetalle" class="btn btn-danger w-100">Cancelar</button>
                                 </div>
@@ -571,66 +615,4 @@
 
 
 
-<!-- <-- modal para mostrar la vista para asignar guarda almacén -->
-<div class="modal fade modal-with-backdrop" id="verExistencias" name="verExistencias" tabindex="-1" role="dialog" aria-labelledby="verExistenciasLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl" role="document">
-        <div class="modal-content">
-            <div class="modal-header custom-modal-header">
-                <h4 class="modal-title custom-modal-title" id="verExistenciasLabel">Ver Ingresos</h4>
-                <button type="button" class="close btn btn-danger" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    <span class="sr-only">Salir de esta ventana</span>
-                </button>
-            </div>
-            <div class="modal-body" id="verExistenciasBody">
-                <h3 class="text-center border rounded encabezado-inventario">Buscar Ingresos</h3>
-                <div class="row justify-content-center mb-5">
-                    <form class="col-lg-8 border rounded bg-light p-3" id="formularioExistencia">
-                        <div class="row mb-3">
-                            <div class="col">
-                                <div class="form-group">
-                                    <label for="mov_alma">Seleccione el almacén del que buscará</label>
-                                    <div class="d-flex align-items-center">
-                                        <span class="input-group-text"><i class="bi bi-arrow-right-circle"></i></span>
-                                        <select name="mov_alma" id="mov_alma" class="form-select" required>
-                                            <option value="">SELECCIONE...</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col">
-                                <div class="form-group">
-                                    <label class="sm-4" for="det_pro">Seleccione el producto</label>
-                                    <div class="d-flex align-items-center">
-                                        <span class="input-group-text"><i class="bi bi-box"></i></span>
-                                        <select name="det_pro" id="det_pro" class="form-select" required>
-                                            <option value="">SELECCIONE...</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col">
-                                <button type="button" id="btnBuscarExistencias" class="btn btn-info w-100">Buscar</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <!-- <div class="container border rounded bg-white mt-5"> -->
-                <div class="container d-flex flex-column align-items-center justify-content-center border rounded bg-white mt-5">
-                    <h3 class="text-center mt-4 mb-4  p-3 border rounded encabezado-inventario">Ingresos Realizados</h3>
-                    <div class="row justify-content-center">
-                        <div class="table-responsive">
-                            <table id="tablaExistencias" class="table table-striped table-bordered table-hover table-light w-auto">
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 <script src="<?= asset('./build/js/movimiento/index.js') ?>"></script>

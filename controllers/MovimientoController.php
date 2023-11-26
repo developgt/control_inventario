@@ -358,7 +358,9 @@ class MovimientoController
 
         if ($almaSeleccionadoId != '') {
             $almaSeleccionadoId = ($almaSeleccionadoId);
-            $sql .= " AND a.alma_id = $almaSeleccionadoId ";
+            $sql .= " AND a.alma_id = $almaSeleccionadoId  ORDER BY m.mov_id DESC ";
+         } else {
+            $sql .= " ORDER BY m.mov_id DESC ";
          }
 
         try {
@@ -610,43 +612,25 @@ class MovimientoController
     }
 
 
-    public static function buscarExistenciasAPI()
+  
+    public static function buscarDetallePorIngresoAPI()
     {
+        $det_mov_id = $_GET['IdMovimiento'] ?? '';
 
-        $producto = $_GET['det_pro'] ?? '';
 
-
-        $sql = "
-        SELECT
-        d.det_id,
-        d.det_pro_id,
-        d.det_mov_id,
-        p.pro_id,
-        d.det_lote,
-        d.det_estado,
-        m.mov_tipo_trans,
-        d.det_fecha_vence,
-        e.est_descripcion,
-        d.det_cantidad_existente,
-        d.det_cantidad_lote,
-        p.pro_nom_articulo,
-        u.uni_nombre AS pro_medida_nombre,
-        m.mov_tipo_mov
-    FROM inv_deta_movimientos d
-    INNER JOIN inv_producto p ON d.det_pro_id = p.pro_id
-    LEFT JOIN inv_uni_med u ON p.pro_medida = u.uni_id
-    INNER JOIN inv_movimientos m ON d.det_mov_id = m.mov_id
-    INNER JOIN inv_estado e ON d.det_estado = e.est_id
-    WHERE d.det_pro_id = $producto AND det_situacion = 1 AND mov_tipo_mov = 'I'
-    ORDER BY d.det_id ASC
-    ";
-      
+        $sql = "SELECT m.*, d.*, e.est_descripcion, u.uni_nombre, p.pro_nom_articulo
+        FROM inv_movimientos AS m
+        JOIN inv_deta_movimientos AS d ON m.mov_id = d.det_mov_id
+        LEFT JOIN inv_estado AS e ON d.det_estado = e.est_id
+        LEFT JOIN inv_uni_med AS u ON d.det_uni_med = u.uni_id
+        LEFT JOIN inv_producto AS p ON d.det_pro_id = p.pro_id
+        WHERE d.det_mov_id = $det_mov_id AND d.det_situacion = 1";
 
         try {
 
-            $estado = Detalle::fetchArray($sql);
+            $detalle = Detalle::fetchArray($sql);
 
-            echo json_encode($estado);
+            echo json_encode($detalle);
         } catch (Exception $e) {
             echo json_encode([
                 'detalle' => $e->getMessage(),
@@ -655,6 +639,7 @@ class MovimientoController
             ]);
         }
     }
+
 
     public static function eliminarAPI() {
         try {

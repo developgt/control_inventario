@@ -4,6 +4,8 @@ import { validarFormulario, Toast, confirmacion } from "../funciones";
 import Datatable from "datatables.net-bs5";
 import { lenguaje } from "../lenguaje";
 import { data } from "jquery";
+import { icon } from "leaflet";
+
 
 
 ////formulario busqueda////////////
@@ -34,8 +36,8 @@ const mov_perso_recibe = document.getElementById('mov_perso_recibe');
 const mov_perso_recibe_nom = document.getElementById('mov_perso_recibe_nom');
 const mov_perso_respon = document.getElementById('mov_perso_respon');
 const mov_perso_respon_nom = document.getElementById('mov_perso_respon_nom');
-const movMovimientoDiv = document.getElementById('mov_movimiento')
-
+const movMovimientoDiv = document.getElementById('mov_movimiento');
+const divLote = document.getElementById('divLote');
 let typingTimeout;
 
 const select = document.getElementById('mov_tipo_trans');
@@ -80,6 +82,8 @@ const det_mov_id = document.getElementById('det_mov_id');
 
 
 const botonImprimir = document.getElementById('btnImprimir');
+const botonVolverImprimir = document.getElementById('btnVolverImprimir');
+
 
 
 //////formulario existencias//////////////////
@@ -96,10 +100,13 @@ const checkboxLoteSi = document.getElementById('tiene_lote_si');
 const botonVerIngresos = document.getElementById('btnVerIngresos');
 const botonRetirarMas = document.getElementById('btnRetirarMas');
 const modalVerExistencias = document.getElementById('verExistencias');
-const botonCerrarModal = document.querySelector('.modal-header .close');
+const modalIngresoDetalle = document.getElementById('IngresoDetalle');
+const botonCerrarModal = document.getElementById('botonCerrarModalExistencias');
+const botonCerrarModalIngresoDetalle = document.getElementById('botonCerrarIngresoDetalleModal');
 const formularioModal = document.getElementById('formularioExistencia');
 
-let almaSeleccionadoId;// para guardar el id del almacen seleccionado
+let almaSeleccionadoId;
+let IdMovimiento;
 let producto = [];
 let medida = [];
 let estado = [];// se define estado como un array vacio...
@@ -242,6 +249,7 @@ const traeDatos = (e) => {
         // Ocultar el formulario de movimiento
         movMovimientoDiv.style.display = 'none';
         //buscar por cantidad y lote
+        divLote.style.display = 'none'
         buscarCantidad();
         buscarCantidadLote();
        
@@ -338,7 +346,7 @@ const datatableDetalle = new Datatable('#tablaDetalles', {
             }
         },
         {
-            title: 'Cantidad Ingresada',
+            title: 'Cantidad Retirada',
             data: 'det_cantidad'
         },
         {
@@ -557,13 +565,27 @@ const datatableMovimiento = new Datatable('#tablaMovimientos', {
                 return `<button class="btn btn-success" data-id='${data}' data-almacen='${row["mov_alma_id"]}'>Continuar Egreso</button>`;
             }
         },
-        // {
-        //     title: 'ELIMINAR',
-        //     data: 'det_id',
-        //     searchable: false,
-        //     orderable: false,
-        //     render: (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Eliminar</button>`
-        // }
+        {
+            title: 'EDITAR',
+            data: 'mov_id',
+            searchable: false,
+            orderable: false,
+            render: (data, type, row, meta) => `<button class="btn btn-warning" data-id='${data}'>Eliminar</button>`
+        },
+        {
+            title: 'VER DETALLES DE ESTE INGRESO',
+            data: 'mov_id',
+            searchable: false,
+            orderable: false,
+            render: (data, type, row, meta) => `<button class="btn btn-info" data-id='${data}'>Ver Detalles de Este Egreso</button>`
+        },
+        {
+            title: 'ELIMINAR',
+            data: 'mov_id',
+            searchable: false,
+            orderable: false,
+            render: (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Eliminar</button>`
+        }
      ],
      columnDefs: [
         {
@@ -575,6 +597,31 @@ const datatableMovimiento = new Datatable('#tablaMovimientos', {
     ]
    
 });
+
+
+//// PARA TRAER LOS DATOS 
+const traeDatosVerDetalle = (e) => {
+    const button = e.target;
+    const id = button.dataset.id;
+
+    const dataset = {
+        det_mov_id: id,
+    };  
+    console.log('Datos en traeDatos:', dataset);
+        colocarDatosVerDetalle(dataset);
+        botonVolverImprimir.value = dataset.det_mov_id;
+        modalIngresoDetalle.classList.add('show');
+        modalIngresoDetalle.style.display = 'block';
+
+
+};
+
+const colocarDatosVerDetalle = (dataset) => {
+    console.log('Datos en colocarDatos:', dataset);
+    IdMovimiento = dataset.det_mov_id;
+    buscarDetallePorIngreso();
+ 
+};
 
 //// PARA TRAER LOS DATOS 
 const traeDatosFinalizacion = (e) => {
@@ -588,6 +635,8 @@ const traeDatosFinalizacion = (e) => {
     };  
     console.log('Datos en traeDatos:', dataset);
         colocarDatosFinalizacion(dataset);
+        modalVerExistencias.classList.add('show');
+        modalVerExistencias.style.display = 'block';
         movDetalleDiv.style.display = 'block';
         movMovimientoDiv.style.display = 'none';
         divIngresoMovimiento.style.display = 'none';
@@ -613,6 +662,83 @@ const cancelarAccionFinalizacion = () => {
     datosMovimiento.style.display = 'block';
 };
 
+//////////DATATABLE//////////////////////////////////////////////////////
+
+let contadorEgresoDetalle = 1;
+
+const datatableEgresoDetalle = new Datatable('#tablaEgresoDetalle', {
+    language: lenguaje,
+    data: null,
+    columns: [
+        {
+            title: 'NO',
+            render: () => contador++
+        },
+
+        {
+            title: 'ID',
+            data: 'det_id'
+        },
+        {
+            title: 'Producto',
+            data: 'det_pro_id'
+        },
+        {
+            title: 'Estado del insumo',
+            data: 'det_estado'
+        },
+        {
+            title: 'Tipo de transaccion',
+            data: 'mov_tipo_trans',
+            render: function (data) {
+                return (data === 'I') ? 'EGRESO INTERNO' : (data === 'E') ? 'EGRESO EXTERNO' : data;
+            }
+        },
+        {
+            title: 'Producto',
+            data: 'pro_nom_articulo'
+        },
+        {
+            title: 'Medida',
+            data: 'uni_nombre'
+        },
+        {
+            title: 'Lote',
+            data: 'det_lote'
+        },
+        {
+            title: 'Estado del insumo',
+            data: 'est_descripcion'
+        },
+        {
+            title: 'Fecha de Vencimiento',
+            data: 'det_fecha_vence',
+            render: function (data) {
+                // Verifica si la fecha es '7/05/1999' y muestra 'Sin fecha de vencimiento'
+                return (data === '1999-05-07') ? 'Sin fecha de vencimiento' : data;
+            }
+        },
+        {
+            title: 'Cantidad que egreso',
+            data: 'det_cantidad'
+        },
+        {
+            title: 'Cantidad Existente Por lote',
+            data: 'det_cantidad_lote'
+        },
+
+    ],
+    columnDefs: [
+        {
+            targets: [1, 2, 3],
+            visible: false, 
+            width: 0,
+            searchable: false,
+            
+        }
+      
+    ]
+});
 
 ////funcion para cambiar de situacion un detalle
 
@@ -665,6 +791,37 @@ const eliminar = async (e) => {
 
 };
 
+
+const buscarDetallePorIngreso = async () => {
+    
+
+    const url = `/control_inventario/API/movimiento/buscarDetallePorIngreso?IdMovimiento=${IdMovimiento}`;
+    const config = {
+        method: 'GET'
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+        console.log(data)
+
+        datatableEgresoDetalle.clear().draw();
+        if (data) {
+            contadorEgresoDetalle  = 1;
+            datatableEgresoDetalle.rows.add(data).draw();
+        } else {
+            Toast.fire({
+                title: 'No se encontraron registros',
+                icon: 'info'
+            });
+        }
+
+    } catch (error) {
+        console.log(error);
+    }
+   
+};
+
 // Modifica la función buscarDetalleMovimiento para manejar la nueva estructura
 const buscarDetalleMovimiento = async () => {
     let det_mov_id = formularioDetalle.det_mov_id.value;
@@ -694,8 +851,6 @@ const buscarDetalleMovimiento = async () => {
         console.log(error);
     }
 };
-
-
 
 
 const buscarDetalleIngresado = async () => {
@@ -1591,6 +1746,35 @@ const buscarRecibo = async () => {
     }
 };
 
+const buscarRecibo2 = async () => {
+    let det_mov_id = botonVolverImprimir.value;
+    console.log('Valor del botón al iniciar buscarRecibo2:', det_mov_id);
+ 
+
+    const url = `/control_inventario/API/egresoreporte/buscarRecibo2?det_mov_id=${det_mov_id}`;
+    const config = {
+        method: 'GET',
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+        console.log(data);
+
+        if (data && data.length > 0) {
+            generarPDF(data);     
+          
+        
+        } else {
+            Toast.fire({
+                title: 'No se encontraron registros ',
+                icon: 'info',
+            });
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
 
 ////////////////generar pdf para entregar hoja de responsabilidad/////////////
 
@@ -1759,6 +1943,7 @@ const modificar = async () => {
     };
     
 botonImprimir.addEventListener('click', buscarRecibo);
+botonVolverImprimir.addEventListener('click', buscarRecibo2);
 
 buscarAlmacenes();
 buscarAlmacenesMovimientos();
@@ -1779,6 +1964,8 @@ formularioDetalle.addEventListener('submit', guardarDetalle);
 ///evento para detectar el cambio del select 
 select.addEventListener('change', mostrarDependencia);
 datatableMovimiento.on('click', '.btn-success', traeDatosFinalizacion);
+datatableMovimiento.on('click', '.btn-info', traeDatosVerDetalle);
+
 
 
 det_mov_id.addEventListener('input', buscarDetalleMovimiento);
@@ -1932,7 +2119,19 @@ modalVerExistencias.addEventListener('click', function (event) {
     if (event.target === modalVerExistencias) {
         modalVerExistencias.style.display = 'none';
         document.body.classList.remove('modal-open');
-        //buscarDependencia();
+
     }
 
+});
+
+botonCerrarModalIngresoDetalle.addEventListener('click', function () {
+    modalIngresoDetalle.style.display = 'none';
+    document.body.classList.remove('modal-open');
+});
+
+modalIngresoDetalle.addEventListener('click', function (event) {
+    if (event.target === modalIngresoDetalle) {
+        modalIngresoDetalle.style.display = 'none';
+        document.body.classList.remove('modal-open');
+    }
 });

@@ -211,10 +211,13 @@ class AlmacenController
         alm.alma_nombre AS alma_nombre,
         alm.alma_descripcion AS alma_descripcion,
         alm.alma_id AS alma_id,
-        alm.alma_clase AS alma_clase
+        alm.alma_clase AS alma_clase,
+        c.alma_descr AS clase_nombre
       FROM 
         inv_guarda_almacen ga
         JOIN inv_almacenes alm ON ga.guarda_almacen = alm.alma_id
+        JOIN inv_clase c ON alm.alma_clase = c.alma_clase
+
       WHERE 
         ga.guarda_catalogo = user
         AND ga.guarda_situacion = 1

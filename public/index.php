@@ -62,7 +62,12 @@ $router->get('/API/medida/buscarAlmacenes', [MedidaController::class, 'buscarAlm
 $router->get('/guarda', [GuardaController::class,'index']);
 $router->get('/API/guarda/buscarAlmacenes', [GuardaController::class, 'buscarAlmacenesAPI']);
 $router->get('/API/guarda/buscarOficiales', [GuardaController::class, 'buscarOficialesAPI']);
-$router->post('/API/guarda/guardar', [GuardaController::class,'guardarAPI'] );
+$router->get('/API/guarda/buscarOficialesEntrega', [GuardaController::class, 'buscarOficialesEntregaAPI']);
+$router->get('/API/guarda/buscarIdGuarda', [GuardaController::class, 'buscarIdGuardaAPI']);
+$router->post('/API/guarda/modificarYGuardar', [GuardaController::class,'modificarYGuardarAPI'] );
+$router->get('/API/guarda/buscar', [GuardaController::class, 'buscarAPI']);
+
+
 
 //rutas para manejar la vista del producto y sus funciones de la tabla inv_producto
 $router->get('/producto', [ProductoController::class,'index']);
@@ -90,6 +95,7 @@ $router->get('/API/movimiento/buscarUnidades', [MovimientoController::class, 'bu
 $router->get('/API/movimiento/buscarDetalleMovimiento', [MovimientoController::class, 'buscarDetalleMovimientoAPI']);
 $router->get('/API/movimiento/buscarDetalleIngresado', [MovimientoController::class, 'buscarDetalleIngresadoAPI']);
 $router->get('/API/movimiento/buscarMovimientos', [MovimientoController::class, 'buscarMovimientosAPI']);
+$router->get('/API/movimiento/buscarDetallePorIngreso', [MovimientoController::class, 'buscarDetallePorIngresoAPI']);
 $router->post('/API/movimiento/guardar', [MovimientoController::class,'guardarAPI'] );
 $router->post('/API/movimiento/guardarDetalle', [MovimientoController::class,'guardarDetalleAPI']);
 $router->post('/API/movimiento/eliminar', [MovimientoController::class,'eliminarAPI'] );
@@ -114,6 +120,8 @@ $router->get('/API/movegreso/buscarMovimientos', [MovimientoEgresoController::cl
 $router->get('/pdf', [ReporteController::class,'pdf']);
 $router->post('/reporte/generarPDF', [ReporteController::class, 'generarPDF']);
 $router->get('/API/reporte/buscarRecibo', [ReporteController::class, 'buscarReciboAPI']);
+$router->get('/API/reporte/buscarRecibo2', [ReporteController::class, 'buscarRecibo2API']);
+
 
 
 ///imprimir vale de egreso al inventario 
@@ -121,6 +129,8 @@ $router->get('/API/reporte/buscarRecibo', [ReporteController::class, 'buscarReci
 $router->get('/pdf', [ReporteEgresoController::class,'pdf']);
 $router->post('/egresoreporte/generarPDF', [ReporteEgresoController::class, 'generarPDF']);
 $router->get('/API/egresoreporte/buscarRecibo', [ReporteEgresoController::class, 'buscarReciboAPI']);
+$router->get('/API/egresoreporte/buscarRecibo2', [ReporteEgresoController::class, 'buscarRecibo2API']);
+
 
 $router->get('/', [MenuController::class,'index']);
 $router->get('/API/menu/buscar', [MenuController::class,'buscarAlmacen']);

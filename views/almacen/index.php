@@ -168,7 +168,7 @@
                     <div class="container border rounded bg-white mt-1 tabla-container nuevo-contenedor">
                         <h1 class="text-center mt-4 mb-4 encabezado-inventario">Inventarios Registrados</h1>
                         <div class="row justify-content-center">
-                            <div class="col-lg-12">
+                            <div class="col-lg-10">
                                 <div class="table">
                                     <table id="tablaAlmacen" class="table table-striped table-bordered table-light mi-tabla">
                                     </table>

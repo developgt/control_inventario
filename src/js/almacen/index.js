@@ -45,7 +45,7 @@ const almaUnidadId = document.getElementById('alma_unidad_id');
 
 
 
-///////////AQUI TERMINA PARA ABRIR EL MODAL DE ASIGNAR OFICIAL///////////////
+
 
 //////////DATATABLE//////////////////////////
 
@@ -64,12 +64,16 @@ const datatable = new Datatable('#tablaAlmacen', {
             render: () => contador++
         },
         {
-            title: 'NOMBRE',
+            title: 'Nombre del Inventario',
             data: 'alma_nombre'
         },
         {
-            title: 'DESCRIPCION',
+            title: 'Descripción',
             data: 'alma_descripcion'
+        },
+        {
+            title: 'Clase de Inventario',
+            data: 'clase_nombre'
         },
 
         {
@@ -86,26 +90,12 @@ const datatable = new Datatable('#tablaAlmacen', {
             orderable: false,
             render: (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Eliminar</button>`
         },
-        {
-            title: 'NOMBRE',
-            data: 'alma_clase'
-        },
-
     ],
     columnDefs: [
         {  
-        targets: [3, 4], 
+        targets: [4, 5], 
         className: 'col-1'
-        //width: "400%"
       },
-      {  
-        targets: [5], 
-        visible: false,
-        searchable: false,
-        //width: "400%"
-      },
-
-
     ],
 });
 
@@ -343,7 +333,7 @@ const buscar = async () => {
     } catch (error) {
         console.log(error);
     }
-    actualizarDependencia();
+
 };
 
 ////funcion para cambiar de situacion un almacen
@@ -551,7 +541,6 @@ datatable.on('click', '.btn-danger', eliminar);
 
 // Agrega un evento de clic al botón
 btnBuscar.addEventListener('click', () => {
-    // Abre el modal al hacer clic en el botón
     modalVerRegistros.classList.add('show');
     modalVerRegistros.style.display = 'block';
 
@@ -562,7 +551,6 @@ btnBuscar.addEventListener('click', () => {
 //////////evento para cerrar el modal haciendo clic
 
 botonCerrarModal.addEventListener('click', function () {
-    // Cierra el modal
     modalVerRegistros.style.display = 'none';
     actualizarDependencia();
 

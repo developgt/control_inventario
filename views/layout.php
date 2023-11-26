@@ -37,12 +37,10 @@
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="/control_inventario/gestion"><i class="bi bi bi-pencil-fill me-2"></i>Registrar Inventario</a>
                     </li>
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="/control_inventario/crear"><i class="bi bi bi-clipboard-data-fill me-2"></i>Administrar Inventario</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="/control_inventario/crear"><i class="bi bi bi-building-fill-check me-2"></i>Realizar Entrega de Inventario</a>
-                    </li>
+                    </li> -->
+          
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="/control_inventario/almacen"><i class="bi bi bi-building-fill-check me-2"></i>Inventario</a>
                     </li>
@@ -54,6 +52,9 @@
                     </li>
                     <li>
                         <a class="nav-link" aria-current="page" href="/control_inventario/kardex"><i class="bi bi-archive-fill me-2"></i>Kardex</a>
+                    </li>          
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/control_inventario/guarda"><i class="bi bi bi-building-fill-check me-2"></i>Realizar Entrega de Inventario</a>
                     </li>
                     <!-- GESTION DE INVENTARIOS -->
                     <!-- <div class="nav-item dropdown ">

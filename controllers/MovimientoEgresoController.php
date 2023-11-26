@@ -27,8 +27,9 @@ class MovimientoEgresoController
     // }
 
 
-    
-    public static function index(Router $router){
+
+    public static function index(Router $router)
+    {
         isAuth();
         try {
             $usuario = Usuario::fetchFirst("
@@ -51,13 +52,12 @@ class MovimientoEgresoController
             per_catalogo = user;
 
             ");
-            
         } catch (Exception $e) {
             getHeadersApi();
             echo json_encode([
-                "detalle" => $e->getMessage(),       
+                "detalle" => $e->getMessage(),
                 "mensaje" => "Error de conexión bd",
-        
+
                 "codigo" => 5,
             ]);
             exit;
@@ -69,15 +69,15 @@ class MovimientoEgresoController
 
 
     public static function buscarDependenciaAPI()
-    
+
     {
         $sql = "SELECT dep_llave, dep_desc_md FROM mdep";
         try {
             $dependencias = Mdep::fetchArray($sql);
-    
+
             // Establece el tipo de contenido de la respuesta a JSON
             header('Content-Type: application/json');
-    
+
             // Convierte el array a JSON y envíalo como respuesta
             echo json_encode($dependencias);
         } catch (Exception $e) {
@@ -186,7 +186,7 @@ class MovimientoEgresoController
     }
 
 
-    
+
     public static function buscarExistenciasAPI()
     {
 
@@ -210,7 +210,7 @@ class MovimientoEgresoController
  LEFT JOIN inv_estado e ON d.det_estado = e.est_id
  ORDER BY d.det_id ASC";
 
-      
+
 
         try {
 
@@ -231,47 +231,49 @@ class MovimientoEgresoController
 
         $almaSeleccionadoId = $_GET['mov_alma'];
 
-        $sql = "    
-        SELECT m.*, 
-        a.alma_nombre, 
-        d.dep_desc_md,
-        -- Datos de la persona que entrega
-        trim(ge.gra_desc_ct) || ' DE ' || trim(ae.arm_desc_md) || ' ' || 
-        trim(pe.per_ape1) || ' ' || trim(pe.per_ape2) || ', ' || 
-        trim(pe.per_nom1) || ', ' || trim(pe.per_nom2) as mov_perso_entrega_nom,
-        -- Datos de la persona que recibe
-        trim(gr.gra_desc_ct) || ' DE ' || trim(ar.arm_desc_md) || ' ' || 
-        trim(pr.per_ape1) || ' ' || trim(pr.per_ape2) || ', ' || 
-        trim(pr.per_nom1) || ', ' || trim(pr.per_nom2) as mov_perso_recibe_nom,
-        -- Datos de la persona responsable
-        trim(g.gra_desc_ct) || ' DE ' || trim(arm.arm_desc_md) || ' ' || 
-        trim(per.per_ape1) || ' ' || trim(per.per_ape2) || ', ' || 
-        trim(per.per_nom1) || ', ' || trim(per.per_nom2) as mov_perso_respon_nom
-        FROM inv_movimientos AS m
-        JOIN inv_almacenes AS a ON m.mov_alma_id = a.alma_id
-        LEFT JOIN mdep AS d ON a.alma_unidad = d.dep_llave
-        LEFT JOIN inv_guarda_almacen AS ga ON a.alma_id = ga.guarda_almacen 
-        -- Datos de la persona que entrega
-        LEFT JOIN mper AS pe ON m.mov_perso_entrega = pe.per_catalogo
-        LEFT JOIN grados AS ge ON pe.per_grado = ge.gra_codigo
-        LEFT JOIN armas AS ae ON pe.per_arma = ae.arm_codigo
-        -- Datos de la persona que recibe
-        LEFT JOIN mper AS pr ON m.mov_perso_recibe = pr.per_catalogo
-        LEFT JOIN grados AS gr ON pr.per_grado = gr.gra_codigo
-        LEFT JOIN armas AS ar ON pr.per_arma = ar.arm_codigo
-        -- Datos de la persona responsable
-        LEFT JOIN mper AS per ON m.mov_perso_respon = per.per_catalogo
-        LEFT JOIN grados AS g ON per.per_grado = g.gra_codigo
-        LEFT JOIN armas AS arm ON per.per_arma = arm.arm_codigo
-        AND ga.guarda_almacen = a.alma_id 
-        AND ga.guarda_catalogo = user
-        AND ga.guarda_situacion = 1
-        AND m.mov_tipo_mov = 'E'";
+        $sql = "SELECT m.*, 
+  a.alma_nombre, 
+  d.dep_desc_md,
+  -- Datos de la persona que entrega
+  trim(ge.gra_desc_ct) || ' DE ' || trim(ae.arm_desc_md) || ' ' || 
+  trim(pe.per_ape1) || ' ' || trim(pe.per_ape2) || ', ' || 
+  trim(pe.per_nom1) || ', ' || trim(pe.per_nom2) as mov_perso_entrega_nom,
+  -- Datos de la persona que recibe
+  trim(gr.gra_desc_ct) || ' DE ' || trim(ar.arm_desc_md) || ' ' || 
+  trim(pr.per_ape1) || ' ' || trim(pr.per_ape2) || ', ' || 
+  trim(pr.per_nom1) || ', ' || trim(pr.per_nom2) as mov_perso_recibe_nom,
+  -- Datos de la persona responsable
+  trim(g.gra_desc_ct) || ' DE ' || trim(arm.arm_desc_md) || ' ' || 
+  trim(per.per_ape1) || ' ' || trim(per.per_ape2) || ', ' || 
+  trim(per.per_nom1) || ', ' || trim(per.per_nom2) as mov_perso_respon_nom
+  FROM inv_movimientos AS m
+  JOIN inv_almacenes AS a ON m.mov_alma_id = a.alma_id
+  LEFT JOIN mdep AS d ON a.alma_unidad = d.dep_llave
+  LEFT JOIN inv_guarda_almacen AS ga ON a.alma_id = ga.guarda_almacen 
+  -- Datos de la persona que entrega
+  LEFT JOIN mper AS pe ON m.mov_perso_entrega = pe.per_catalogo
+  LEFT JOIN grados AS ge ON pe.per_grado = ge.gra_codigo
+  LEFT JOIN armas AS ae ON pe.per_arma = ae.arm_codigo
+  -- Datos de la persona que recibe
+  LEFT JOIN mper AS pr ON m.mov_perso_recibe = pr.per_catalogo
+  LEFT JOIN grados AS gr ON pr.per_grado = gr.gra_codigo
+  LEFT JOIN armas AS ar ON pr.per_arma = ar.arm_codigo
+  -- Datos de la persona responsable
+  LEFT JOIN mper AS per ON m.mov_perso_respon = per.per_catalogo
+  LEFT JOIN grados AS g ON per.per_grado = g.gra_codigo
+  LEFT JOIN armas AS arm ON per.per_arma = arm.arm_codigo
+  WHERE 
+   ga.guarda_almacen = a.alma_id 
+  AND ga.guarda_catalogo = user
+  AND ga.guarda_situacion = 1
+  AND m.mov_tipo_mov = 'E'";
 
         if ($almaSeleccionadoId != '') {
             $almaSeleccionadoId = ($almaSeleccionadoId);
-            $sql .= " AND a.alma_id = $almaSeleccionadoId ";
-         }
+            $sql .= " AND a.alma_id = $almaSeleccionadoId ORDER BY m.mov_id DESC";
+        } else {
+            $sql .= "ORDER BY m.mov_id DESC";
+        }
 
         try {
 
@@ -288,5 +290,4 @@ class MovimientoEgresoController
             ]);
         }
     }
-
 }

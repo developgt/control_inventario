@@ -12,46 +12,65 @@ const btnBuscar = document.getElementById('btnBuscar');
 const btnModificar = document.getElementById('btnModificar');
 const btnCancelar = document.getElementById('btnCancelar');
 const guarda_id = document.getElementById('guarda_id');
+const guarda_id2 = document.getElementById('guarda_id2');
 const guarda_catalogo = document.getElementById('guarda_catalogo');
+const guarda_catalogo2 = document.getElementById('guarda_catalogo2');
 const guarda_nombre = document.getElementById('guarda_nombre')
+const guarda_nombre2 = document.getElementById('guarda_nombre2')
+const guarda_almacen = document.getElementById('guarda_almacen');
 const alma_nombre = document.getElementById('alma_nombre');
 const alma_id = document.getElementById('alma_id');
 const nombreAlmacen = document.getElementById('guarda_almacen')
 let almaIdSeleccionado = null;
-//declaracion de variable typingtimeout
 let typingTimeout;
-let almacenes = []; // se define almacenes como un array vacio...
-console.log('almacenes:', almacenes);
-
-btnModificar.disabled = true
-btnModificar.parentElement.style.display = 'none'
-btnCancelar.disabled = true
-btnCancelar.parentElement.style.display = 'none'
+let almacenes = []; 
+let almaSeleccionadoId;
+const botonCerrarModal = document.querySelector('.modal-header .close');
+const modalVerRegistros = document.getElementById('modalVerRegistros');
 
 
 
 
-//cargar contenido cuando se cargue la pagina
+//////////DATATABLE//////////////////////////
 
-document.addEventListener('DOMContentLoaded', async function() {
+let contador = 1;
 
-    try {
-        await buscarAlmacenes();
-      
-        //buscar();
-    } catch (error) {
-        console.error(error);
-        // Manejar el error, si es necesario.
-    }
+const datatable = new Datatable('#tablaAlmacen', {
+    language: lenguaje,
+    data: null,
+    columns: [
+        {
+            title: 'NO',
+            render: () => contador++
+        },
+        {
+            title: 'Nombre del Inventario',
+            data: 'alma_nombre'
+        },
+        {
+            title: 'Descripción',
+            data: 'alma_descripcion'
+        },
+
+        {
+            title: 'Clase de Inventario',
+            data: 'clase_nombre'
+        },
+
+    ],
 });
 
+
+
+
+
 const buscarAlmacenes = async () => {
-    // Verificar si los elementos del formulario existen antes de acceder a sus propiedades
+  
     if (formulario.alma_nombre && formulario.alma_id) {
         let alma_nombre = formulario.alma_nombre.value;
         let alma_id = formulario.alma_id.value;
     }
-    const url = `/control_inventario/API/medida/buscarAlmacenes`;
+    const url = `/control_inventario/API/guarda/buscarAlmacenes`;
     const config = {
         method: 'GET'
     };
@@ -59,46 +78,34 @@ const buscarAlmacenes = async () => {
     try {
         const respuesta = await fetch(url, config);
         const data = await respuesta.json();
-        console.log('data de almacenes', data); // Imprimir datos en la consola
+        console.log('data de almacenes', data); 
 
         almacenes = data;
-        // Limpiar el contenido del select
         formulario.guarda_almacen.innerHTML = '';
-
-         // Agregar opción predeterminada
     const defaultOption = document.createElement('option');
     defaultOption.value = '';
     defaultOption.textContent = 'SELECCIONE...';
     formulario.guarda_almacen.appendChild(defaultOption);
-        // Iterar sobre cada objeto en el arreglo y crear opciones para el select
         data.forEach(almacen => {
             const option = document.createElement('option');
             option.value = almacen.alma_id;
             option.textContent = almacen.alma_nombre;
             formulario.guarda_almacen.appendChild(option);
         });
-
-   
-
-        // contador = 1;
-        // datatable.clear().draw();
     } catch (error) {
         console.log(error);
     }
-    formulario.reset();
+
 };
 
 
 
+const buscarOficialesEntrega = async () => {
+    let guarda_catalogo2 = formulario.guarda_catalogo2.value;
+    clearTimeout(typingTimeout); 
 
-
-const buscarOficiales = async () => {
-    let guarda_catalogo = formulario.guarda_catalogo.value;
-    clearTimeout(typingTimeout); // Limpiar el temporizador anterior (si existe)  
-    
-    // Función que se ejecutará después del retraso
     const fetchData = async () => {
-        const url = `/control_inventario/API/guarda/buscarOficiales?guarda_catalogo=${guarda_catalogo}`;
+        const url = `/control_inventario/API/guarda/buscarOficialesEntrega?guarda_catalogo2=${guarda_catalogo2}`;
         const config = {
             method: 'GET'
         };    
@@ -109,8 +116,8 @@ const buscarOficiales = async () => {
             console.log(data);
 
             if (data && data.length > 0) {
-                const guardaNombre = data[0].guarda_nombre; 
-                guarda_nombre.value = guardaNombre;
+                const guardaNombre2 = data[0].guarda_nombre2; 
+                guarda_nombre2.value = guardaNombre2;
                 Toast.fire({
                     icon: 'success',
                     title: 'El catálogo ingresado es correcto, se muestran los siguientes datos.'
@@ -130,90 +137,209 @@ const buscarOficiales = async () => {
             });    
         }    
     };    
-     // Establecer un retraso de 500 ms antes de realizar la solicitud a la API
+
      typingTimeout = setTimeout(fetchData, 1200);
 
 };     
 
-guarda_catalogo.addEventListener('input', buscarOficiales);
+
+const buscarOficiales = async () => {
+  
+    const url = `/control_inventario/API/guarda/buscarOficiales`;
+    const config = {
+        method: 'GET'
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+        console.log(data);
+
+        if (data && data.length > 0) {
+            const guardaNombre = data[0].guarda_nombre;
+            guarda_nombre.value = guardaNombre;
+            const GuardaCatalogo = data[0].per_catalogo;
+            guarda_catalogo.value = GuardaCatalogo;
+      
+        } else {
+            guarda_nombre.value = '';
+        }
+    } catch (error) {
+        console.log(error);
+        Toast.fire({
+            icon: 'error',
+            title: 'Ocurrió un error al buscar los datos.'
+        });
+    }
+};
+
+// Agregar evento al cambio del select para almacenar el ID del almacén
+formulario.guarda_almacen.addEventListener('change', function () {
+    almaSeleccionadoId = this.value;
+    console.log('Alma ID seleccionado:', almaSeleccionadoId);
+    buscarIdGuarda();
+});
+
+
+const buscarIdGuarda = async () => {
+  
+    const url = `/control_inventario/API/guarda/buscarIdGuarda?almaSeleccionadoId=${almaSeleccionadoId}`;
+    const config = {
+        method: 'GET'
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+        console.log(data);
+
+        if (data && data.length > 0) {
+            const guardaId = data[0].guarda_id;
+            guarda_id2.value = guardaId;
+
+        } else {
+            guarda_nombre.value = '';
+        }
+    } catch (error) {
+        console.log(error);
+        Toast.fire({
+            icon: 'error',
+            title: 'Ocurrió un error al buscar los datos.'
+        });
+    }
+};
 
 
 
-////// GUARDAR CAMPOS DEL FORMULARIO
 
-const guardar = async (evento) => {
-    evento.preventDefault();
 
-    if (!validarFormulario(formulario, ['guarda_id', 'guarda_nombre'])) {
+
+
+// Función para manejar tanto la modificación como el guardado
+const modificarYGuardar = async () => {
+    if (!validarFormulario(formulario, ['guarda_id'])) {
         Toast.fire({
             icon: 'info',
             text: 'Debe llenar todos los datos'
-        })
-        return
+        });
+        return;
     }
-    const body = new FormData(formulario)
-    body.delete('uni_id')
-    const url = '/control_inventario/API/guarda/guardar';
+
+    const body = new FormData(formulario);
+    const url = '/control_inventario/API/guarda/modificarYGuardar';
     const config = {
         method: 'POST',
         body
-    }
+    };
 
     try {
-        const respuesta = await fetch(url, config)
+        const respuesta = await fetch(url, config);
         const data = await respuesta.json();
-
         console.log(data);
-        // return
 
         const { codigo, mensaje, detalle } = data;
-        let icon = 'info'
-        switch (codigo) {
-            case 1:
-                formulario.reset();
-                icon = 'success'
-                //buscar();
-                break;
-
-            case 0:
-                icon = 'error'
-                console.log(detalle)
-                break;
-
-            default:
-                break;
-        }
+        let icon = (codigo === 1) ? 'success' : 'error';
 
         Toast.fire({
             icon,
             text: mensaje
-        })
+        });
+
+        if (codigo === 1) {
+            formulario.reset();
+            buscarAlmacenes();
+        }
+    } catch (error) {
+        console.log(error);
+        Toast.fire({
+            icon: 'error',
+            text: 'Ocurrió un error al realizar la operación'
+        });
+    }
+}
+
+
+////////////// FUNCION PARA BUSCAR LOS ELEMENTOS GUARDADOS
+
+const buscar = async () => {
+
+    const url = `/control_inventario/API/guarda/buscar`;
+    const config = {
+        method: 'GET'
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+        console.log(data);
+
+        datatable.clear().draw();
+        if (data) {
+            contador = 1;
+            datatable.rows.add(data).draw();
+        } else {
+            Toast.fire({
+                title: 'No se encontraron registros',
+                icon: 'info'
+            });
+        }
 
     } catch (error) {
         console.log(error);
     }
-    //buscar();
-}
+  
+};
 
 
-
-
-
-
-
-
-
-
-
+buscarOficiales();
 buscarAlmacenes();
+guarda_catalogo2.addEventListener('input', buscarOficialesEntrega);
 
-formulario.addEventListener('submit', guardar);
-// btnBuscar.addEventListener('click', buscar);
-// btnCancelar.addEventListener('click', cancelarAccion);
-// btnModificar.addEventListener('click', modificar);
-// datatable.on('click', '.btn-warning', traeDatos );
-// datatable.on('click', '.btn-danger', eliminar);
 
+btnBuscar.addEventListener('click', () => {
+    modalVerRegistros.classList.add('show');
+    modalVerRegistros.style.display = 'block';
+
+    buscar();
+});
+
+
+
+
+btnGuardar.addEventListener('click', async (e) => {
+    e.preventDefault();
+     Swal.fire({
+        title: 'Confirmar Entrega',
+        text: "Se entregará el inventario seleccionado. ¿Desea continuar?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, entregar',
+        cancelButtonText: 'Cancelar acción'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            modificarYGuardar();
+        }
+    });
+});
+
+
+//////////evento para cerrar el modal haciendo clic
+
+botonCerrarModal.addEventListener('click', function () {
+    modalVerRegistros.style.display = 'none';
+    
+
+});
+
+////cerrar el modal cuando se hace clic fuera del modal...
+modalVerRegistros.addEventListener('click', function (event) {
+    if (event.target === modalVerRegistros) {
+        modalVerRegistros.style.display = 'none';
+     
+    }
+});
 
 
 
