@@ -241,6 +241,17 @@ const guardar = async (evento) => {
 
     const almaUnidadValor = almaUnidad.value;
 
+    const claseValueVerificar = document.getElementById('alma_clase').value;
+    if (!claseValueVerificar) {
+        Swal.fire({
+            title: 'Información faltante',
+            text: 'Para registrar un inventario, es necesario seleccionar la clase en el módulo de Registro de Inventario. Por favor, asegúrate de completar este paso antes de continuar.',
+            icon: 'warning',
+            confirmButtonText: 'Entendido'
+        });
+        return;
+    }
+
     if (!validarFormulario(formulario, ['alma_id', 'guarda_id','guarda_almacen'])) {
         Toast.fire({
             icon: 'info',
@@ -249,8 +260,9 @@ const guardar = async (evento) => {
         return
     }
 
-       // Guarda el valor actual del campo alma_clase
        const claseValue = document.getElementById('alma_clase').value;
+       const claseValueDescripcion = document.getElementById('alma_clase_descripcion').value;
+
     const body = new FormData(formulario)
     body.delete('alma_id')
     const url = '/control_inventario/API/almacen/guardar';
@@ -273,6 +285,8 @@ const guardar = async (evento) => {
                 formulario.reset();
                 icon = 'success'
                 document.getElementById('alma_clase').value = claseValue;
+                document.getElementById('alma_clase_descripcion').value = claseValueDescripcion;
+
                 //buscar();
                 break;
 
@@ -483,6 +497,29 @@ const buscarOficiales = async () => {
         }
 };
 
+function actualizarClase(valor) {
+    const clases = {
+        '1': 'Alimentos y Comestibles',
+        '2': 'Vestuario y Equipo Individual',
+        '3': 'Carburantes y Lubricantes',
+        '4': 'Material de Construcción',
+        '5': 'Artículos Personales',
+        '6': 'Artículos Terminados',
+        '7': 'Repuestos y Accesorios',
+        '8': 'Apoyo Asuntos Civiles',
+        '9': 'Material Capturado/Recuperable'
+    };
+
+    const mensajePorDefecto = "SELECCIONE LA CLASE EN 'REGISTRAR INVENTARIO'";
+
+  // Actualiza el valor del input con el número (para el envío del formulario)
+  document.getElementById('alma_clase').value = valor || '';
+
+  // Muestra la descripción correspondiente o el mensaje por defecto
+  document.getElementById('alma_clase_descripcion').value = clases[valor] || mensajePorDefecto;
+}
+
+
 let alma_clase_value;
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -493,17 +530,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Verifica si el valor existe y actualiza el campo
     if (alma_clase_value) {
-        const inputAlmaClase = formulario.alma_clase;
-        inputAlmaClase.value = alma_clase_value;
-        
+        actualizarClase(alma_clase_value);
+    } else {
+        actualizarClase(''); // Esto establecerá el mensaje por defecto
+    }
 
           // Limpia alma_clase_value antes de abandonar la página
         window.addEventListener('beforeunload', function () {
         alma_clase_value = null;
         localStorage.removeItem('alma_clase');
     });
-    }
+    
 });
+
+
 
 // // Función para guardar el valor de alma_clase en localStorage
 // const guardarAlmaClase = (alma_clase_value) => {

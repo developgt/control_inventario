@@ -74,13 +74,14 @@
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         margin-left: auto;
         margin-right: auto;
-    
+
     }
 
     /* Estilo para ocultar el desplegable DEL SELECT */
     #alma_clase {
         pointer-events: none;
     }
+
 </style>
 <div class="container border rounded bg-white nuevo-contenedor">
     <div class="row justify-content-center mt-1 mb-1">
@@ -96,19 +97,9 @@
                         <input type="text" name="alma_nombre" id="alma_nombre" class="form-control">
                     </div>
                     <div class="col-lg-6">
-                    <label for="alma_clase"><i class="bi bi-shield-shaded me-2"></i>Clases</label>
-                        <select name="alma_clase" id="alma_clase" class="form-select" size="1">
-                            <option value="">SELECCIONE LA CLASE EN "REGISTRAR INVENTARIO"</option>
-                            <option value="1">Alimentos y Comestibles</option>
-                            <option value="2">Vestuario y Equipo Individual</option>
-                            <option value="3">Carburantes y Lubricantes</option>
-                            <option value="4">Material de Construcción</option>
-                            <option value="5">Artículos Personales</option>
-                            <option value="6">Artículos Terminados</option>
-                            <option value="7">Repuestos y Accesorios</option>
-                            <option value="8">Apoyo Asuntos Civiles</option>
-                            <option value="9">Material Capturado/Recuperable</option>
-                        </select>
+                        <label for="alma_clase"><i class="bi bi-shield-shaded me-2"></i>Clases</label>
+                        <input type="hidden" name="alma_clase" id="alma_clase" class="form-control" readonly>
+                        <input type="text" name="alma_clase_descripcion" id="alma_clase_descripcion" readonly class="form-control readonly">
                     </div>
                 </div>
                 <input type="hidden" name="guarda_id" id="guarda_id">
@@ -153,7 +144,7 @@
     </div>
 
 
-    <!-- <-- modal para mostrar la vista para asignar guarda almacén -->
+    <!-- <-- modal para mostrar los inventarios asignados-->
     <div class="modal fade modal-with-backdrop" id="modalVerRegistros" name="modalVerRegistros" tabindex="-1" role="dialog" aria-labelledby="modalVerRegistrosLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">

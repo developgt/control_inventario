@@ -207,7 +207,7 @@ class AlmacenController
 
 
 
-        $sql = " SELECT DISTINCT
+        $sql = "SELECT DISTINCT
         alm.alma_nombre AS alma_nombre,
         alm.alma_descripcion AS alma_descripcion,
         alm.alma_id AS alma_id,
@@ -217,7 +217,6 @@ class AlmacenController
         inv_guarda_almacen ga
         JOIN inv_almacenes alm ON ga.guarda_almacen = alm.alma_id
         JOIN inv_clase c ON alm.alma_clase = c.alma_clase
-
       WHERE 
         ga.guarda_catalogo = user
         AND ga.guarda_situacion = 1

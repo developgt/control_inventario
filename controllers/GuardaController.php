@@ -179,7 +179,8 @@ class GuardaController
         alm.alma_descripcion AS alma_descripcion,
         alm.alma_id AS alma_id,
         alm.alma_clase AS alma_clase,
-        c.alma_descr AS clase_nombre
+        c.alma_descr AS clase_nombre,
+        ga.guarda_situacion
       FROM 
         inv_guarda_almacen ga
         JOIN inv_almacenes alm ON ga.guarda_almacen = alm.alma_id

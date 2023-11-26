@@ -56,6 +56,19 @@ const datatable = new Datatable('#tablaAlmacen', {
             title: 'Clase de Inventario',
             data: 'clase_nombre'
         },
+        {
+            title: 'Situación del Inventario',
+            data: 'guarda_situacion',
+            render: function (data) {
+                if (data == 0) {
+                    return '<span style="color: red;">INVENTARIO ENTREGADO</span>';
+                } else {
+                    return 'Verifique la entrega del inventario. Si aparece aquí, contacte al administrador.';
+                }
+            }
+        },
+        
+        
 
     ],
 });
