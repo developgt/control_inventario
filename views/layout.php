@@ -56,6 +56,12 @@
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="/control_inventario/guarda"><i class="bi bi bi-building-fill-check me-2"></i>Realizar Entrega de Inventario</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/control_inventario/estadisticas/estadistica"><i class="bi bi-bar-chart me-2""></i>Estadisticas de Cantidad de prducto</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/control_inventario/estadisticas/cantidadestadistica"><i class="bi bi-bar-chart me-2""></i>Estadisticas de Ingresos y Egresos</a>
+                    </li>
                     <!-- GESTION DE INVENTARIOS -->
                     <!-- <div class="nav-item dropdown ">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown">

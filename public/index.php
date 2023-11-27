@@ -8,6 +8,7 @@ require_once __DIR__ . '/../includes/app.php';
 use MVC\Router;
 use Controllers\AppController;
 use Controllers\AlmacenController;
+use Controllers\EstadisticaController;
 use Controllers\EstadoController;
 use Controllers\GuardaController;
 use Controllers\MedidaController;
@@ -130,6 +131,24 @@ $router->get('/pdf', [ReporteEgresoController::class,'pdf']);
 $router->post('/egresoreporte/generarPDF', [ReporteEgresoController::class, 'generarPDF']);
 $router->get('/API/egresoreporte/buscarRecibo', [ReporteEgresoController::class, 'buscarReciboAPI']);
 $router->get('/API/egresoreporte/buscarRecibo2', [ReporteEgresoController::class, 'buscarRecibo2API']);
+
+
+
+// estadisticas
+
+
+$router->get('/estadisticas/estadistica', [EstadisticaController::class,'estadistica']);
+$router->get('/API/estadisticas/buscar', [EstadisticaController::class,'buscarCantidadAPI']);
+$router->get('/API/estadisticas/buscarIngreso', [EstadisticaController::class,'buscarIngresoAPI']);
+$router->get('/API/estadisticas/buscarEgreso', [EstadisticaController::class,'buscarEgresoAPI']);
+
+
+
+$router->get('/estadisticas/cantidadestadistica', [EstadisticaController::class,'cantidadEstadistica']);
+
+//$router->get('/API/usuarios/detalleUsuarios', [DetalleController::class,'detalleUsuariosAPI']);
+
+
 
 
 $router->get('/', [MenuController::class,'index']);

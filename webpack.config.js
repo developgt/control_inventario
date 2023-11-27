@@ -17,6 +17,10 @@ module.exports = {
     'js/gestion/index' : './src/js/gestion/index.js',
     'js/guardalmacen/index' : './src/js/guardalmacen/index.js',
     'js/kardex/index' : './src/js/kardex/index.js',
+    'js/estadisticas/estadistica' : './src/js/estadisticas/estadistica.js',
+    'js/estadisticas/cantidadestadistica' : './src/js/estadisticas/cantidadestadistica.js',
+
+
 
   },
   output: {
