@@ -106,17 +106,6 @@ const cancelarAccion = () => {
 };
 
 
-//// Función para buscar las dependencias y colocarlas en el input alma_unidad
-
-// Función para buscar la dependencia y actualizar el campo alma_unidad
-// const actualizarDependencia = async () => {
-//     try {
-//         await buscarDependencia();
-//     } catch (error) {
-//         console.error(error);
-//         Manejar el error si es necesario.
-//     }
-// };
 
 ////// GUARDAR CAMPOS DEL FORMULARIO
 
@@ -143,8 +132,7 @@ const guardar = async (evento) => {
         const data = await respuesta.json();
 
         console.log(data);
-        // return
-
+       
         const { codigo, mensaje, detalle } = data;
         let icon = 'info'
         switch (codigo) {
@@ -211,7 +199,6 @@ const buscar = async () => {
     }
     formulario.reset();
 
-    //actualizarDependencia();
 };
 
 ////funcion para cambiar de situacion un almacen (eliminado)
@@ -234,7 +221,7 @@ const eliminar = async (e) => {
             body
         };
         try {
-            //await buscarDependencia();
+            
             const respuesta = await fetch(url, config);
             const data = await respuesta.json();
             console.log(data);
@@ -285,7 +272,7 @@ let valor = est_id.value
         body
     };
     try {
-        //await buscarDependencia();
+     
         const respuesta = await fetch(url, config);
         const data = await respuesta.json();
         console.log(data)

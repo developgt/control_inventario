@@ -20,9 +20,8 @@ let almaIdSeleccionado = null;
 
 let almacenes = [];
 let medida = [];
-let estado = [] // se define almacenes como un array vacio...
-// se define almacenes como un array vacio...
-//console.log('almacenes:', almacenes);
+let estado = [];
+
 
 btnModificar.disabled = true
 btnModificar.parentElement.style.display = 'none'
@@ -143,7 +142,7 @@ const cancelarAccion = () => {
 
 
 const buscarAlmacenes = async () => {
-    // Verificar si los elementos del formulario existen antes de acceder a sus propiedades
+ 
     if (formulario.pro_almacen_id && formulario.alma_id) {
         let alma_nombre = formulario.alma_nombre.value;
         let alma_id = formulario.alma_id.value;
@@ -156,18 +155,16 @@ const buscarAlmacenes = async () => {
     try {
         const respuesta = await fetch(url, config);
         const data = await respuesta.json();
-        console.log('data de almacenes', data); // Imprimir datos en la consola
+        console.log('data de almacenes', data); 
 
         almacenes = data;
-        // Limpiar el contenido del select
+    
         formulario.pro_almacen_id.innerHTML = '';
 
-        // Agregar opción predeterminada
         const defaultOption = document.createElement('option');
         defaultOption.value = '';
         defaultOption.textContent = 'SELECCIONE...';
         formulario.pro_almacen_id.appendChild(defaultOption);
-        // Iterar sobre cada objeto en el arreglo y crear opciones para el select
         data.forEach(almacen => {
             const option = document.createElement('option');
             option.value = almacen.alma_id;
@@ -175,10 +172,6 @@ const buscarAlmacenes = async () => {
             formulario.pro_almacen_id.appendChild(option);
         });
 
-
-
-        //contador = 1;
-        //datatable.clear().draw();
     } catch (error) {
         console.log(error);
     }
@@ -187,7 +180,6 @@ const buscarAlmacenes = async () => {
 
 
 const buscarUnidades = async () => {
-    // Verificar si los elementos del formulario existen antes de acceder a sus propiedades
     if (formulario.uni_nombre && formulario.uni_id) {
         let uni_nombre = formulario.uni_nombre.value;
         let uni_id = formulario.uni_id.value;
@@ -200,10 +192,10 @@ const buscarUnidades = async () => {
     try {
         const respuesta = await fetch(url, config);
         const data = await respuesta.json();
-        console.log('data de medidas', data); // Imprimir datos en la consola
+        console.log('data de medidas', data); 
 
         medida = data;
-        // Limpiar el contenido del select
+        
         formulario.pro_medida.innerHTML = '';
 
         // Agregar opción predeterminada
@@ -211,7 +203,7 @@ const buscarUnidades = async () => {
         defaultOption.value = '';
         defaultOption.textContent = 'SELECCIONE...';
         formulario.pro_medida.appendChild(defaultOption);
-        // Iterar sobre cada objeto en el arreglo y crear opciones para el select
+    
         data.forEach(medida => {
             const option = document.createElement('option');
             option.value = medida.uni_id;
@@ -220,9 +212,6 @@ const buscarUnidades = async () => {
         });
 
 
-
-        //contador = 1;
-        //datatable.clear().draw();
     } catch (error) {
         console.log(error);
     }
@@ -261,61 +250,17 @@ document.addEventListener('DOMContentLoaded', async function () {
         });
 
 
-        //buscar();
+     
     } catch (error) {
         console.error(error);
-        // Manejar el error, si es necesario.
+       
     }
 });
-
-// const buscarEstados = async () => {
-//     // Verificar si los elementos del formulario existen antes de acceder a sus propiedades
-//     if (formulario.est_descripcion && formulario.est_id) {
-//         let est_descripcion = formulario.est_descripcion.value;
-//         let est_id = formulario.est_id.value;
-//     }
-//     const url = `/control_inventario/API/producto/buscarEstados`;
-//     const config = {
-//         method: 'GET'
-//     };
-
-//     try {
-//         const respuesta = await fetch(url, config);
-//         const data = await respuesta.json();
-//         console.log('data de estados', data); // Imprimir datos en la consola
-
-//         estado = data;
-//         // Limpiar el contenido del select
-//         formulario.pro_estado.innerHTML = '';
-
-//         // Agregar opción predeterminada
-//         const defaultOption = document.createElement('option');
-//         defaultOption.value = '';
-//         defaultOption.textContent = 'SELECCIONE...';
-//         formulario.pro_estado.appendChild(defaultOption);
-//         // Iterar sobre cada objeto en el arreglo y crear opciones para el select
-//         data.forEach(estado => {
-//             const option = document.createElement('option');
-//             option.value = estado.est_id;
-//             option.textContent = estado.est_descripcion;
-//             formulario.pro_estado.appendChild(option);
-//         });
-
-
-
-//         //contador = 1;
-//         //datatable.clear().draw();
-//     } catch (error) {
-//         console.log(error);
-//     }
-//     formulario.reset();
-// }
 
 
 const guardar = async (evento) => {
     evento.preventDefault();
 
-    // Validar campos comunes a todos los casos
     if (!validarFormulario(formulario, ['pro_id'])) {
         Toast.fire({
             icon: 'info',
@@ -337,7 +282,7 @@ const guardar = async (evento) => {
         const data = await respuesta.json();
 
         console.log(data);
-        // return
+       
 
         const { codigo, mensaje, detalle } = data;
         let icon = 'info'
@@ -345,7 +290,7 @@ const guardar = async (evento) => {
             case 1:
                 formulario.reset();
                 icon = 'success'
-                //buscar();
+               
                 break;
 
             case 0:
@@ -365,8 +310,7 @@ const guardar = async (evento) => {
     } catch (error) {
         console.log(error);
     }
-    //buscar();
-
+  
 }
 
 const buscar = async () => {
@@ -404,7 +348,6 @@ const buscar = async () => {
     }
     formulario.reset();
 
-    //actualizarDependencia();
 };
 
 buscar();

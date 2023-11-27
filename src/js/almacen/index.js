@@ -35,16 +35,12 @@ const guardaAlmacenNombreInput = document.getElementById('guarda_almacen_nombre'
 
 
 
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ///para que se autocomplete el campo de dependencia en automatico. 
 
 const almaUnidad = document.getElementById('alma_unidad');
 const almaUnidadId = document.getElementById('alma_unidad_id');
-
-
-
 
 
 //////////DATATABLE//////////////////////////
@@ -164,12 +160,10 @@ const buscarDependencia = async () => {
     try {
         const respuesta = await fetch(url, config);
         const data = await respuesta.json();
-        //console.log(data);
+    
 
         if (data && data.length > 0 && data[0].dep_desc_md && data[0].dep_llave) {
-            // Mostrar el nombre de la dependencia en el campo dep_desc_md
             almaUnidad.value = data[0].dep_llave;
-            // Almacenar dep_llave en alma_unidad_id 
             almaUnidadId.value = data[0].dep_desc_md;
         } else {
             Toast.fire({
@@ -182,7 +176,6 @@ const buscarDependencia = async () => {
         console.log(error);
     }
 
-
 };
 
 
@@ -194,7 +187,7 @@ const actualizarDependencia = async () => {
         await buscarOficiales();
     } catch (error) {
         console.error(error);
-        // Manejar el error si es necesario.
+   
     }
 };
 
@@ -204,13 +197,11 @@ const obtenerNombreAlmacen = async (almaId) => {
     const url = `/control_inventario/API/almacen/obtenerNombreAlmacen?alma_id=${almaId}`;
     try {
         const respuesta = await fetch(url);
-        //console.log(respuesta);
         const data = await respuesta.json();
         console.log(data);
 
 
         if (data.length > 0 && data[0].alma_nombre) {
-            // Si se encontró el almacén, devolver el nombre
             return {
                 alma_nombre: data[0].alma_nombre,
                 alma_id: data[0].alma_id,
@@ -218,7 +209,6 @@ const obtenerNombreAlmacen = async (almaId) => {
 
                  };
         } else {
-            // Si no se encontró el almacén, devolver un mensaje indicando que no se encontró
             return {
                 alma_nombre: 'Nombre no encontrado',
                 alma_id: null,
@@ -276,8 +266,7 @@ const guardar = async (evento) => {
         const data = await respuesta.json();
 
         console.log(data);
-        // return
-
+     
         const { codigo, mensaje, detalle } = data;
         let icon = 'info'
         switch (codigo) {
@@ -286,8 +275,6 @@ const guardar = async (evento) => {
                 icon = 'success'
                 document.getElementById('alma_clase').value = claseValue;
                 document.getElementById('alma_clase_descripcion').value = claseValueDescripcion;
-
-                //buscar();
                 break;
 
             case 0:
@@ -371,7 +358,6 @@ const eliminar = async (e) => {
             body
         };
         try {
-            //await buscarDependencia();
             const respuesta = await fetch(url, config);
             const data = await respuesta.json();
             console.log(data);
@@ -397,7 +383,6 @@ const eliminar = async (e) => {
             console.log(error);
         }
     }
-    //actualizarDependencia();
     buscar();
 };
 
@@ -405,8 +390,7 @@ const eliminar = async (e) => {
 // funcion para modificar un almacen
 
 const modificar = async () => {
-    //const almaUnidadValor = almaUnidad.value;
-    //console.log(alma_id)
+
     let valor = alma_id.value
     if (!formulario.checkValidity()) {
         Toast.fire({
@@ -420,16 +404,14 @@ const modificar = async () => {
     body.delete('guarda_almacen');
     body.delete('guarda_catalogo');
     body.delete('guarda_id');
-    // body.delete('alma_unidad');
     body.delete('guarda_nombre');
-    //body.append('alma_id', alma_id.value);
     const url = '/control_inventario/API/almacen/modificar';
     const config = {
         method: 'POST',
         body
     };
     try {
-        //await buscarDependencia();
+
         const respuesta = await fetch(url, config);
         const data = await respuesta.json();
         console.log(data)
@@ -439,7 +421,6 @@ const modificar = async () => {
             case 1:
                 formulario.reset();
                 icon = 'success';
-                //buscar();
                 cancelarAccion();
                 break;
             case 0:
@@ -456,7 +437,6 @@ const modificar = async () => {
     } catch (error) {
         console.log(error)
     }
-    //formulario.reset();
     actualizarDependencia();
     buscar();
     modalVerRegistros.classList.add('show');
@@ -512,7 +492,7 @@ function actualizarClase(valor) {
 
     const mensajePorDefecto = "SELECCIONE LA CLASE EN 'REGISTRAR INVENTARIO'";
 
-  // Actualiza el valor del input con el número (para el envío del formulario)
+  // Actualiza el valor del input con el número para el envío del formulario
   document.getElementById('alma_clase').value = valor || '';
 
   // Muestra la descripción correspondiente o el mensaje por defecto
@@ -523,8 +503,7 @@ function actualizarClase(valor) {
 let alma_clase_value;
 
 document.addEventListener('DOMContentLoaded', function () {
- 
-    
+
     // Obtiene el valor de localStorage
     alma_clase_value = localStorage.getItem('alma_clase');
 
@@ -544,31 +523,8 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
-
-// // Función para guardar el valor de alma_clase en localStorage
-// const guardarAlmaClase = (alma_clase_value) => {
-//     localStorage.setItem('alma_clase', alma_clase_value);
-// }
-
-// // Función para obtener el valor de alma_clase de localStorage
-// const obtenerAlmaClase = () => {
-//     return localStorage.getItem('alma_clase');
-// }
-
-// const guardarAlmaClaseDespuesDeReset = () => {
-//     const alma_clase_input = formulario.alma_clase;
-//     const alma_clase_value = alma_clase_input.value;
-//     guardarAlmaClase(alma_clase_value);
-// };
-// // Función para limpiar el valor de alma_clase en localStorage
-// const limpiarAlmaClase = () => {
-//     localStorage.removeItem('alma_clase');
-// }
-
-
-
 actualizarDependencia();
-//BuscarAsignar();
+
 //eventos de la vista general
 formulario.addEventListener('submit', guardar);
 btnCancelar.addEventListener('click', cancelarAccion);
@@ -604,18 +560,6 @@ modalVerRegistros.addEventListener('click', function (event) {
      
     }
 });
-
-
-
-// //eventos del modal
-// guarda_catalogo.addEventListener('input', buscarOficiales);
-// formularioGuarda.addEventListener('submit', GuardarAsignar);
-// btnBuscarAsignar.addEventListener('click', BuscarAsignar);
-// btnModificarAsignar.addEventListener('click', ModificarAsignar);
-// datatableAsignar.on('click', '.btn-warning', traeDatosAsignar);
-//btnCancelarAsignar.addEventListener('click', cancelarAccionAsignar);
-
-//datatable.on('click', '.btn-danger', eliminar);
 
 
 
