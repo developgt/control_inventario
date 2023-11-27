@@ -55,7 +55,7 @@
 
     }
 
-    /* Estilo para el título del modal */
+
     .custom-modal-title {
         margin: 0;
 
