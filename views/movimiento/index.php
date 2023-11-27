@@ -50,16 +50,15 @@
         background-color: rgba(173, 216, 230, 0.5);
     }
 
+
+
     .nuevo-contenedor {
         padding: 20px;
-        margin-top: 5px;
-        background-color: beige;
+        margin-top: 10px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        display: flex;
-        align-items: center;
-        min-height: 100vh;
-        justify-content: center;
+
     }
+
 
     .contenedor-modal {
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
@@ -85,36 +84,19 @@
     }
 
 
-    .card {
+    /* .card {
         border: none;
         border-radius: 10px;
     }
 
     .card-body {
         padding: 2rem;
-    }
+    } */
 
     .form-select {
         margin-left: 0.5rem;
     }
 
-    /* .btn-success {
-        background-color: #28a745;
-        border-color: #28a745;
-    }
-    .btn-success:hover {
-        background-color: #218838;
-        border-color: #1e7e34;
-    } */
-    .btn-ingreso {
-        position: absolute;
-        right: 25px;
-        /* Ajustar según necesidad */
-        top: 120px;
-        /* Ajustar según necesidad */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-
-    }
 
     #formularioMovimiento {
         padding: 20px;
@@ -142,6 +124,15 @@
 
     }
 
+    #formularioBusqueda {
+        padding: 20px;
+        margin: auto;
+        background-color: #f2f2f2;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        /* Sombra */
+
+    }
+
     .encabezado-inventario {
         background-color: #007bff;
         color: #ffffff;
@@ -154,24 +145,17 @@
 
     .encabezado-busqueda {
         background-color: #e9ecef;
-        /* Un gris claro que no compite con el azul del encabezado principal */
         color: #495057;
-        /* Un color oscuro para el texto que garantiza legibilidad */
         padding: 20px;
         margin-top: 10px;
         border-radius: 10px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        /* Un sombreado más suave */
         border: 1px solid #dee2e6;
-        /* Un borde sutil para definir los límites del encabezado */
         transition: background-color 0.3s;
-        /* Suaviza la transición de color al pasar el mouse */
+      
     }
 
     .encabezado-busqueda:hover {
         background-color: #dde1e6;
-        /* Un tono ligeramente más oscuro para el hover, manteniéndolo suave */
-        /* No es necesario un cambio drástico de color al pasar el mouse, solo un toque sutil */
     }
 
     .encabezado-inventario:hover {
@@ -213,7 +197,7 @@
     }
 
     .mi-tabla {
-        width: 100%;
+        width: auto;
         border-collapse: collapse;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         margin-left: auto;
@@ -230,43 +214,54 @@
         color: green;
 
     }
+
+    /* Estilos adicionales */
+#btnRealizarIngreso, #btnVerExistenciasPorAlmacenModal {
+    width: 100%;
+    height: 80px;
+    margin-bottom: 10px; /* Espacio entre botones */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+
+}
+
+/* Alinea los botones a la derecha */
+.derecha-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 0 15px; /* Espacio interior */
+}
 </style>
-<div class="container bg-light border rounded mx-auto mt-2 busqueda-contenedor" id="movimiento_busqueda">
-    <div class="row justify-content-center">
-        <div class="col-12 mb-4">
-            <div class="card mb-4 mt-4">
-                <h2 class="card-title text-center p-3 encabezado-inventario">Gestione su inventario</h2>
-                <div class="card-body">
-                    <div class="row g-3 align-items-end">
-                        <div class="col-lg-9">
-                            <form class="border rounded bg-light p-3" id="formularioBusqueda">
-                                <h5 class="card-title text-center p-3 encabezado-busqueda">Ver Ingresos</h5>
-                                <div class="mb-3">
-                                    <label for="mov_alma" class="form-label">Seleccione el inventario</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="bi bi-arrow-right-circle"></i></span>
-                                        <select name="mov_alma" id="mov_alma" class="form-select">
-                                            <option value="">SELECCIONE...</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <button type="button" id="btnMovimientos" class="btn btn-info w-100">VER INGRESOS</button>
-                            </form>
-                        </div>
-                        <div class="col-lg-3 d-flex justify-content-end">
-                            <button type="button" id="btnRealizarIngreso" class="btn btn-success btn-ingreso">REALIZAR INGRESO</button>
-                        </div>
-                    </div>
-                    <div class="row g-3 align-items-end">
-                        <div class="col-lg-3 d-flex justify-content-end">
-                            <button type="button" id="btnVerExistenciasPorAlmacenModal" class="btn btn-info">Ver Existencias de Insumos por Inventario</button>
-                        </div>
+<div class="container bg-white border rounded mx-auto mt-2 nuevo-contenedor" id="movimiento_busqueda">
+    <div class="row">
+        <div class="col-md-8 mb-4">
+            <h2 class="card-title text-center p-3 encabezado-inventario">Gestione su inventario</h2>
+            <form class="border rounded bg-white p-3" id="formularioBusqueda">
+                <h5 class="card-title text-center p-3 encabezado-busqueda">Ver Ingresos</h5>
+                <div class="mb-3">
+                    <label for="mov_alma" class="form-label">Seleccione el inventario</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-arrow-right-circle"></i></span>
+                        <select name="mov_alma" id="mov_alma" class="form-select">
+                            <option value="">SELECCIONE...</option>
+                        </select>
                     </div>
                 </div>
-            </div>
+                <button type="button" id="btnMovimientos" class="btn btn-info w-100">VER INGRESOS</button>
+            </form>
+        </div>
+        <div class="col-md-4 derecha-container">
+            <button type="button" id="btnRealizarIngreso" class="btn btn-success">
+                <i class="bi bi-plus-circle me-2"></i>REALIZAR INGRESO
+            </button>
+            <button type="button" id="btnVerExistenciasPorAlmacenModal" class="btn btn-secondary">
+                <i class="bi bi-eye me-2"></i>Ver Existencias de Insumos por Inventario
+            </button>
         </div>
     </div>
 </div>
+
+
 
 <!-- <-- modal para mostrar la vista de existencias de productos por inventario-->
 <div class="modal fade  modal-with-backdrop" id="ExistenciasInventario" name="ExistenciasInventario" tabindex="-1" role="dialog" aria-labelledby="ExistenciasInventarioLabel" aria-hidden="true">
