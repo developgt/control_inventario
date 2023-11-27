@@ -233,7 +233,7 @@
         <div class="col-md-8 mb-4">
             <h2 class="card-title text-center p-3 encabezado-inventario">Gestione su inventario</h2>
             <form class="border rounded bg-white p-3" id="formularioBusqueda">
-                <h5 class="card-title text-center p-3 encabezado-busqueda">Ver Ingresos</h5>
+                <h5 class="card-title text-center p-3 encabezado-busqueda">Ver Egresos</h5>
                 <div class="mb-3">
                     <label for="mov_alma" class="form-label">Seleccione el inventario</label>
                     <div class="input-group">
@@ -243,12 +243,12 @@
                         </select>
                     </div>
                 </div>
-                <button type="button" id="btnMovimientos" class="btn btn-info w-100">VER INGRESOS</button>
+                <button type="button" id="btnMovimientos" class="btn btn-info w-100">VER EGRESOS</button>
             </form>
         </div>
         <div class="col-md-4 derecha-container">
             <button type="button" id="btnRealizarIngreso" class="btn btn-success">
-                <i class="bi bi-plus-circle me-2"></i>REALIZAR INGRESO
+                <i class="bi bi-plus-circle me-2"></i>REALIZAR EGRESO
             </button>
             <button type="button" id="btnVerExistenciasPorAlmacenModal" class="btn btn-secondary">
                 <i class="bi bi-eye me-2"></i>Ver Existencias de Insumos por Inventario
@@ -497,13 +497,7 @@
                         <button type="button" id="btnModificar" class="btn btn-warning w-100">Modificar</button>
                     </div>
                     <div class="col">
-                        <button type="button" id="btnSiguiente" class="btn btn-success w-100">Siguiente</button>
-                    </div>
-                    <div class="col">
                         <button type="button" id="btnCancelar" class="btn btn-danger w-100">Cancelar</button>
-                    </div>
-                    <div class="col">
-                        <button type="button" id="btnVerIngresos" class="btn btn-success w-100">Existencias</button>
                     </div>
                     <div class="col">
                         <button type="button" id="btnRegresarGestion" class="btn btn-danger w-100">Cancelar Egreso</button>
@@ -683,13 +677,7 @@
                                         <button type="button" id="btnModificarDetalle" class="btn btn-warning w-100">Modificar</button>
                                     </div>
                                     <div class="col">
-                                        <button type="button" id="btnAnterior" class="btn btn-warning w-100">Anterior</button>
-                                    </div>
-                                    <div class="col">
-                                        <button type="button" id="btnVerIngresos" class="btn btn-success w-100">VER INGRESOS</button>
-                                    </div>
-                                    <div class="col">
-                                        <button type="button" id="btnBuscarDetalle" class="btn btn-info w-100">Buscar</button>
+                                        <button type="button" id="btnAnterior" class="btn btn-danger w-100">Cancelar</button>
                                     </div>
                                     <div class="col">
                                         <button type="button" id="btnCancelarDetalle" class="btn btn-danger w-100">Cancelar</button>
@@ -718,7 +706,7 @@
     <div class="row justify-content-center">
         <div class="col-lg-3">
             <button type="button" id="btnImprimir" class="btn btn-primary w-100">
-                <i class="bi bi-printer"></i> Imprimir
+                <i class="bi bi-printer"></i> Finalizar Egreso
             </button>
         </div>
     </div>

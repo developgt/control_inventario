@@ -23,7 +23,6 @@ const btnGuardar = document.getElementById('btnGuardar');
 const btnBuscar = document.getElementById('btnBuscar');
 const btnModificar = document.getElementById('btnModificar');
 const btnCancelar = document.getElementById('btnCancelar');
-const btnSiguiente = document.getElementById('btnSiguiente');
 const btnAnterior = document.getElementById('btnAnterior');
 const pro_id = document.getElementById('pro_id');
 const alma_nombre = document.getElementById('alma_nombre');
@@ -103,7 +102,7 @@ const checkboxLoteNo = document.getElementById('tiene_lote_no');
 const checkboxLoteSi = document.getElementById('tiene_lote_si');
 
 ///////////// para el modal///////
-const botonVerIngresos = document.getElementById('btnVerIngresos');
+
 const botonRetirarMas = document.getElementById('btnRetirarMas');
 const modalVerExistencias = document.getElementById('verExistencias');
 const modalIngresoDetalle = document.getElementById('IngresoDetalle');
@@ -118,7 +117,7 @@ let IdMovimiento;
 let producto = [];
 let medida = [];
 let estado = [];
-let almacenes = []; 
+let almacenes = [];
 let dependencias = [];
 
 // Oculta el elemento div card formulario detalle
@@ -235,7 +234,7 @@ const traeDatos = (e) => {
         // Si la fecha de vencimiento no es '1999-05-7', se muestra campo fecha y oculta sinFecha
         fechaCampo.style.display = 'block';
         sinFecha.style.display = 'none';
-      
+
     }
 
     const dataset = {
@@ -259,6 +258,8 @@ const traeDatos = (e) => {
     divLote.style.display = 'none'
     buscarCantidad();
     buscarCantidadLote();
+    datatable.clear().draw();
+    formularioExistencia.reset();
 
 };
 
@@ -424,7 +425,7 @@ const traeDatosDetalle = (e) => {
     colocarDatosDetalle(dataset);
     buscarCantidad();
     buscarCantidadLote();
-
+ 
 };
 
 const colocarDatosDetalle = (dataset) => {
@@ -947,9 +948,9 @@ const buscarDetalleIngresado = async () => {
 
 const buscarOficiales = async () => {
     let mov_perso_entrega = formulario.mov_perso_entrega.value;
-    clearTimeout(typingTimeout); 
+    clearTimeout(typingTimeout);
 
-   
+
     const fetchData = async () => {
         const url = `/control_inventario/API/movegreso/buscarOficiales?mov_perso_entrega=${mov_perso_entrega}`;
         const config = {
@@ -993,7 +994,7 @@ const buscarOficiales = async () => {
 
 const buscarOficialesRecibe = async () => {
     let mov_perso_recibe = formulario.mov_perso_recibe.value;
-    clearTimeout(typingTimeout); 
+    clearTimeout(typingTimeout);
 
     const fetchData = async () => {
         const url = `/control_inventario/API/movegreso/buscarOficialesRecibe?mov_perso_recibe=${mov_perso_recibe}`;
@@ -1097,15 +1098,15 @@ const buscarAlmacenes = async () => {
         console.log('data de almacenes', data); // Imprimir datos en la consola
 
         almacenes = data;
-    
+
         formulario.mov_alma_id.innerHTML = '';
 
-     
+
         const defaultOption = document.createElement('option');
         defaultOption.value = '';
         defaultOption.textContent = 'SELECCIONE...';
         formulario.mov_alma_id.appendChild(defaultOption);
-t
+
         data.forEach(almacen => {
             const option = document.createElement('option');
             option.value = almacen.alma_id;
@@ -1118,7 +1119,7 @@ t
     } catch (error) {
         console.log(error);
     }
-   
+
 };
 
 
@@ -1140,10 +1141,10 @@ const buscarAlmacenesInventario = async () => {
         console.log('data de almacenes', data); // Imprimir datos en la consola
 
         almacenes = data;
-     
+
         formularioExistenciasPorInventario.mov_almacen.innerHTML = '';
 
-    
+
         const defaultOption = document.createElement('option');
         defaultOption.value = '';
         defaultOption.textContent = 'SELECCIONE...';
@@ -1214,15 +1215,15 @@ const buscarDependencia = async () => {
         console.log('data de dependencias', data);
 
         dependencias = data;
-     
+
         formulario.mov_proce_destino.innerHTML = '';
 
-     
+
         const defaultOption = document.createElement('option');
         defaultOption.value = '';
         defaultOption.textContent = 'SELECCIONE...';
         formulario.mov_proce_destino.appendChild(defaultOption);
-      
+
         data.forEach(dependencias => {
             const option = document.createElement('option');
             option.value = dependencias.dep_llave;
@@ -1230,11 +1231,11 @@ const buscarDependencia = async () => {
             formulario.mov_proce_destino.appendChild(option);
         });
 
-    
+
     } catch (error) {
         console.log(error);
     }
- 
+
 };
 
 
@@ -1253,29 +1254,29 @@ const buscarEstados = async () => {
     try {
         const respuesta = await fetch(url, config);
         const data = await respuesta.json();
-        console.log('data de estados', data); 
+        console.log('data de estados', data);
 
         estado = data;
-       
+
         formularioDetalle.det_estado.innerHTML = '';
 
-        
+
         const defaultOption = document.createElement('option');
         defaultOption.value = '';
         defaultOption.textContent = 'SELECCIONE...';
         formularioDetalle.det_estado.appendChild(defaultOption);
-       
+
         data.forEach(estado => {
             const option = document.createElement('option');
             option.value = estado.est_id;
             option.textContent = estado.est_descripcion;
             formularioDetalle.det_estado.appendChild(option);
         });
-  
+
     } catch (error) {
         console.log(error);
     }
-   
+
 };
 
 
@@ -1296,7 +1297,7 @@ formulario.mov_alma_id.addEventListener('change', function () {
 ////////////////buscar producto de acuerdo al id del almacen seleccionado/////////////////////////////
 
 const buscarProducto = async () => {
-   
+
     if (formularioExistencia.pro_nom_articulo && formularioExistencia.pro_id) {
         let pro_nom_articulo = formularioExistencia.pro_nom_articulo.value;
         let pro_id = formularioExistencia.pro_id.value;
@@ -1312,17 +1313,17 @@ const buscarProducto = async () => {
     try {
         const respuesta = await fetch(url, config);
         const data = await respuesta.json();
-        console.log('data de productos', data); 
+        console.log('data de productos', data);
 
         producto = data;
- 
+
         formularioExistencia.det_pro.innerHTML = '';
 
         const defaultOption = document.createElement('option');
         defaultOption.value = '';
         defaultOption.textContent = 'SELECCIONE...';
         formularioExistencia.det_pro.appendChild(defaultOption);
-       
+
         data.forEach(producto => {
             const option = document.createElement('option');
             option.value = producto.pro_id;
@@ -1330,7 +1331,7 @@ const buscarProducto = async () => {
             formularioExistencia.det_pro.appendChild(option);
         });
 
-      
+
     } catch (error) {
         console.log(error);
     }
@@ -1340,7 +1341,7 @@ const buscarProducto = async () => {
 /// buscar unidades de acuerdo al id del almacen seleccionado
 
 const buscarUnidades = async () => {
-   
+
     if (formularioDetalle.uni_nombre && formularioDetalle.uni_id) {
         let uni_nombre = formularioDetalle.uni_nombre.value;
         let uni_id = formularioDetalle.uni_id.value;
@@ -1356,15 +1357,15 @@ const buscarUnidades = async () => {
         console.log('data de medidas', data);
 
         medida = data;
-      
+
         formularioDetalle.det_uni_med.innerHTML = '';
 
-      
+
         const defaultOption = document.createElement('option');
         defaultOption.value = '';
         defaultOption.textContent = 'SELECCIONE...';
         formularioDetalle.det_uni_med.appendChild(defaultOption);
-       
+
         data.forEach(medida => {
             const option = document.createElement('option');
             option.value = medida.uni_id;
@@ -1379,7 +1380,7 @@ const buscarUnidades = async () => {
 };
 
 const buscarProductoDetalle = async () => {
- 
+
     if (formularioDetalle.pro_nom_articulo && formularioDetalle.pro_id) {
         let pro_nom_articulo = formularioDetalle.pro_nom_articulo.value;
         let pro_id = formularioDetalle.pro_id.value;
@@ -1395,18 +1396,18 @@ const buscarProductoDetalle = async () => {
     try {
         const respuesta = await fetch(url, config);
         const data = await respuesta.json();
-        console.log('data de productos', data); 
+        console.log('data de productos', data);
 
         producto = data;
-       
+
         formularioDetalle.det_pro_id.innerHTML = '';
 
-      
+
         const defaultOption = document.createElement('option');
         defaultOption.value = '';
         defaultOption.textContent = 'SELECCIONE...';
         formularioDetalle.det_pro_id.appendChild(defaultOption);
-      
+
         data.forEach(producto => {
             const option = document.createElement('option');
             option.value = producto.pro_id;
@@ -1414,11 +1415,11 @@ const buscarProductoDetalle = async () => {
             formularioDetalle.det_pro_id.appendChild(option);
         });
 
-    
+
     } catch (error) {
         console.log(error);
     }
-  
+
 };
 
 
@@ -1452,7 +1453,7 @@ const buscarExistencias = async () => {
     } catch (error) {
         console.log(error);
     }
-  
+
 };
 
 
@@ -1550,15 +1551,15 @@ const buscarCantidadLote = async () => {
         const data = await respuesta.json();
         console.log(data);
 
-       
+
         if (data && data.length > 0) {
-        
+
             formularioDetalle.det_cantidad_lote.value = data[0].det_cantidad_lote;
 
             valorInicialCantidadLote = parseFloat(data[0].det_cantidad_lote) || 0;
 
         } else {
-          
+
             formularioDetalle.det_cantidad_lote.value = 0;
 
             valorInicialCantidadLote = 0;
@@ -1592,20 +1593,20 @@ const buscarCantidad = async () => {
         const data = await respuesta.json();
         console.log(data);
 
-        
+
         if (data && data.length > 0) {
             // se asignan los valores a los inputs
             formularioDetalle.det_cantidad_existente.value = data[0].det_cantidad_existente;
-        
+
             valorInicialCantidadExistente = parseFloat(data[0].det_cantidad_existente) || 0;
-      
+
 
         } else {
-           
+
             formularioDetalle.det_cantidad_existente.value = 0;
-           
+
             valorInicialCantidadExistente = 0;
-            
+
         }
 
     } catch (error) {
@@ -1627,11 +1628,11 @@ const guardarDetalle = async (evento) => {
         })
         return
     }
-  
+
     const detMovIdValue = document.getElementById('det_mov_id').value;
     const body = new FormData(formularioDetalle)
     body.delete('det_id')
-  
+
     const url = '/control_inventario/API/movimiento/guardarDetalle';
 
     const config = {
@@ -1644,7 +1645,7 @@ const guardarDetalle = async (evento) => {
         const data = await respuesta.json();
 
         console.log(data);
-      
+
         const { codigo, mensaje, detalle } = data;
         let icon = 'info'
         switch (codigo) {
@@ -1687,7 +1688,7 @@ const guardarDetalle = async (evento) => {
 //funcion para buscar si seleccionan egreso interno
 
 const buscarDependenciaInterna = async () => {
-   
+
     if (formulario.dep_desc_md && formulario.dep_llave) {
         let dep_desc_md = formulario.dep_desc_md.value;
         let dep_llave = formulario.dep_llave.value;
@@ -1713,7 +1714,7 @@ const buscarDependenciaInterna = async () => {
             option.textContent = dependencias.dep_desc_md;
             formularioMovimiento.mov_proce_destino.appendChild(option);
         });
-      
+
     } catch (error) {
         console.log(error);
     }
@@ -1848,7 +1849,7 @@ const generarPDF = async (datos) => {
 ////para buscar almacenes en el modal/////////////
 
 const buscarAlmacenesMovimientos = async () => {
-    
+
     if (formularioBusqueda.alma_nombre && formularioBusqueda.alma_id) {
         let alma_nombre = formularioBusqueda.alma_nombre.value;
         let alma_id = formularioBusqueda.alma_id.value;
@@ -1864,10 +1865,10 @@ const buscarAlmacenesMovimientos = async () => {
         console.log('data de almacenes', data); // Imprimir datos en la consola
 
         almacenes = data;
-        
+
         formularioBusqueda.mov_alma.innerHTML = '';
 
-        
+
         const defaultOption = document.createElement('option');
         defaultOption.value = '';
         defaultOption.textContent = 'SELECCIONE...';
@@ -1880,11 +1881,11 @@ const buscarAlmacenesMovimientos = async () => {
             formularioBusqueda.mov_alma.appendChild(option);
         });
 
-     
+
     } catch (error) {
         console.log(error);
     }
-   
+
 };
 
 //////////////función buscar para imprimir recibo
@@ -1934,7 +1935,7 @@ const modificar = async () => {
         body
     };
     try {
-       
+
         const respuesta = await fetch(url, config);
         const data = await respuesta.json();
         console.log(data)
@@ -2016,30 +2017,17 @@ btnRegresarGestion.addEventListener('click', function () {
 
 })
 
-btnSiguiente.addEventListener('click', function (event) {
-    // Prevenir el envío normal del formulario
-    event.preventDefault();
-
-
-    // Ocultar el formulario de movimiento
-    movMovimientoDiv.style.display = 'none';
-
-    // Mostrar el formulario de detalle
-    movDetalleDiv.style.display = 'block';
-});
 
 // Agrega un oyente de eventos al botón "Anterior" del formulario de detalle
-btnAnterior.addEventListener('click', function (event) {
-    // Prevenir el envío normal del formulario
-    event.preventDefault();
-
-
-
-    // Ocultar el formulario de detalle
+btnAnterior.addEventListener('click', function () {
+    divIngresoMovimiento.style.display = 'block';
+    movMovimientoDiv.style.display = 'none';
+    datosMovimiento.style.display = 'block';
     movDetalleDiv.style.display = 'none';
-
-    // Mostrar el formulario de movimiento
-    movMovimientoDiv.style.display = 'block';
+    formularioDetalle.reset();
+    formularioMovimiento.reset();
+    datatableDetalle.clear().draw();
+    
 });
 
 
@@ -2119,13 +2107,7 @@ checkboxLoteSi.addEventListener('change', function () {
 });
 
 
-// Agrega un evento de clic al botón
-botonVerIngresos.addEventListener('click', () => {
-    // Abre el modal al hacer clic en el botón
-    modalVerExistencias.classList.add('show');
-    modalVerExistencias.style.display = 'block';
 
-});
 
 // Agrega un evento de clic al botón
 botonRetirarMas.addEventListener('click', () => {
@@ -2146,6 +2128,8 @@ modalExistenciasPorInventario.addEventListener('click', function (event) {
     if (event.target === modalExistenciasPorInventario) {
         modalExistenciasPorInventario.style.display = 'none';
         document.body.classList.remove('modal-open');
+        datatableExistenciasPorInventario.clear().draw();
+
 
     }
 
@@ -2154,9 +2138,10 @@ modalExistenciasPorInventario.addEventListener('click', function (event) {
 
 // cerrar modal con el boton ...
 cerrarModalExistenciasPorInventario.addEventListener('click', function () {
-    
+
     modalExistenciasPorInventario.style.display = 'none';
     document.body.classList.remove('modal-open');
+    datatableExistenciasPorInventario.clear().draw();
 
 
 });
@@ -2167,7 +2152,9 @@ botonCerrarModal.addEventListener('click', function () {
 
     modalVerExistencias.style.display = 'none';
     document.body.classList.remove('modal-open');
-  
+    datatable.clear().draw();
+
+
 
 });
 
@@ -2176,6 +2163,8 @@ modalVerExistencias.addEventListener('click', function (event) {
     if (event.target === modalVerExistencias) {
         modalVerExistencias.style.display = 'none';
         document.body.classList.remove('modal-open');
+        datatable.clear().draw();
+
 
     }
 

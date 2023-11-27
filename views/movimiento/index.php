@@ -151,7 +151,7 @@
         border-radius: 10px;
         border: 1px solid #dee2e6;
         transition: background-color 0.3s;
-      
+
     }
 
     .encabezado-busqueda:hover {
@@ -216,21 +216,24 @@
     }
 
     /* Estilos adicionales */
-#btnRealizarIngreso, #btnVerExistenciasPorAlmacenModal {
-    width: 100%;
-    height: 80px;
-    margin-bottom: 10px; /* Espacio entre botones */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    #btnRealizarIngreso,
+    #btnVerExistenciasPorAlmacenModal {
+        width: 100%;
+        height: 80px;
+        margin-bottom: 10px;
+        /* Espacio entre botones */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 
-}
+    }
 
-/* Alinea los botones a la derecha */
-.derecha-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    padding: 0 15px; /* Espacio interior */
-}
+    /* Alinea los botones a la derecha */
+    .derecha-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        padding: 0 15px;
+        /* Espacio interior */
+    }
 </style>
 <div class="container bg-white border rounded mx-auto mt-2 nuevo-contenedor" id="movimiento_busqueda">
     <div class="row">
@@ -336,7 +339,7 @@
         <div class="modal-content">
             <div class="modal-header custom-modal-header">
                 <h4 class="modal-title custom-modal-title" id="verExistenciasLabel">Ver Ingresos</h4>
-                <button type="button" class="close btn btn-danger" data-dismiss="modal" aria-label="Close">
+                <button type="button" id="cerrarModalExistencias" class="close btn btn-danger" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                     <span class="sr-only">Salir de esta ventana</span>
                 </button>
@@ -495,9 +498,6 @@
                         <button type="button" id="btnModificar" class="btn btn-warning w-100">Modificar</button>
                     </div>
                     <div class="col">
-                        <button type="button" id="btnSiguiente" class="btn btn-success w-100">Siguiente</button>
-                    </div>
-                    <div class="col">
                         <button type="button" id="btnCancelar" class="btn btn-danger w-100">Cancelar</button>
                     </div>
                     <div class="col">
@@ -508,19 +508,10 @@
             </div>
         </div>
     </div>
-    <!-- <div class="col-lg-4">
-        <div class="card" style="background-color: rgba(0, 0, 255, 0.2);">
-            <div class="card-body">
-                <h5 class="card-title">Detalle de Ingresos</h5>
-                <p class="card-text">Haz clic en el botón para ver el detalle de ingresos.</p>
-                <button type="button" id="btnVerIngresos" class="btn btn-success w-100">VER INGRESOS</button>
-            </div>
-        </div> 
-    </div> -->
 </div>
 </div>
 <div class="container bg-light border rounded mx-auto mt-2" id="mov_detalle">
-    <div class="row justify-content-center"> <!-- aqui empieza la siguiente div para el formulario de detalle -->
+    <div class="row justify-content-center"> 
         <div class="col-lg-9">
             <div class="card mb-4 mt-4"">
             <h2 class=" card-header text-center p-3 rounded encabezado-inventario">Detalle del Ingreso del Almacén</h2>
@@ -637,7 +628,7 @@
                                     <button type="button" id="btnModificarDetalle" class="btn btn-warning w-100">Modificar</button>
                                 </div>
                                 <div class="col">
-                                    <button type="button" id="btnAnterior" class="btn btn-warning w-100">Anterior</button>
+                                    <button type="button" id="btnAnterior" class="btn btn-danger w-100">Cancelar Ingreso</button>
                                 </div>
                                 <div class="col">
                                     <button type="button" id="btnCancelarDetalle" class="btn btn-danger w-100">Cancelar</button>
@@ -664,7 +655,7 @@
     <div class="row justify-content-center">
         <div class="col-lg-3">
             <button type="button" id="btnImprimir" class="btn btn-primary w-100">
-                <i class="bi bi-printer"></i> Imprimir
+                <i class="bi bi-printer"></i> Finalizar Ingreso
             </button>
         </div>
     </div>

@@ -19,14 +19,6 @@ use Model\Producto;
 class MovimientoController
 {
 
-    // public static function index(Router $router)
-    // {
-
-
-    //     $router->render('movimiento/index', []);
-    // }
-
-
     public static function index(Router $router){
         isAuth();
         try {
@@ -74,13 +66,10 @@ class MovimientoController
         try {
             $dependencias = Mdep::fetchArray($sql);
 
-            // Establece el tipo de contenido de la respuesta a JSON
             header('Content-Type: application/json');
 
-            // Convierte el array a JSON y envíalo como respuesta
             echo json_encode($dependencias);
         } catch (Exception $e) {
-            // En caso de error, envía una respuesta vacía
             echo json_encode([]);
         }
     }
@@ -92,13 +81,11 @@ class MovimientoController
         try {
             $dependencias = Mdep::fetchArray($sql);
 
-            // Establece el tipo de contenido de la respuesta a JSON
             header('Content-Type: application/json');
 
-            // Convierte el array a JSON y envíalo como respuesta
             echo json_encode($dependencias);
         } catch (Exception $e) {
-            // En caso de error, envía una respuesta vacía
+            
             echo json_encode([]);
         }
     }
@@ -111,13 +98,11 @@ class MovimientoController
         try {
             $almacen = Almacen::fetchArray($sql);
 
-            // Establece el tipo de contenido de la respuesta a JSON
             header('Content-Type: application/json');
 
-            // Convierte el array a JSON y envíalo como respuesta
             echo json_encode($almacen);
         } catch (Exception $e) {
-            // En caso de error, envía una respuesta vacía
+           
             echo json_encode([]);
         }
     }
@@ -129,13 +114,11 @@ class MovimientoController
         try {
             $almacen = Almacen::fetchArray($sql);
 
-            // Establece el tipo de contenido de la respuesta a JSON
             header('Content-Type: application/json');
 
-            // Convierte el array a JSON y envíalo como respuesta
             echo json_encode($almacen);
         } catch (Exception $e) {
-            // En caso de error, envía una respuesta vacía
+         
             echo json_encode([]);
         }
     }
@@ -154,14 +137,13 @@ class MovimientoController
         try {
             $oficial = Mper::fetchArray($sql);
 
-            // Establece el tipo de contenido de la respuesta a JSON
             header('Content-Type: application/json');
 
-            // Convierte el array a JSON 
+           
             echo json_encode($oficial);
             return;
         } catch (Exception $e) {
-            // En caso de error, envía una respuesta vacía
+           
             echo json_encode([]);
         }
     }
@@ -182,14 +164,14 @@ class MovimientoController
         try {
             $oficial = Mper::fetchArray($sql);
 
-            // Establece el tipo de contenido de la respuesta a JSON
+           
             header('Content-Type: application/json');
 
-            // Convierte el array a JSON 
+           
             echo json_encode($oficial);
             return;
         } catch (Exception $e) {
-            // En caso de error, envía una respuesta vacía
+            
             echo json_encode([]);
         }
     }
@@ -210,14 +192,12 @@ class MovimientoController
         try {
             $oficial = Mper::fetchArray($sql);
 
-            // Establece el tipo de contenido de la respuesta a JSON
             header('Content-Type: application/json');
 
-            // Convierte el array a JSON 
             echo json_encode($oficial);
             return;
         } catch (Exception $e) {
-            // En caso de error, envía una respuesta vacía
+           
             echo json_encode([]);
         }
     }
@@ -230,26 +210,17 @@ class MovimientoController
         try {
             $estado = Estado::fetchArray($sql);
 
-            // Establece el tipo de contenido de la respuesta a JSON
+            
             header('Content-Type: application/json');
-            //return;
-            // Convierte el array a JSON 
+          
             echo json_encode($estado);
         } catch (Exception $e) {
-            // En caso de error, envía una respuesta vacía
+            
             echo json_encode([]);
         }
     }
 
-    // $sql = "SELECT pro_id, pro_nom_articulo, inv_uni_med.uni_nombre AS pro_medida, 
-    // inv_almacenes.alma_nombre AS pro_almacen_id
-    // FROM inv_producto
-    // JOIN inv_uni_med ON inv_producto.pro_medida = inv_uni_med.uni_id
-    // JOIN inv_almacenes ON inv_producto.pro_almacen_id = inv_almacenes.alma_id
-    // JOIN mdep ON inv_almacenes.alma_unidad = mdep.dep_llave
-    // JOIN morg ON mdep.dep_llave = morg.org_dependencia
-    // JOIN mper ON morg.org_plaza = mper.per_plaza
-    // WHERE mper.per_catalogo = 665133 AND inv_producto.pro_situacion = 1";
+    
     public static function buscarProductoAPI()
     {
 
@@ -393,13 +364,12 @@ class MovimientoController
         try {
             $medida = Medida::fetchArray($sql);
 
-            // Establece el tipo de contenido de la respuesta a JSON
             header('Content-Type: application/json');
 
-            // Convierte el array a JSON 
+           
             echo json_encode($medida);
         } catch (Exception $e) {
-            // En caso de error, envía una respuesta vacía
+           
             echo json_encode([]);
         }
     }
@@ -519,9 +489,6 @@ class MovimientoController
         $det_pro_id = $_GET['det_pro_id'] ?? '';
         $det_uni_med = $_GET['det_uni_med'] ?? '';
 
-        // $sql = "SELECT det_cantidad_existente from inv_deta_movimientos where det_pro_id = $det_pro_id and det_situacion = 1 and det_uni_med = '$det_uni_med'
-        // and det_id = (select max(det_id) from  inv_deta_movimientos where det_pro_id = $det_pro_id and det_situacion = 1 and det_uni_med = '$det_uni_med')
-        // group by det_cantidad_existente";
 
         $sql ="SELECT 
         dm.det_cantidad_existente
