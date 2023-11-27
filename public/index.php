@@ -114,6 +114,7 @@ $router->get('/API/movegreso/buscarAlmacenes', [MovimientoEgresoController::clas
 $router->get('/API/movegreso/buscarDependencia', [MovimientoEgresoController::class, 'buscarDependenciaAPI']);
 $router->get('/API/movegreso/buscarExistencias', [MovimientoEgresoController::class, 'buscarExistenciasAPI']);
 $router->get('/API/movegreso/buscarMovimientos', [MovimientoEgresoController::class, 'buscarMovimientosAPI']);
+$router->get('/API/movegreso/buscarExistenciasPorInventario', [MovimientoEgresoController::class, 'buscarExistenciasPorInventarioAPI']);
 
 
 /////IMPRIMIR PDF DE VALE DE INGRESO al inventario

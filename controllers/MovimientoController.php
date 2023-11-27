@@ -519,10 +519,39 @@ class MovimientoController
         $det_pro_id = $_GET['det_pro_id'] ?? '';
         $det_uni_med = $_GET['det_uni_med'] ?? '';
 
-        $sql = "SELECT det_cantidad_existente from inv_deta_movimientos where det_pro_id = $det_pro_id and det_situacion = 1 and det_uni_med = '$det_uni_med'
-        and det_id = (select max(det_id) from  inv_deta_movimientos where det_pro_id = $det_pro_id and det_situacion = 1 and det_uni_med = '$det_uni_med')
-        group by det_cantidad_existente";
+        // $sql = "SELECT det_cantidad_existente from inv_deta_movimientos where det_pro_id = $det_pro_id and det_situacion = 1 and det_uni_med = '$det_uni_med'
+        // and det_id = (select max(det_id) from  inv_deta_movimientos where det_pro_id = $det_pro_id and det_situacion = 1 and det_uni_med = '$det_uni_med')
+        // group by det_cantidad_existente";
 
+        $sql ="SELECT 
+        dm.det_cantidad_existente
+    FROM 
+        inv_deta_movimientos dm
+    INNER JOIN 
+        inv_movimientos m ON dm.det_mov_id = m.mov_id
+    INNER JOIN 
+        inv_almacenes a ON m.mov_alma_id = a.alma_id
+    INNER JOIN 
+        inv_guarda_almacen ga ON a.alma_id = ga.guarda_almacen
+    WHERE 
+        dm.det_pro_id = $det_pro_id 
+        AND dm.det_situacion = 1 
+        AND dm.det_uni_med = $det_uni_med
+        AND ga.guarda_catalogo = user
+        AND ga.guarda_situacion = 1
+        AND dm.det_id = (
+            SELECT 
+                MAX(det_id) 
+            FROM 
+                inv_deta_movimientos 
+            WHERE 
+                det_pro_id = $det_pro_id 
+                AND det_situacion = 1 
+                AND det_uni_med = $det_uni_med
+        )
+    GROUP BY 
+        dm.det_cantidad_existente
+    ";
         try {
 
             $detalle = Detalle::fetchArray($sql);
@@ -552,6 +581,42 @@ class MovimientoController
         and det_id = (select max(det_id) from  inv_deta_movimientos where det_pro_id = $det_pro_id and det_situacion = 1 and det_uni_med = '$det_uni_med' and det_lote = '$det_lote' and det_estado = $det_estado and det_fecha_vence = '$det_fecha_vence' )
         group by det_cantidad_lote";
 
+
+        $sql = "SELECT 
+        dm.det_cantidad_lote
+    FROM 
+        inv_deta_movimientos dm
+    INNER JOIN 
+        inv_movimientos m ON dm.det_mov_id = m.mov_id
+    INNER JOIN 
+        inv_almacenes a ON m.mov_alma_id = a.alma_id
+    INNER JOIN 
+        inv_guarda_almacen ga ON a.alma_id = ga.guarda_almacen
+    WHERE 
+        dm.det_pro_id = $det_pro_id 
+        AND dm.det_situacion = 1 
+        AND dm.det_uni_med = '$det_uni_med' 
+        AND dm.det_lote = '$det_lote' 
+        AND dm.det_estado = $det_estado 
+        AND dm.det_fecha_vence = '$det_fecha_vence'
+        AND ga.guarda_catalogo = user
+        AND ga.guarda_situacion = 1
+        AND dm.det_id = (
+            SELECT 
+                MAX(det_id) 
+            FROM 
+                inv_deta_movimientos 
+            WHERE 
+                det_pro_id = $det_pro_id 
+                AND det_situacion = 1 
+                AND det_uni_med = '$det_uni_med' 
+                AND det_lote = '$det_lote' 
+                AND det_estado = $det_estado 
+                AND det_fecha_vence = '$det_fecha_vence'
+        )
+    GROUP BY 
+        dm.det_cantidad_lote;
+    ";
 
         try {
 

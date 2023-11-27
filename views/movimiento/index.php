@@ -257,6 +257,68 @@
                             <button type="button" id="btnRealizarIngreso" class="btn btn-success btn-ingreso">REALIZAR INGRESO</button>
                         </div>
                     </div>
+                    <div class="row g-3 align-items-end">
+                        <div class="col-lg-3 d-flex justify-content-end">
+                            <button type="button" id="btnVerExistenciasPorAlmacenModal" class="btn btn-info">Ver Existencias de Insumos por Inventario</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- <-- modal para mostrar la vista de existencias de productos por inventario-->
+<div class="modal fade  modal-with-backdrop" id="ExistenciasInventario" name="ExistenciasInventario" tabindex="-1" role="dialog" aria-labelledby="ExistenciasInventarioLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header custom-modal-header">
+                <h6 class="modal-title" id="ExistenciasInventarioLabel">Ver existencias</h6>
+                <button type="button" id="btnCerrarModalExistenciasPorInventario" class="close btn btn-danger" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Salir de esta ventana</span>
+                </button>
+            </div>
+            <div class="modal-body" id="ExistenciasInventarioBody">
+                <div class="container bg-light border rounded mx-auto mt-2 nuevo-contenedor">
+                    <div class="row">
+                        <div class="col-lg-4 mb-4">
+                            <div class="card mt-3 mb-3" id="ExistenciasInventarioBody">
+                                <h4 class="text-center mt-4 mb-4 p-3 border rounded encabezado-inventario">Busqueda de Insumos por Inventario</h4>
+                                <div class="row justify-content-center mb-5">
+                                    <form class="col-lg-11 border rounded bg-light p-3" id="formularioExistenciasInventario">
+                                        <div class="row mb-3">
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <label for="mov_almacen">Seleccione el inventario</label>
+                                                    <div class="d-flex align-items-center">
+                                                        <span class="input-group-text"><i class="bi bi-arrow-right-circle"></i></span>
+                                                        <select name="mov_almacen" id="mov_almacen" class="form-select" required>
+                                                            <option value="">SELECCIONE...</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col">
+                                                <button type="button" id="btnBuscarExistenciasPorInventario" class="btn btn-info w-100">Buscar</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-8 mb-3">
+                            <div class="card mt-2 mb-2" id="ExistenciasInventarioBody">
+                                <h4 class="text-center mt-4 mb-4 p-3 border rounded encabezado-inventario">Existencias de Productos de acuerdo al almacén seleccionado</h4>
+                                <div class="col table-responsive">
+                                    <table id="tablaExistenciasPorInventario" class="table table-striped table-bordered table-hover table-light mi-tabla">
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

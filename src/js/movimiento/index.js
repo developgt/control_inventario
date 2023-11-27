@@ -99,6 +99,14 @@ const btnIngreso = document.getElementById('btnRealizarIngreso');
 const divIngresoMovimiento = document.getElementById('movimiento_busqueda');
 
 
+//cont para el modal ver existencias de insumos por almacen 
+const btnVerExistenciasInventario = document.getElementById('btnVerExistenciasPorAlmacenModal');
+const btnBuscarInventarioExistencias = document.getElementById('btnBuscarExistenciasPorInventario');
+const modalExistenciasPorInventario = document.getElementById('ExistenciasInventario');
+const cerrarModalExistenciasPorInventario = document.getElementById('btnCerrarModalExistenciasPorInventario');
+const formularioExistenciasPorInventario = document.getElementById('formularioExistenciasInventario');
+
+
 let almaSeleccionId;
 let IdMovimiento;
 let almaSeleccionadoId;// para guardar el id del almacen seleccionado
@@ -628,6 +636,78 @@ const cancelarAccionFinalizacion = () => {
 
 
 
+//////////DATATABLE//////////////////////////////////////////////////////
+
+let contadorExistenciasPorInventario = 1;
+
+
+const datatableExistenciasPorInventario = new Datatable('#tablaExistenciasPorInventario', {
+    language: lenguaje,
+    data: null,
+    columns: [
+        {
+            title: 'NO',
+            render: () => contador++
+        },
+        {
+            title: 'Producto',
+            data: 'pro_id'
+
+        },
+        {
+            title: 'Producto',
+            data: 'det_pro_id'
+        },
+        {
+            title: 'Estado del insumo',
+            data: 'det_estado'
+        },
+        {
+            title: 'Unidad de medida',
+            data: 'det_uni_med'
+        },
+        {
+            title: 'Producto',
+            data: 'pro_nom_articulo'
+        },
+        {
+            title: 'Medida',
+            data: 'uni_nombre'
+        },
+        {
+            title: 'Lote',
+            data: 'det_lote'
+        },
+        {
+            title: 'Estado del insumo',
+            data: 'est_descripcion'
+        },
+        {
+            title: 'Fecha de Vencimiento',
+            data: 'det_fecha_vence',
+            render: function (data) {
+                // Verifica si la fecha es '7/05/1999' y muestra 'Sin fecha de vencimiento'
+                return (data === '1999-05-07') ? 'Sin fecha de vencimiento' : data;
+            }
+        },
+        {
+            title: 'Cantidad Existente Por lote',
+            data: 'det_cantidad_lote'
+        },
+
+    ],
+    columnDefs: [
+        {
+            targets: [1, 2, 3, 4 ],
+            visible: false,
+            width: 0,
+            searchable: false,
+
+        }
+
+    ]
+});
+
 
 ////funcion para cambiar de situacion un detalle
 
@@ -1107,6 +1187,79 @@ const buscarAlmacenes = async () => {
     //formulario.reset();
 };
 
+
+const buscarAlmacenesInventario = async () => {
+    // Verificar si los elementos del formulario existen antes de acceder a sus propiedades
+    if (formularioExistenciasPorInventario.alma_nombre && formularioExistenciasPorInventario.alma_id) {
+        let alma_nombre = formularioExistenciasPorInventario.alma_nombre.value;
+        let alma_id = formularioExistenciasPorInventario.alma_id.value;
+    }
+    const url = `/control_inventario/API/movegreso/buscarAlmacenes`;
+    const config = {
+        method: 'GET'
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+        console.log('data de almacenes', data); // Imprimir datos en la consola
+
+        almacenes = data;
+        // Limpiar el contenido del select
+        formularioExistenciasPorInventario.mov_almacen.innerHTML = '';
+
+        // Agregar opción predeterminada
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = 'SELECCIONE...';
+        formularioExistenciasPorInventario.mov_almacen.appendChild(defaultOption);
+        // Iterar sobre cada objeto en el arreglo y crear opciones para el select
+        data.forEach(almacen => {
+            const option = document.createElement('option');
+            option.value = almacen.alma_id;
+            option.textContent = almacen.alma_nombre;
+            formularioExistenciasPorInventario.mov_almacen.appendChild(option);
+        });
+
+    } catch (error) {
+        console.log(error);
+    }
+
+};
+
+
+
+////////////// FUNCION PARA BUSCAR LOS ELEMENTOS GUARDADOS
+
+const buscarExistenciasPorInventario = async () => {
+
+    let mov_almacen = formularioExistenciasPorInventario.mov_almacen.value;
+
+    const url = `/control_inventario/API/movegreso/buscarExistenciasPorInventario?mov_almacen=${mov_almacen}`;
+    const config = {
+        method: 'GET'
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+
+        datatableExistenciasPorInventario.clear().draw();
+        if (data) {
+            contadorExistenciasPorInventario = 1;
+            datatableExistenciasPorInventario.rows.add(data).draw();
+        } else {
+            Toast.fire({
+                title: 'No se encontraron registros',
+                icon: 'info'
+            });
+        }
+
+    } catch (error) {
+        console.log(error);
+    }
+
+};
 
 /////////////////////////////almacenar el id//////////////////////////////////////
 // Agregar evento al cambio del select para almacenar el ID del almacén
@@ -1851,6 +2004,7 @@ select.addEventListener('change', mostrarDependencia);
 ///////////////LLAMAR A LAS FUNCIONES///////////
 establecerFechaActual();
 buscarAlmacenes();
+buscarAlmacenesInventario();
 //buscarDependencia();
 buscarEstados();
 buscarAlmacenesMovimientos();
@@ -1872,6 +2026,7 @@ datatableDetalle.on('click', '.btn-warning', traeDatosDetalle );
 datatableDetalle.on('click', '.btn-danger', eliminar);
 datatableMovimiento.on('click', '.btn-success', traeDatosFinalizacion);
 datatableMovimiento.on('click', '.btn-info', traeDatosVerDetalle);
+btnBuscarInventarioExistencias.addEventListener('click', buscarExistenciasPorInventario);
 
 
 
@@ -2058,6 +2213,32 @@ modalVerExistencias.addEventListener('click', function (event) {
         document.body.classList.remove('modal-open');
         //buscarDependencia();
     }
+});
+
+
+btnVerExistenciasInventario.addEventListener('click', () => {
+    // Abre el modal al hacer clic en el botón
+    modalExistenciasPorInventario.classList.add('show');
+    modalExistenciasPorInventario.style.display = 'block';
+
+});
+
+////cerrar el modal cuando se hace clic fuera del modal...
+modalExistenciasPorInventario.addEventListener('click', function (event) {
+    if (event.target === modalExistenciasPorInventario) {
+        modalExistenciasPorInventario.style.display = 'none';
+        document.body.classList.remove('modal-open');
+
+    }
+
+});
+
+cerrarModalExistenciasPorInventario.addEventListener('click', function () {
+    
+    modalExistenciasPorInventario.style.display = 'none';
+    document.body.classList.remove('modal-open');
+
+
 });
 
 

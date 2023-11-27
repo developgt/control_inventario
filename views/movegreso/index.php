@@ -57,7 +57,7 @@
         /* Sombra */
     }
 
-    
+
     .tabla-contenedor {
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     }
@@ -68,29 +68,36 @@
         justify-content: center;
         padding: 20px;
     }
-    
+
     .card {
         border: none;
         border-radius: 10px;
     }
+
     .card-body {
         padding: 2rem;
     }
+
     .form-select {
         margin-left: 0.5rem;
     }
+
     .btn-success {
         background-color: #28a745;
         border-color: #28a745;
     }
+
     .btn-success:hover {
         background-color: #218838;
         border-color: #1e7e34;
     }
+
     .btn-ingreso {
         position: absolute;
-        right: 25px; /* Ajustar según necesidad */
-        top: 120px; /* Ajustar según necesidad */
+        right: 25px;
+        /* Ajustar según necesidad */
+        top: 120px;
+        /* Ajustar según necesidad */
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 
     }
@@ -137,22 +144,28 @@
         /* Cambio de color al pasar el mouse */
     }
 
-    
-    .encabezado-busqueda {
-    background-color: #e9ecef; /* Un gris claro que no compite con el azul del encabezado principal */
-    color: #495057; /* Un color oscuro para el texto que garantiza legibilidad */
-    padding: 20px;
-    margin-top: 10px;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Un sombreado más suave */
-    border: 1px solid #dee2e6; /* Un borde sutil para definir los límites del encabezado */
-    transition: background-color 0.3s; /* Suaviza la transición de color al pasar el mouse */
-}
 
-.encabezado-busqueda:hover {
-    background-color: #dde1e6; /* Un tono ligeramente más oscuro para el hover, manteniéndolo suave */
-    /* No es necesario un cambio drástico de color al pasar el mouse, solo un toque sutil */
-}
+    .encabezado-busqueda {
+        background-color: #e9ecef;
+        /* Un gris claro que no compite con el azul del encabezado principal */
+        color: #495057;
+        /* Un color oscuro para el texto que garantiza legibilidad */
+        padding: 20px;
+        margin-top: 10px;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        /* Un sombreado más suave */
+        border: 1px solid #dee2e6;
+        /* Un borde sutil para definir los límites del encabezado */
+        transition: background-color 0.3s;
+        /* Suaviza la transición de color al pasar el mouse */
+    }
+
+    .encabezado-busqueda:hover {
+        background-color: #dde1e6;
+        /* Un tono ligeramente más oscuro para el hover, manteniéndolo suave */
+        /* No es necesario un cambio drástico de color al pasar el mouse, solo un toque sutil */
+    }
 
     /* Estilo para el fondo oscuro del modal */
     .modal-with-backdrop:before {
@@ -197,68 +210,15 @@
     }
 
     .estado-pendiente {
-    color: red;
+        color: red;
 
-}
+    }
 
-.estado-ingresado {
-    color: green;
-  
-}
+    .estado-ingresado {
+        color: green;
+
+    }
 </style>
-<!-- <div class="container bg-light border rounded mx-auto mt-2" id="mov_movimiento">
-    <div class="row">
-        <div class="col-lg-4 mb-4">
-            <div class="card mt-3 mb-3" id="verExistenciasBody">
-                <h3 class="text-center mt-4 mb-4 bg-primary text-white p-3 border rounded">Realizar Egresos</h3>
-                <div class="row justify-content-center mb-5">
-                    <form class="col-lg-11 border rounded bg-light p-3" id="formularioExistencia">
-                        <div class="row mb-3">
-                            <div class="col">
-                                <div class="form-group">
-                                    <label class="sm-4" for="mov_alma">Seleccione el almacén del que realizara el egreso</label>
-                                    <div class="d-flex align-items-center">
-                                        <span class="input-group-text"><i class="bi bi-arrow-right-circle"></i></span>
-                                        <select name="mov_alma" id="mov_alma" class="form-select" required>
-                                            <option value="">SELECCIONE...</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col">
-                                <div class="form-group">
-                                    <label class="sm-4" for="det_pro_id">Seleccione el producto</label>
-                                    <div class="d-flex align-items-center">
-                                        <span class="input-group-text"><i class="bi bi-box"></i></span>
-                                        <select name="det_pro_id" id="det_pro_id" class="form-select" required>
-                                            <option value="">SELECCIONE...</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col">
-                                <button type="button" id="btnBuscarExistencias" class="btn btn-info w-100">Buscar</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-8 mb-4">
-            <div class="card mt-3 mb-3" id="verExistenciasBody">
-                <h3 class="text-center mt-4 mb-4 bg-primary text-white p-3 border rounded">Existencias de Productos de acuerdo al almacén seleccionado</h3>
-                <div class="col table-responsive">
-                    <table id="tablaExistencias" class="table table-striped table-bordered table-hover table-light">
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</div> -->
 <div class="container bg-light border rounded mx-auto mt-2 busqueda-contenedor" id="movimiento_busqueda">
     <div class="row justify-content-center">
         <div class="col-12 mb-4">
@@ -285,12 +245,72 @@
                             <button type="button" id="btnRealizarIngreso" class="btn btn-success btn-ingreso">REALIZAR EGRESO</button>
                         </div>
                     </div>
+                    <div class="row g-3 align-items-end">
+                        <div class="col-lg-3 d-flex justify-content-end">
+                            <button type="button" id="btnVerExistenciasPorAlmacenModal" class="btn btn-info">Ver Existencias de Insumos por Inventario</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
+<!-- <-- modal para mostrar la vista de existencias de productos por inventario-->
+<div class="modal fade  modal-with-backdrop" id="ExistenciasInventario" name="ExistenciasInventario" tabindex="-1" role="dialog" aria-labelledby="ExistenciasInventarioLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header custom-modal-header">
+                <h6 class="modal-title" id="ExistenciasInventarioLabel">Ver existencias</h6>
+                <button type="button" id="btnCerrarModalExistenciasPorInventario" class="close btn btn-danger" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Salir de esta ventana</span>
+                </button>
+            </div>
+            <div class="modal-body" id="ExistenciasInventarioBody">
+                <div class="container bg-light border rounded mx-auto mt-2 nuevo-contenedor">
+                    <div class="row">
+                        <div class="col-lg-4 mb-4">
+                            <div class="card mt-3 mb-3" id="ExistenciasInventarioBody">
+                                <h4 class="text-center mt-4 mb-4 p-3 border rounded encabezado-inventario">Busqueda de Insumos por Inventario</h4>
+                                <div class="row justify-content-center mb-5">
+                                    <form class="col-lg-11 border rounded bg-light p-3" id="formularioExistenciasInventario">
+                                        <div class="row mb-3">
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <label for="mov_almacen">Seleccione el almacén</label>
+                                                    <div class="d-flex align-items-center">
+                                                        <span class="input-group-text"><i class="bi bi-arrow-right-circle"></i></span>
+                                                        <select name="mov_almacen" id="mov_almacen" class="form-select" required>
+                                                            <option value="">SELECCIONE...</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col">
+                                                <button type="button" id="btnBuscarExistenciasPorInventario" class="btn btn-info w-100">Buscar</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-8 mb-3">
+                            <div class="card mt-2 mb-2" id="ExistenciasInventarioBody">
+                                <h4 class="text-center mt-4 mb-4 p-3 border rounded encabezado-inventario">Existencias de Productos de acuerdo al almacén seleccionado</h4>
+                                <div class="col table-responsive">
+                                    <table id="tablaExistenciasPorInventario" class="table table-striped table-bordered table-hover table-light mi-tabla">
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="container border rounded mt-2 bg-white tabla-contenedor" id="DatosMovimiento">
     <div class="row justify-content-center">
         <div class="col-12">
@@ -340,6 +360,8 @@
         </div>
     </div>
 </div>
+
+
 
 <div class="container bg-light border rounded mx-auto mt-2 nuevo-contenedor" id="mov_movimiento">
     <div class="row justify-content-center">
@@ -680,62 +702,6 @@
         </div>
     </div>
 </div>
-<!-- <-- modal para mostrar la vista de existencias -->
-<!-- <div class="modal fade  modal-with-backdrop" id="verExistencias" name="verExistencias" tabindex="-1" role="dialog" aria-labelledby="verExistenciasLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl" role="document">
-        <div class="modal-content">
-            <div class="modal-header custom-modal-header">
-                <h6 class="modal-title" id="verExistenciasLabel">Ver existencias</h6>
-                <button type="button" id="botonCerrarModalExistencias" class="close btn btn-danger" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    <span class="sr-only">Salir de esta ventana</span>
-                </button>
-            </div>
-            <div class="modal-body" id="verExistenciasBody">
-                <div class="container bg-light border rounded mx-auto mt-2 nuevo-contenedor">
-                    <div class="row">
-                        <div class="col-lg-4 mb-4">
-                            <div class="card mt-3 mb-3" id="verExistenciasBody">
-                                <h4 class="text-center mt-4 mb-4 p-3 border rounded encabezado-inventario">Realizar Egresos</h4>
-                                <div class="row justify-content-center mb-5">
-                                    <form class="col-lg-11 border rounded bg-light p-3" id="formularioExistencia">
-                                        <div class="row mb-3">
-                                            <div class="col">
-                                                <div class="form-group">
-                                                    <label class="sm-4" for="det_pro">Seleccione el producto</label>
-                                                    <div class="d-flex align-items-center">
-                                                        <span class="input-group-text"><i class="bi bi-box"></i></span>
-                                                        <select name="det_pro" id="det_pro" class="form-select" required>
-                                                            <option value="">SELECCIONE...</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row mb-3">
-                                            <div class="col">
-                                                <button type="button" id="btnBuscarExistencias" class="btn btn-info w-100">Buscar</button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-8 mb-3">
-                            <div class="card mt-2 mb-2" id="verExistenciasBody">
-                                <h4 class="text-center mt-4 mb-4 p-3 border rounded encabezado-inventario">Existencias de Productos de acuerdo al almacén seleccionado</h4>
-                                <div class="col table-responsive">
-                                    <table id="tablaExistencias" class="table table-striped table-bordered table-hover table-light mi-tabla">
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div> -->
 
 <div class="container border rounded mt-2 bg-light nuevo-contenedor" id="DatosDetalle">
     <div class="row justify-content-center">
