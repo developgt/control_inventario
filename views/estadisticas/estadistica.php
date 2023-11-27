@@ -53,7 +53,7 @@
 </style>
 
 <div class="container contenedor-principal">
-    <h1 class="titulo-estadisticas">Estadísticas de Inventario</h1>
+    <h1 class="titulo-estadisticas">Existencias de Productos por Inventario</h1>
 <div class="row justify-content-center">
     <div class="col-lg-8">
         <div class="formulario-busqueda">
@@ -65,7 +65,7 @@
                         <option value="">SELECCIONE...</option>
                     </select>
                 </div>
-                <button type="button" id="btnBuscar" class="btn btn-info w-100">Ver Inventarios Entregados</button>
+                <button type="button" id="btnBuscar" class="btn btn-info w-100">Ver Estadística</button>
             </form>
         </div>
     </div>
