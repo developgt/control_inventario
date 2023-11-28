@@ -2308,6 +2308,8 @@ modalExistenciasPorInventario.addEventListener('click', function (event) {
         modalExistenciasPorInventario.style.display = 'none';
         document.body.classList.remove('modal-open');
         datatableExistenciasPorInventario.clear().draw();
+        divImprimirExistencias.style.display = 'none';
+        formularioExistenciasPorInventario.reset();
 
 
     }
@@ -2321,6 +2323,8 @@ cerrarModalExistenciasPorInventario.addEventListener('click', function () {
     modalExistenciasPorInventario.style.display = 'none';
     document.body.classList.remove('modal-open');
     datatableExistenciasPorInventario.clear().draw();
+    divImprimirExistencias.style.display = 'none';
+    formularioExistenciasPorInventario.reset();
 
 
 });
