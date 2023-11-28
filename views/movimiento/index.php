@@ -52,7 +52,7 @@
 
     .contenedor-modal {
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        
+
 
     }
 
@@ -97,7 +97,7 @@
         margin: auto;
         background-color: #f2f2f2;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-     
+
     }
 
     #formularioDetalle {
@@ -105,7 +105,7 @@
         margin: auto;
         background-color: #f2f2f2;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-     
+
 
     }
 
@@ -114,7 +114,7 @@
         margin: auto;
         background-color: #f2f2f2;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-     
+
     }
 
     .encabezado-inventario {
@@ -128,7 +128,7 @@
     }
 
     .encabezado-busqueda {
-        background-color: rgba(173, 216, 230, 0.8) ;
+        background-color: rgba(173, 216, 230, 0.8);
         color: #2c3e50;
         padding: 20px;
         margin-top: 10px;
@@ -136,7 +136,7 @@
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         border: 1px solid #dee2e6;
         transition: background-color 0.3s;
-     
+
     }
 
     .encabezado-busqueda:hover {
@@ -164,10 +164,10 @@
     /* Estilo para el modal */
     .modal-with-backdrop .modal-content {
         z-index: 1031;
-       
+
     }
 
-    
+
     .custom-modal-header {
         background: linear-gradient(to right, rgba(70, 130, 180, 0.8), rgba(30, 144, 255, 0.8));
         color: #fff;
@@ -175,7 +175,7 @@
 
     }
 
-    
+
     .custom-modal-title {
         margin: 0;
 
@@ -211,22 +211,21 @@
 
     }
 
-   
+
     .derecha-container {
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
         padding: 0 15px;
-     
+
     }
 
 
     .table-responsive {
-    padding: 20px;  
-    box-shadow: 0 4px 8px rgba(0, 128, 255, 0.3), 0 6px 20px rgba(0, 0, 0, 0.1); 
-    margin-top: 10px;
-}
-
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 128, 255, 0.3), 0 6px 20px rgba(0, 0, 0, 0.1);
+        margin-top: 10px;
+    }
 </style>
 <div class="container bg-white border rounded mx-auto mt-2 nuevo-contenedor" id="movimiento_busqueda">
     <div class="row">
@@ -297,6 +296,17 @@
                                             </div>
                                         </div>
                                     </form>
+                                </div>
+                                <div class="row justify-content-center mb-5" id="divImprimirExistencias">
+                                    <div class="col-lg-11 text-center mb-3">
+                                        <h4 class="card-title text-center p-3 encabezado-busqueda">Impresión de Registro</h4>
+                                        <p>Si desea imprimir el registro de este inventario, haga clic en el botón "Imprimir".</p>
+                                    </div>
+                                    <div class="col-lg-9">
+                                        <button type="button" id="btnImprimirExistencias" class="btn btn-primary w-100">
+                                            <i class="bi bi-printer"></i> Imprimir el registro de insumos
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -504,7 +514,7 @@
 </div>
 </div>
 <div class="container bg-light border rounded mx-auto mt-2" id="mov_detalle">
-    <div class="row justify-content-center"> 
+    <div class="row justify-content-center">
         <div class="col-lg-9">
             <div class="card mb-4 mt-4"">
             <h2 class=" card-header text-center p-3 rounded encabezado-inventario">Detalle del Ingreso del Almacén</h2>

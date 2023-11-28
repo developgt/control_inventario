@@ -113,8 +113,10 @@
 </head>
 
 <body>
+    
+
     <div class="report-header">
-        <h1 class="report-title">Reporte de Movimientos</h1>
+        <h1 class="report-title">Reporte de Ingresos al inventario "<?= htmlspecialchars($datos[0]->alma_nombre) ?>"</h1>
         <div class="ingreso">
             <span class="left">No. de ingreso: <?= htmlspecialchars($datos[0]->mov_id) ?></span>
         </div>

@@ -133,6 +133,13 @@ $router->post('/egresoreporte/generarPDF', [ReporteEgresoController::class, 'gen
 $router->get('/API/egresoreporte/buscarRecibo', [ReporteEgresoController::class, 'buscarReciboAPI']);
 $router->get('/API/egresoreporte/buscarRecibo2', [ReporteEgresoController::class, 'buscarRecibo2API']);
 
+//imprimir existencias de insumos pertenecientes a un inventario
+
+$router->get('/pdf', [ReporteEgresoController::class,'pdf']);
+$router->post('/existenciasreporte/generarPDF', [ReporteEgresoController::class, 'generarPDF']);
+$router->get('/API/existenciasreporte/buscarExistenciasPorInventarioImprimir', [ReporteEgresoController::class, 'buscarExistenciasPorInventarioImprimirAPI']);
+
+
 
 
 // estadisticas

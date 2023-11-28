@@ -72,7 +72,7 @@ class GestionController {
                 'codigo' => 0
             ]);
         }
-        console.log(data);
+    
     }
     
 }

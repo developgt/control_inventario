@@ -230,7 +230,8 @@ class MovimientoEgresoController
                 p.pro_id,
                 e.est_descripcion,
                 p.pro_nom_articulo,
-                u.uni_nombre
+                u.uni_nombre,
+                m.mov_alma_id
                 FROM 
                 inv_deta_movimientos d
                 INNER JOIN (

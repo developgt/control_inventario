@@ -89,6 +89,10 @@ const btnBuscarInventarioExistencias = document.getElementById('btnBuscarExisten
 const modalExistenciasPorInventario = document.getElementById('ExistenciasInventario');
 const cerrarModalExistenciasPorInventario = document.getElementById('btnCerrarModalExistenciasPorInventario');
 const formularioExistenciasPorInventario = document.getElementById('formularioExistenciasInventario');
+const divImprimirExistencias = document.getElementById('divImprimirExistencias');
+const btnImprimirExistencias = document.getElementById('btnImprimirExistencias');
+
+
 
 
 //////formulario existencias//////////////////
@@ -124,6 +128,8 @@ let dependencias = [];
 movDetalleDiv.style.display = "none";
 movMovimientoDiv.style.display = "none";
 sinFecha.style.display = "none";
+divImprimirExistencias.style.display = "none";
+
 
 btnModificarDetalle.disabled = true
 btnModificarDetalle.parentElement.style.display = 'none'
@@ -545,7 +551,7 @@ const datatableMovimiento = new Datatable('#tablaMovimientos', {
             }
         },
         {
-            title: 'VER DETALLES DE ESTE INGRESO',
+            title: 'VER DETALLES DE ESTE EGRESO',
             data: 'mov_id',
             searchable: false,
             orderable: false,
@@ -1796,7 +1802,7 @@ const buscarRecibo2 = async () => {
 
         } else {
             Toast.fire({
-                title: 'No se encontraron registros ',
+                title: 'No se encontraron registros o este Egreso a un esta pendiente',
                 icon: 'info',
             });
         }
@@ -1808,6 +1814,25 @@ const buscarRecibo2 = async () => {
 ////////////////generar pdf para entregar hoja de responsabilidad/////////////
 
 const generarPDF = async (datos) => {
+
+    let timerInterval;
+    Swal.fire({
+        title: 'Generando PDF...',
+        html: 'Por favor espera <b></b> milisegundos.',
+        timer: 4000,
+        timerProgressBar: true,
+        didOpen: () => {
+            Swal.showLoading();
+            const b = Swal.getHtmlContainer().querySelector('b');
+            timerInterval = setInterval(() => {
+                b.textContent = Swal.getTimerLeft();
+            }, 100);
+        },
+        willClose: () => {
+            clearInterval(timerInterval);
+        }
+    });
+
     const url = `/control_inventario/egresoreporte/generarPDF`;
 
     const config = {
@@ -1820,6 +1845,7 @@ const generarPDF = async (datos) => {
 
     try {
         const respuesta = await fetch(url, config);
+        Swal.close();
 
         if (respuesta.ok) {
             const blob = await respuesta.blob();
@@ -1834,9 +1860,13 @@ const generarPDF = async (datos) => {
             }
         } else {
             console.error('Error al generar el PDF.');
+            Swal.close();
+
         }
     } catch (error) {
         console.error(error);
+        Swal.close();
+
     }
 };
 
@@ -1969,11 +1999,19 @@ const modificar = async () => {
 };
 
 
+const manejarConfirmacionImpresion = async () => {
+    try {
+        await buscarRecibo2();
+    } catch (error) {
+        console.error('Error al ejecutar la impresión:', error);
+    }
+};
+
+
 
 buscarAlmacenes();
 buscarAlmacenesMovimientos();
 buscarAlmacenesInventario();
-
 buscarEstados();
 establecerFechaActual();
 
@@ -1982,7 +2020,25 @@ establecerFechaActual();
 ////////eventos/////////////////////////////////////
 //imprimir
 botonImprimir.addEventListener('click', buscarRecibo);
-botonVolverImprimir.addEventListener('click', buscarRecibo2);
+botonVolverImprimir.addEventListener('click', (e) => {
+    e.preventDefault();
+    Swal.fire({
+        title: "¿Desea imprimir este detalle?",
+        text: "Si acepta, se procederá a imprimir el detalle del recibo.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, Imprimir',
+        cancelButtonText: 'Cancelar acción'
+
+    }).then((result) => {
+        if (result.isConfirmed) {
+          manejarConfirmacionImpresion();
+        }
+    });
+});
+
 //formulario movimiento
 mov_perso_entrega.addEventListener('input', buscarOficiales);
 mov_perso_recibe.addEventListener('input', buscarOficialesRecibe);

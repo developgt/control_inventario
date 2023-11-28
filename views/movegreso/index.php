@@ -287,6 +287,17 @@
                                         </div>
                                     </form>
                                 </div>
+                                <div class="row justify-content-center mb-5" id="divImprimirExistencias">
+                                    <div class="col-lg-11 text-center mb-3">
+                                        <h4 class="card-title text-center p-3 encabezado-busqueda">Impresión de Registro</h4>
+                                        <p>Si desea imprimir el registro de este inventario, haga clic en el botón "Imprimir".</p>
+                                    </div>
+                                    <div class="col-lg-9">
+                                        <button type="button" id="btnImprimirExistencias" class="btn btn-primary w-100">
+                                            <i class="bi bi-printer"></i> Imprimir el registro de insumos
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="col-lg-8 mb-3">

@@ -37,7 +37,6 @@ class ReporteController
     {
         $det_mov_id = $_GET['det_mov_id'] ?? '';
 
-        // Aquí debes poner tu consulta SQL
         $sql = "SELECT 
         m.*, 
         d.*, 
@@ -45,7 +44,8 @@ class ReporteController
         u.uni_nombre, 
         p.pro_nom_articulo,
         a.alma_nombre, 
-        dep.dep_desc_md,  -- Cambiado el alias de 'd' a 'dep'
+        dep.dep_desc_md,
+        dep.dep_desc_lg,
         -- Datos de la persona que entrega
         trim(ge.gra_desc_ct) || ' DE ' || trim(ae.arm_desc_md) || ' ' || 
         trim(pe.per_ape1) || ' ' || trim(pe.per_ape2) || ', ' || 
@@ -71,7 +71,7 @@ class ReporteController
     JOIN 
         inv_almacenes AS a ON m.mov_alma_id = a.alma_id
     LEFT JOIN 
-        mdep AS dep ON a.alma_unidad = dep.dep_llave  -- Cambiado el alias aquí
+        mdep AS dep ON a.alma_unidad = dep.dep_llave  
     -- Datos de la persona que entrega
     LEFT JOIN 
         mper AS pe ON m.mov_perso_entrega = pe.per_catalogo
@@ -112,7 +112,6 @@ class ReporteController
     {
         $det_mov_id = $_GET['det_mov_id'] ?? '';
 
-        // Aquí debes poner tu consulta SQL
         $sql = "SELECT 
         m.*, 
         d.*, 
@@ -120,7 +119,9 @@ class ReporteController
         u.uni_nombre, 
         p.pro_nom_articulo,
         a.alma_nombre, 
-        dep.dep_desc_md,  -- Cambiado el alias de 'd' a 'dep'
+        dep.dep_desc_md,
+        dep.dep_desc_lg,
+
         -- Datos de la persona que entrega
         trim(ge.gra_desc_ct) || ' DE ' || trim(ae.arm_desc_md) || ' ' || 
         trim(pe.per_ape1) || ' ' || trim(pe.per_ape2) || ', ' || 
@@ -146,7 +147,7 @@ class ReporteController
     JOIN 
         inv_almacenes AS a ON m.mov_alma_id = a.alma_id
     LEFT JOIN 
-        mdep AS dep ON a.alma_unidad = dep.dep_llave  -- Cambiado el alias aquí
+        mdep AS dep ON a.alma_unidad = dep.dep_llave  
     -- Datos de la persona que entrega
     LEFT JOIN 
         mper AS pe ON m.mov_perso_entrega = pe.per_catalogo
@@ -203,8 +204,8 @@ class ReporteController
             $mpdf->SetMargins(30, 35, 25);
 
             $html = $router->load('reporte/pdf', ['datos' => $datos]);
-            $htmlHeader = $router->load('reporte/header');
-            $htmlFooter = $router->load('reporte/footer');
+            $htmlHeader = $router->load('reporte/header', ['datos' => $datos]);
+            $htmlFooter = $router->load('reporte/footer', ['datos' => $datos]);
 
             $mpdf->SetHTMLHeader($htmlHeader);
             $mpdf->SetHTMLFooter($htmlFooter);

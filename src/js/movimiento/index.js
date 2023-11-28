@@ -104,6 +104,9 @@ const btnBuscarInventarioExistencias = document.getElementById('btnBuscarExisten
 const modalExistenciasPorInventario = document.getElementById('ExistenciasInventario');
 const cerrarModalExistenciasPorInventario = document.getElementById('btnCerrarModalExistenciasPorInventario');
 const formularioExistenciasPorInventario = document.getElementById('formularioExistenciasInventario');
+const divImprimirExistencias = document.getElementById('divImprimirExistencias');
+const btnImprimirExistencias = document.getElementById('btnImprimirExistencias');
+
 
 
 let almaSeleccionId;
@@ -122,6 +125,7 @@ movDetalleDiv.style.display = "none";
 movMovimientoDiv.style.display = "none";
 campoLote.style.display = "none";
 fechaCampo.style.display = "none";
+divImprimirExistencias.style.display = "none";
 
 
 btnModificarDetalle.disabled = true
@@ -1171,6 +1175,8 @@ const buscarExistenciasPorInventario = async () => {
         if (data) {
             contadorExistenciasPorInventario = 1;
             datatableExistenciasPorInventario.rows.add(data).draw();
+            let mov_alma_id = data[0].mov_alma_id;
+            btnImprimirExistencias.value = mov_alma_id;
         } else {
             Toast.fire({
                 title: 'No se encontraron registros',
@@ -1736,7 +1742,7 @@ const buscarRecibo = async () => {
 
         } else {
             Toast.fire({
-                title: 'No se encontraron registros 2',
+                title: 'No se encontrararon registros',
                 icon: 'info',
             });
         }
@@ -1744,6 +1750,8 @@ const buscarRecibo = async () => {
         console.log(error);
     }
 };
+
+
 
 
 //////////////función buscar para imprimir recibo
@@ -1764,12 +1772,12 @@ const buscarRecibo2 = async () => {
         console.log(data);
 
         if (data && data.length > 0) {
-            generarPDF(data);     
+          generarPDF(data);
           
         
         } else {
             Toast.fire({
-                title: 'No se encontraron registros ',
+                title: 'No se encontraron registros o usted tiene un ingreso pendiente',
                 icon: 'info',
             });
         }
@@ -1778,9 +1786,57 @@ const buscarRecibo2 = async () => {
     }
 };
 
+const buscarExistenciasPorInventarioImprimir = async () => {
+
+
+    const url = `/control_inventario/API/existenciasreporte/buscarExistenciasPorInventarioImprimir?det_mov_id=${det_mov_id}`;
+    const config = {
+        method: 'GET',
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+        console.log(data);
+
+        if (data && data.length > 0) {
+            generarPDF(data);
+
+        } else {
+            Toast.fire({
+                title: 'No se encontrararon registros',
+                icon: 'info',
+            });
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+
+
 ////////////////generar pdf para entregar hoja de responsabilidad/////////////
 
 const generarPDF = async (datos) => {
+
+    let timerInterval;
+    Swal.fire({
+        title: 'Generando PDF...',
+        html: 'Por favor espera <b></b> milisegundos.',
+        timer: 4000,
+        timerProgressBar: true,
+        didOpen: () => {
+            Swal.showLoading();
+            const b = Swal.getHtmlContainer().querySelector('b');
+            timerInterval = setInterval(() => {
+                b.textContent = Swal.getTimerLeft();
+            }, 100);
+        },
+        willClose: () => {
+            clearInterval(timerInterval);
+        }
+    });
+
     const url = `/control_inventario/reporte/generarPDF`;
 
     const config = {
@@ -1793,7 +1849,7 @@ const generarPDF = async (datos) => {
 
     try {
         const respuesta = await fetch(url, config);
-
+        Swal.close();
         if (respuesta.ok) {
             const blob = await respuesta.blob();
 
@@ -1807,17 +1863,25 @@ const generarPDF = async (datos) => {
             }
         } else {
             console.error('Error al generar el PDF.');
+            Swal.close();
+
         }
     } catch (error) {
         console.error(error);
+        Swal.close();
     }
 };
 
 
-    
+const manejarConfirmacionImpresion = async () => {
+    try {
+        await buscarRecibo2();
+    } catch (error) {
+        console.error('Error al ejecutar la impresión:', error);
+    }
+};
 
-botonImprimir.addEventListener('click', buscarRecibo);
-botonVolverImprimir.addEventListener('click', buscarRecibo2);
+
 
 ///evento para detectar el cambio del select 
 select.addEventListener('change', mostrarDependencia);
@@ -1852,8 +1916,27 @@ datatableMovimiento.on('click', '.btn-info', traeDatosVerDetalle);
 btnBuscarInventarioExistencias.addEventListener('click', buscarExistenciasPorInventario);
 
 //PARA IMPRIMIR 
+botonVolverImprimir.addEventListener('click', (e) => {
+    e.preventDefault();
+    Swal.fire({
+        title: "¿Desea imprimir este detalle?",
+        text: "Si acepta, se procederá a imprimir el detalle del recibo.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, Imprimir',
+        cancelButtonText: 'Cancelar acción'
+
+    }).then((result) => {
+        if (result.isConfirmed) {
+          manejarConfirmacionImpresion();
+        }
+    });
+});
+
 botonImprimir.addEventListener('click', buscarRecibo);
-botonVolverImprimir.addEventListener('click', buscarRecibo2);
+
 
 ///evento para detectar el cambio del select 
 select.addEventListener('change', mostrarDependencia);
