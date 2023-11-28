@@ -21,6 +21,7 @@ use Controllers\GuardalmacenController;
 use Controllers\KardexController;
 use Controllers\ReporteController;
 use Controllers\ReporteEgresoController;
+use Controllers\ReporteExistenciasController;
 use Controllers\ReporteKardexController;
 
 $router = new Router();
@@ -125,7 +126,6 @@ $router->get('/API/reporte/buscarRecibo', [ReporteController::class, 'buscarReci
 $router->get('/API/reporte/buscarRecibo2', [ReporteController::class, 'buscarRecibo2API']);
 
 
-
 ///imprimir vale de egreso al inventario 
 
 $router->get('/pdf', [ReporteEgresoController::class,'pdf']);
@@ -135,28 +135,21 @@ $router->get('/API/egresoreporte/buscarRecibo2', [ReporteEgresoController::class
 
 //imprimir existencias de insumos pertenecientes a un inventario
 
-$router->get('/pdf', [ReporteEgresoController::class,'pdf']);
-$router->post('/existenciasreporte/generarPDF', [ReporteEgresoController::class, 'generarPDF']);
-$router->get('/API/existenciasreporte/buscarExistenciasPorInventarioImprimir', [ReporteEgresoController::class, 'buscarExistenciasPorInventarioImprimirAPI']);
-
-
+$router->get('/pdf', [ReporteExistenciasController::class,'pdf']);
+$router->post('/existenciasreporte/generarExistenciasPDF', [ReporteExistenciasController::class, 'generarExistenciasPDF']);
+$router->get('/API/existenciasreporte/buscarExistenciasPorInventarioImprimir', [ReporteExistenciasController::class, 'buscarExistenciasPorInventarioImprimirAPI']);
 
 
 // estadisticas
-
 
 $router->get('/estadisticas/estadistica', [EstadisticaController::class,'estadistica']);
 $router->get('/API/estadisticas/buscar', [EstadisticaController::class,'buscarCantidadAPI']);
 $router->get('/API/estadisticas/buscarIngreso', [EstadisticaController::class,'buscarIngresoAPI']);
 $router->get('/API/estadisticas/buscarEgreso', [EstadisticaController::class,'buscarEgresoAPI']);
 
-
-
 $router->get('/estadisticas/cantidadestadistica', [EstadisticaController::class,'cantidadEstadistica']);
 
 //$router->get('/API/usuarios/detalleUsuarios', [DetalleController::class,'detalleUsuariosAPI']);
-
-
 
 
 $router->get('/', [MenuController::class,'index']);

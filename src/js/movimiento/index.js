@@ -1175,6 +1175,7 @@ const buscarExistenciasPorInventario = async () => {
         if (data) {
             contadorExistenciasPorInventario = 1;
             datatableExistenciasPorInventario.rows.add(data).draw();
+            divImprimirExistencias.style.display = 'block';
             let mov_alma_id = data[0].mov_alma_id;
             btnImprimirExistencias.value = mov_alma_id;
         } else {
@@ -1788,8 +1789,9 @@ const buscarRecibo2 = async () => {
 
 const buscarExistenciasPorInventarioImprimir = async () => {
 
+    let inventarioId = btnImprimirExistencias.value;
 
-    const url = `/control_inventario/API/existenciasreporte/buscarExistenciasPorInventarioImprimir?det_mov_id=${det_mov_id}`;
+    const url = `/control_inventario/API/existenciasreporte/buscarExistenciasPorInventarioImprimir?inventarioId=${inventarioId}`;
     const config = {
         method: 'GET',
     };
@@ -1800,7 +1802,7 @@ const buscarExistenciasPorInventarioImprimir = async () => {
         console.log(data);
 
         if (data && data.length > 0) {
-            generarPDF(data);
+            generarExistenciasPDF(data);
 
         } else {
             Toast.fire({
@@ -1838,6 +1840,63 @@ const generarPDF = async (datos) => {
     });
 
     const url = `/control_inventario/reporte/generarPDF`;
+
+    const config = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(datos),
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        Swal.close();
+        if (respuesta.ok) {
+            const blob = await respuesta.blob();
+
+            if (blob) {
+                const urlBlob = window.URL.createObjectURL(blob);
+
+                // Abre el PDF en una nueva ventana o pestaña
+                window.open(urlBlob, '_blank');
+            } else {
+                console.error('No se pudo obtener el blob del PDF.');
+            }
+        } else {
+            console.error('Error al generar el PDF.');
+            Swal.close();
+
+        }
+    } catch (error) {
+        console.error(error);
+        Swal.close();
+    }
+};
+
+
+
+const generarExistenciasPDF = async (datos) => {
+
+    let timerInterval;
+    Swal.fire({
+        title: 'Generando PDF...',
+        html: 'Por favor espera <b></b> milisegundos.',
+        timer: 4000,
+        timerProgressBar: true,
+        didOpen: () => {
+            Swal.showLoading();
+            const b = Swal.getHtmlContainer().querySelector('b');
+            timerInterval = setInterval(() => {
+                b.textContent = Swal.getTimerLeft();
+            }, 100);
+        },
+        willClose: () => {
+            clearInterval(timerInterval);
+        }
+    });
+
+    const url = `/control_inventario/existenciasreporte/generarExistenciasPDF`;
 
     const config = {
         method: 'POST',
@@ -1934,7 +1993,7 @@ botonVolverImprimir.addEventListener('click', (e) => {
         }
     });
 });
-
+btnImprimirExistencias.addEventListener('click', buscarExistenciasPorInventarioImprimir);
 botonImprimir.addEventListener('click', buscarRecibo);
 
 

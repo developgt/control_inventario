@@ -100,6 +100,7 @@ const formularioExistencia = document.getElementById('formularioExistencia');
 const mov_alma = document.getElementById('mov_alma');
 const btnBuscarExistencias = document.getElementById('btnBuscarExistencias');
 
+
 // ////PARA MANEJAR EL CKECK BOX DE SI Y NO DE LOTE 
 
 const checkboxLoteNo = document.getElementById('tiene_lote_no');
@@ -1176,6 +1177,9 @@ const buscarExistenciasPorInventario = async () => {
         if (data) {
             contadorExistenciasPorInventario = 1;
             datatableExistenciasPorInventario.rows.add(data).draw();
+            divImprimirExistencias.style.display = 'block';
+            let mov_alma_id = data[0].mov_alma_id;
+            btnImprimirExistencias.value = mov_alma_id;
         } else {
             Toast.fire({
                 title: 'No se encontraron registros',
@@ -1811,6 +1815,37 @@ const buscarRecibo2 = async () => {
     }
 };
 
+const buscarExistenciasPorInventarioImprimir = async () => {
+
+    let inventarioId = btnImprimirExistencias.value;
+
+    const url = `/control_inventario/API/existenciasreporte/buscarExistenciasPorInventarioImprimir?inventarioId=${inventarioId}`;
+    const config = {
+        method: 'GET',
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+        console.log(data);
+
+        if (data && data.length > 0) {
+            generarExistenciasPDF(data);
+
+        } else {
+            Toast.fire({
+                title: 'No se encontrararon registros',
+                icon: 'info',
+            });
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+
+
+
 ////////////////generar pdf para entregar hoja de responsabilidad/////////////
 
 const generarPDF = async (datos) => {
@@ -1871,6 +1906,61 @@ const generarPDF = async (datos) => {
 };
 
 
+
+const generarExistenciasPDF = async (datos) => {
+
+    let timerInterval;
+    Swal.fire({
+        title: 'Generando PDF...',
+        html: 'Por favor espera <b></b> milisegundos.',
+        timer: 4000,
+        timerProgressBar: true,
+        didOpen: () => {
+            Swal.showLoading();
+            const b = Swal.getHtmlContainer().querySelector('b');
+            timerInterval = setInterval(() => {
+                b.textContent = Swal.getTimerLeft();
+            }, 100);
+        },
+        willClose: () => {
+            clearInterval(timerInterval);
+        }
+    });
+
+    const url = `/control_inventario/existenciasreporte/generarExistenciasPDF`;
+
+    const config = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(datos),
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        Swal.close();
+        if (respuesta.ok) {
+            const blob = await respuesta.blob();
+
+            if (blob) {
+                const urlBlob = window.URL.createObjectURL(blob);
+
+                // Abre el PDF en una nueva ventana o pestaña
+                window.open(urlBlob, '_blank');
+            } else {
+                console.error('No se pudo obtener el blob del PDF.');
+            }
+        } else {
+            console.error('Error al generar el PDF.');
+            Swal.close();
+
+        }
+    } catch (error) {
+        console.error(error);
+        Swal.close();
+    }
+};
 
 
 ///////////funciones para el formulario de busqueda de ingresos
@@ -2038,6 +2128,9 @@ botonVolverImprimir.addEventListener('click', (e) => {
         }
     });
 });
+
+btnImprimirExistencias.addEventListener('click', buscarExistenciasPorInventarioImprimir);
+
 
 //formulario movimiento
 mov_perso_entrega.addEventListener('input', buscarOficiales);

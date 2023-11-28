@@ -7,7 +7,7 @@ use MVC\Router;
 use Model\Detalle;
 use Exception;
 
-class ReporteEgresoController
+class ReporteExistenciasController
 {
     // Método para generar el PDF
     public static function pdf(Router $router)
@@ -35,66 +35,42 @@ class ReporteEgresoController
     // Método para buscar el recibo
     public static function buscarExistenciasPorInventarioImprimirAPI()
     {
-        $det_mov_id = $_GET['det_mov_id'] ?? '';
+        $inventario = $_GET['inventarioId'] ?? '';
 
      
         $sql = "SELECT 
-        m.*, 
-        d.*, 
-        e.est_descripcion, 
-        u.uni_nombre, 
+        d.*,
+        p.pro_id,
+        e.est_descripcion,
         p.pro_nom_articulo,
-        a.alma_nombre, 
-        dep.dep_desc_md,  -- Cambiado el alias de 'd' a 'dep'
-        -- Datos de la persona que entrega
-        trim(ge.gra_desc_ct) || ' DE ' || trim(ae.arm_desc_md) || ' ' || 
-        trim(pe.per_ape1) || ' ' || trim(pe.per_ape2) || ', ' || 
-        trim(pe.per_nom1) || ', ' || trim(pe.per_nom2) as mov_perso_entrega_nom,
-        -- Datos de la persona que recibe
-        trim(gr.gra_desc_ct) || ' DE ' || trim(ar.arm_desc_md) || ' ' || 
-        trim(pr.per_ape1) || ' ' || trim(pr.per_ape2) || ', ' || 
-        trim(pr.per_nom1) || ', ' || trim(pr.per_nom2) as mov_perso_recibe_nom,
-        -- Datos de la persona responsable
-        trim(g.gra_desc_ct) || ' DE ' || trim(arm.arm_desc_md) || ' ' || 
-        trim(per.per_ape1) || ' ' || trim(per.per_ape2) || ', ' || 
-        trim(per.per_nom1) || ', ' || trim(per.per_nom2) as mov_perso_respon_nom
-    FROM 
-        inv_movimientos AS m
-    JOIN 
-        inv_deta_movimientos AS d ON m.mov_id = d.det_mov_id
-    LEFT JOIN 
-        inv_estado AS e ON d.det_estado = e.est_id
-    LEFT JOIN 
-        inv_uni_med AS u ON d.det_uni_med = u.uni_id
-    LEFT JOIN 
-        inv_producto AS p ON d.det_pro_id = p.pro_id
-    JOIN 
-        inv_almacenes AS a ON m.mov_alma_id = a.alma_id
-    LEFT JOIN 
-        mdep AS dep ON a.alma_unidad = dep.dep_llave  -- Cambiado el alias aquí
-    -- Datos de la persona que entrega
-    LEFT JOIN 
-        mper AS pe ON m.mov_perso_entrega = pe.per_catalogo
-    LEFT JOIN 
-        grados AS ge ON pe.per_grado = ge.gra_codigo
-    LEFT JOIN 
-        armas AS ae ON pe.per_arma = ae.arm_codigo
-    -- Datos de la persona que recibe
-    LEFT JOIN 
-        mper AS pr ON m.mov_perso_recibe = pr.per_catalogo
-    LEFT JOIN 
-        grados AS gr ON pr.per_grado = gr.gra_codigo
-    LEFT JOIN 
-        armas AS ar ON pr.per_arma = ar.arm_codigo
-    -- Datos de la persona responsable
-    LEFT JOIN 
-        mper AS per ON m.mov_perso_respon = per.per_catalogo
-    LEFT JOIN 
-        grados AS g ON per.per_grado = g.gra_codigo
-    LEFT JOIN 
-        armas AS arm ON per.per_arma = arm.arm_codigo
-    WHERE 
-        m.mov_situacion = 1 AND d.det_mov_id = $det_mov_id AND d.det_situacion = 1 AND m.mov_id = $det_mov_id"; 
+        u.uni_nombre,
+        m.mov_alma_id,
+        a.alma_nombre
+        FROM 
+        inv_deta_movimientos d
+        INNER JOIN (
+        SELECT 
+            MAX(d2.det_id) AS max_det_id
+        FROM 
+            inv_deta_movimientos d2
+        INNER JOIN 
+            inv_movimientos m2 ON d2.det_mov_id = m2.mov_id
+        WHERE 
+            m2.mov_alma_id = $inventario AND d2.det_situacion = 1
+        GROUP BY 
+            d2.det_pro_id, d2.det_lote, d2.det_estado, d2.det_fecha_vence
+        ) max_det ON d.DET_ID = max_det.max_det_id
+        LEFT JOIN inv_producto p ON d.det_pro_id = p.pro_id
+        LEFT JOIN inv_uni_med u ON d.det_uni_med = u.uni_id
+        LEFT JOIN inv_estado e ON d.det_estado = e.est_id
+        INNER JOIN inv_movimientos m ON d.det_mov_id = m.mov_id
+        INNER JOIN inv_almacenes a ON m.mov_alma_id = a.alma_id
+        INNER JOIN inv_guarda_almacen ga ON a.alma_id = ga.guarda_almacen
+        WHERE 
+        ga.guarda_catalogo = user 
+        AND ga.guarda_situacion = 1
+        ORDER BY 
+        d.det_id ASC;"; 
 
         try {
             $detalle = Detalle::fetchArray($sql);
@@ -110,7 +86,7 @@ class ReporteEgresoController
 
 
     // Método para generar el PDF 
-    public static function generarPDF(Router $router) 
+    public static function generarExistenciasPDF(Router $router) 
     {
         try {
             $datos = json_decode(file_get_contents('php://input'));
@@ -128,9 +104,9 @@ class ReporteEgresoController
             ]);
             $mpdf->SetMargins(30, 35, 25);
 
-            $html = $router->load('egresoreporte/pdf', ['datos' => $datos]);
-            $htmlHeader = $router->load('egresoreporte/header',['datos' => $datos]);
-            $htmlFooter = $router->load('egresoreporte/footer', ['datos' => $datos]);
+            $html = $router->load('existenciasreporte/pdf', ['datos' => $datos]);
+            $htmlHeader = $router->load('existenciasreporte/header',['datos' => $datos]);
+            $htmlFooter = $router->load('existenciasreporte/footer', ['datos' => $datos]);
 
             $mpdf->SetHTMLHeader($htmlHeader);
             $mpdf->SetHTMLFooter($htmlFooter);
