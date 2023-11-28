@@ -1942,6 +1942,18 @@ const manejarConfirmacionImpresion = async () => {
 
 
 
+const manejarConfirmacionImpresionExistencias = async () => {
+    try {
+        await buscarExistenciasPorInventarioImprimir();
+    } catch (error) {
+        console.error('Error al ejecutar la impresión:', error);
+    }
+};
+
+
+
+
+
 ///evento para detectar el cambio del select 
 select.addEventListener('change', mostrarDependencia);
 
@@ -1993,7 +2005,26 @@ botonVolverImprimir.addEventListener('click', (e) => {
         }
     });
 });
-btnImprimirExistencias.addEventListener('click', buscarExistenciasPorInventarioImprimir);
+
+btnImprimirExistencias.addEventListener('click', (e) => {
+    e.preventDefault();
+    Swal.fire({
+        title: "¿Desea imprimir las Existencias de este Inventario?",
+        text: "Si acepta, se procederá a imprimir el detalle de las existencias.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, Imprimir',
+        cancelButtonText: 'Cancelar acción'
+
+    }).then((result) => {
+        if (result.isConfirmed) {
+          manejarConfirmacionImpresionExistencias();
+        }
+    });
+});
+
 botonImprimir.addEventListener('click', buscarRecibo);
 
 
