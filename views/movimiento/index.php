@@ -582,13 +582,6 @@
                         </div>
                         <div class="row mb-3">
                             <div class="col">
-                                <label for="det_cantidad_existente">Ingrese la Cantidad</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-card-text"></i></span>
-                                    <input type="number" name="det_cantidad" id="det_cantidad" class="form-control" placeholder="Cantidad" required>
-                                </div>
-                            </div>
-                            <div class="col">
                                 <label for="det_cantidad_existente">Cantidad Existente</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-card-text"></i></span>
@@ -600,6 +593,13 @@
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-card-text"></i></span>
                                     <input type="number" name="det_cantidad_lote" id="det_cantidad_lote" class="form-control" placeholder="Cantidad" readonly>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <label for="det_cantidad_existente">Ingrese la Cantidad</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-card-text"></i></span>
+                                    <input type="number" name="det_cantidad" id="det_cantidad" class="form-control" placeholder="Cantidad" required>
                                 </div>
                             </div>
                             <div class="row mb-3">
