@@ -217,6 +217,7 @@ const datatable = new Datatable('#tablaExistencias', {
 });
 
 
+
 //// PARA TRAER LOS DATOS 
 const traeDatos = (e) => {
     const button = e.target;
@@ -258,8 +259,7 @@ const traeDatos = (e) => {
     divLote.style.display = 'none'
     buscarCantidad();
     buscarCantidadLote();
-    datatable.clear().draw();
-    formularioExistencia.reset();
+   
 
 };
 
@@ -354,20 +354,6 @@ const datatableDetalle = new Datatable('#tablaDetalles', {
         {
             title: 'Observaciones',
             data: 'det_observaciones'
-        },
-        {
-            title: 'EDITAR DETALLE',
-            data: 'det_id',
-            searchable: false,
-            orderable: false,
-            render: (data, type, row, meta) => `<button class="btn btn-warning" data-id='${row["det_id"]}'data-producto='${row["det_pro_id"]}' data-lote='${row["det_lote"]}' data-estado='${row["det_estado"]}' data-fecha='${row["det_fecha_vence"]}' data-medida='${row["det_uni_med"]}' data-cantidad='${row["det_cantidad"]}' data-observaciones='${row["det_observaciones"]}'>Editar</button>`
-        },
-        {
-            title: 'ELIMINAR',
-            data: 'det_id',
-            searchable: false,
-            orderable: false,
-            render: (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Eliminar</button>`
         }
     ],
     columnDefs: [
@@ -425,7 +411,7 @@ const traeDatosDetalle = (e) => {
     colocarDatosDetalle(dataset);
     buscarCantidad();
     buscarCantidadLote();
- 
+
 };
 
 const colocarDatosDetalle = (dataset) => {
@@ -625,7 +611,7 @@ const traeDatosFinalizacion = (e) => {
 const colocarDatosFinalizacion = (dataset) => {
     console.log('Datos en colocarDatos:', dataset);
     formularioDetalle.det_mov_id.value = dataset.det_mov_id;
-    formularioMovimiento.mov_alma_id.value = dataset.mov_alma_id;
+    formulario.mov_alma_id.value = dataset.mov_alma_id;
     almaSeleccionadoId = dataset.mov_alma_id;
     buscarProducto();
     buscarUnidades();
@@ -815,7 +801,6 @@ const eliminar = async (e) => {
             body
         };
         try {
-            //await buscarDependencia();
             const respuesta = await fetch(url, config);
             const data = await respuesta.json();
             console.log(data);
@@ -868,7 +853,7 @@ const buscarDetallePorIngreso = async () => {
             datatableEgresoDetalle.rows.add(data).draw();
         } else {
             Toast.fire({
-                title: 'No se encontraron registros',
+                title: 'No se encontraron registros! Asegurese de no tener un ingreso pendiente',
                 icon: 'info'
             });
         }
@@ -1463,12 +1448,16 @@ const buscarExistencias = async () => {
 const guardar = async (evento) => {
     evento.preventDefault();
 
+    btnGuardar.disabled = true;
+
     if (!validarFormulario(formulario, ['mov_id', 'mov_tipo_mov'])) {
         Toast.fire({
             icon: 'info',
             text: 'Debe llenar todos los datos'
-        })
-        return
+        });
+        btnGuardar.disabled = false;
+
+        return;
     }
     const body = new FormData(formulario)
     body.delete('mov_id')
@@ -1519,6 +1508,9 @@ const guardar = async (evento) => {
         console.log(error);
     }
     buscarDetalleIngresado();
+    btnGuardar.disabled = false;
+    establecerFechaActual();
+
 
 }
 
@@ -1620,13 +1612,16 @@ const buscarCantidad = async () => {
 
 const guardarDetalle = async (evento) => {
     evento.preventDefault();
+    btnGuardarDetalle.disabled = true;
+
 
     if (!validarFormulario(formularioDetalle, ['det_id', 'det_lote', 'sin_fecha'])) {
         Toast.fire({
             icon: 'info',
             text: 'Debe llenar todos los datos'
-        })
-        return
+        });
+        btnGuardarDetalle.disabled = false;
+        return;
     }
 
     const detMovIdValue = document.getElementById('det_mov_id').value;
@@ -1682,6 +1677,9 @@ const guardarDetalle = async (evento) => {
         console.log('Respuesta completa:', await error.text());
     }
     buscarDetalleMovimiento();
+    btnGuardarDetalle.disabled = false;
+    buscarExistencias();
+
 
 };
 
@@ -1705,14 +1703,14 @@ const buscarDependenciaInterna = async () => {
 
         dependencias = data;
         // Limpiar el contenido del select
-        formularioMovimiento.mov_proce_destino.innerHTML = '';
+        formulario.mov_proce_destino.innerHTML = '';
 
         // Iterar sobre cada objeto en el arreglo y crear opciones para el select
         data.forEach(dependencias => {
             const option = document.createElement('option');
             option.value = dependencias.dep_llave;
             option.textContent = dependencias.dep_desc_md;
-            formularioMovimiento.mov_proce_destino.appendChild(option);
+            formulario.mov_proce_destino.appendChild(option);
         });
 
     } catch (error) {
@@ -1759,8 +1757,9 @@ const buscarRecibo = async () => {
             movDetalleDiv.style.display = 'none';
             datatableMovimiento.clear().draw();
             formularioDetalle.reset();
-            formularioMovimiento.reset();
+            formulario.reset();
             datatableDetalle.clear().draw();
+            establecerFechaActual();
 
 
         } else {
@@ -2014,6 +2013,8 @@ btnRegresarGestion.addEventListener('click', function () {
     divIngresoMovimiento.style.display = 'block';
     movMovimientoDiv.style.display = 'none';
     datosMovimiento.style.display = 'block';
+    formulario.reset();
+    establecerFechaActual();
 
 })
 
@@ -2025,9 +2026,10 @@ btnAnterior.addEventListener('click', function () {
     datosMovimiento.style.display = 'block';
     movDetalleDiv.style.display = 'none';
     formularioDetalle.reset();
-    formularioMovimiento.reset();
+    formulario.reset();
+    establecerFechaActual();
     datatableDetalle.clear().draw();
-    
+
 });
 
 

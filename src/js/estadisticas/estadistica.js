@@ -35,7 +35,7 @@ const buscarAlmacenes = async () => {
     } catch (error) {
         Toast.fire({
             icon: 'error',
-            title: 'Error al buscar almacenes'
+            title: 'Error al buscar inventarios'
         });
         console.error('Error al buscar almacenes:', error);
     }

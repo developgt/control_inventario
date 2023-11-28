@@ -68,13 +68,19 @@
     }
 
     .mi-tabla {
-        width: 110%;
+        width: auto;
         border-collapse: collapse;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         margin-left: auto;
         margin-right: auto;
 
     }
+
+    .table-responsive {
+    padding: 20px;  
+    box-shadow: 0 4px 8px rgba(0, 128, 255, 0.3), 0 6px 20px rgba(0, 0, 0, 0.1); 
+    margin-top: 10px;
+}
 
     
 
@@ -156,7 +162,7 @@
                         <h1 class="text-center mt-4 mb-4 encabezado-inventario">Inventarios Registrados</h1>
                         <div class="row justify-content-center">
                             <div class="col-lg-10">
-                                <div class="table">
+                                <div class="col table-responsive">
                                     <table id="tablaAlmacen" class="table table-striped table-bordered table-light mi-tabla">
                                     </table>
                                 </div>

@@ -332,20 +332,6 @@ const datatableDetalle = new Datatable('#tablaDetalles', {
             title: 'Observaciones',
             data: 'det_observaciones'
             },
-        {
-            title: 'EDITAR DETALLE',
-            data: 'det_id',
-            searchable: false,
-            orderable: false,
-            render: (data, type, row, meta) => `<button class="btn btn-warning" data-id='${row["det_id"]}'data-producto='${row["det_pro_id"]}' data-lote='${row["det_lote"]}' data-estado='${row["det_estado"]}' data-fecha='${row["det_fecha_vence"]}' data-medida='${row["det_uni_med"]}' data-cantidad='${row["det_cantidad"]}' data-observaciones='${row["det_observaciones"]}'>Editar</button>`
-        },
-        {
-            title: 'ELIMINAR',
-            data: 'det_id',
-            searchable: false,
-            orderable: false,
-            render: (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Eliminar</button>`
-        }
     ],
     columnDefs: [
         {
@@ -603,7 +589,7 @@ const traeDatosFinalizacion = (e) => {
 const colocarDatosFinalizacion = (dataset) => {
     console.log('Datos en colocarDatos:', dataset);
     formularioDetalle.det_mov_id.value = dataset.det_mov_id;
-    formularioMovimiento.mov_alma_id.value = dataset.mov_alma_id;
+    formulario.mov_alma_id.value = dataset.mov_alma_id;
     almaSeleccionadoId = dataset.mov_alma_id;
     buscarProducto();
     buscarUnidades();
@@ -826,7 +812,7 @@ const buscarDetallePorIngreso = async () => {
             datatable.rows.add(data).draw();
         } else {
             Toast.fire({
-                title: 'No se encontraron registros',
+                title: 'No se encontraron registros! Asegurese de no tener un ingreso pendiente',
                 icon: 'info'
             });
         }
@@ -842,7 +828,7 @@ const buscarDetallePorIngreso = async () => {
 //////////para buscar oficiales y llenar el campo de la persona que entrega////////
 
 const buscarOficiales = async () => {
-    let mov_perso_entrega = formularioMovimiento.mov_perso_entrega.value;
+    let mov_perso_entrega = formulario.mov_perso_entrega.value;
     clearTimeout(typingTimeout); // Limpiar el temporizador anterior (si existe)  
 
     const fetchData = async () => {
@@ -887,7 +873,7 @@ const buscarOficiales = async () => {
 //////////para buscar oficiales y llenar el campo de la persona que recibe////////
 
 const buscarOficialesRecibe = async () => {
-    let mov_perso_recibe = formularioMovimiento.mov_perso_recibe.value;
+    let mov_perso_recibe = formulario.mov_perso_recibe.value;
     clearTimeout(typingTimeout);  
 
     const fetchData = async () => {
@@ -932,7 +918,7 @@ const buscarOficialesRecibe = async () => {
 //////////para buscar oficiales y llenar el campo de la persona que entrega////////
 
 const buscarOficialesResponsable = async () => {
-    let mov_perso_respon = formularioMovimiento.mov_perso_respon.value;
+    let mov_perso_respon = formulario.mov_perso_respon.value;
     clearTimeout(typingTimeout); 
     const fetchData = async () => {
         const url = `/control_inventario/API/movimiento/buscarOficialesResponsable?mov_perso_respon=${mov_perso_respon}`;
@@ -991,18 +977,18 @@ const buscarDependencia = async () => {
 
         dependencias = data;
         
-        formularioMovimiento.mov_proce_destino.innerHTML = '';
+        formulario.mov_proce_destino.innerHTML = '';
 
         const defaultOption = document.createElement('option');
         defaultOption.value = '';
         defaultOption.textContent = 'SELECCIONE...';
-        formularioMovimiento.mov_proce_destino.appendChild(defaultOption);
+        formulario.mov_proce_destino.appendChild(defaultOption);
       
         data.forEach(dependencias => {
             const option = document.createElement('option');
             option.value = dependencias.dep_llave;
             option.textContent = dependencias.dep_desc_md;
-            formularioMovimiento.mov_proce_destino.appendChild(option);
+            formulario.mov_proce_destino.appendChild(option);
         });
        
     } catch (error) {
@@ -1030,14 +1016,14 @@ const buscarDependenciaInterna = async () => {
 
         dependencias = data;
        
-        formularioMovimiento.mov_proce_destino.innerHTML = '';
+        formulario.mov_proce_destino.innerHTML = '';
 
        
         data.forEach(dependencias => {
             const option = document.createElement('option');
             option.value = dependencias.dep_llave;
             option.textContent = dependencias.dep_desc_md;
-            formularioMovimiento.mov_proce_destino.appendChild(option);
+            formulario.mov_proce_destino.appendChild(option);
         });
       
     } catch (error) {
@@ -1346,11 +1332,14 @@ const buscarUnidades = async () => {
 const guardar = async (evento) => {
     evento.preventDefault();
 
+    btnGuardar.disabled = true;
+
     if (!validarFormulario(formulario, ['mov_id', 'mov_tipo_mov'])) {
         Toast.fire({
             icon: 'info',
             text: 'Debe llenar todos los datos'
-        })
+        });
+        btnGuardar.disabled = false;
         return
     }
     const body = new FormData(formulario)
@@ -1400,7 +1389,8 @@ const guardar = async (evento) => {
     } catch (error) {
         console.log(error);
     }
-
+    btnGuardar.disabled = false;
+    establecerFechaActual(); 
 }
 
 
@@ -1505,13 +1495,14 @@ const buscarCantidad = async () => {
 
 const guardarDetalle = async (evento) => {
     evento.preventDefault();
-
+    btnGuardarDetalle.disabled = true;
     if (!validarFormulario(formularioDetalle, ['det_id', 'det_fecha_vence'])) {
         Toast.fire({
             icon: 'info',
             text: 'Debe llenar todos los datos'
-        })
-        return
+        });
+        btnGuardarDetalle.disabled = false;
+        return;
     }
     //  // Guarda el valor actual del campo det_mov_id
     const detMovIdValue = document.getElementById('det_mov_id').value;
@@ -1570,6 +1561,9 @@ const guardarDetalle = async (evento) => {
         console.log('Respuesta completa:', await error.text());
 
     }
+
+    btnGuardarDetalle.disabled = false;
+
   
 };
 
@@ -1708,6 +1702,8 @@ const modificar = async () => {
         } catch (error) {
             console.log(error);
         }
+
+        establecerFechaActual();
   
     };
 //////////////función buscar para imprimir recibo
@@ -1734,9 +1730,10 @@ const buscarRecibo = async () => {
             movDetalleDiv.style.display = 'none';
             datatableMovimiento.clear().draw();
             formularioDetalle.reset();
-            formularioMovimiento.reset();
+            formulario.reset();
             datatableDetalle.clear().draw();
-        
+            establecerFechaActual();
+
         } else {
             Toast.fire({
                 title: 'No se encontraron registros 2',
@@ -1747,7 +1744,6 @@ const buscarRecibo = async () => {
         console.log(error);
     }
 };
-
 
 
 //////////////función buscar para imprimir recibo
@@ -1872,6 +1868,8 @@ btnAnterior.addEventListener('click', function (event) {
     datosMovimiento.style.display = 'block';
     movDetalleDiv.style.display = 'none';
     formularioDetalle.reset();
+    formulario.reset();
+    establecerFechaActual();
 });
 
 //EVENTOS PARA BUSCAR LA CANTIDAD EXISTENTE
@@ -1897,6 +1895,8 @@ btnRegresarGestion.addEventListener('click', function() {
     divIngresoMovimiento.style.display = 'block';
     movMovimientoDiv.style.display = 'none';
     datosMovimiento.style.display = 'block';
+    formulario.reset();
+    establecerFechaActual();
 
 })
 

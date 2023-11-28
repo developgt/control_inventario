@@ -1,14 +1,4 @@
 <style>
-    .table-responsive {
-        margin: 0 auto;
-    }
-
-    .table {
-        width: 100%;
-        margin-bottom: 1rem;
-        color: #212529;
-    }
-
     .table th,
     .table td {
         padding: 0.75rem;
@@ -62,12 +52,15 @@
 
     .contenedor-modal {
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        
 
     }
 
 
     .tabla-contenedor {
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        padding: 20px;
+
     }
 
     .busqueda-contenedor {
@@ -84,14 +77,7 @@
     }
 
 
-    /* .card {
-        border: none;
-        border-radius: 10px;
-    }
 
-    .card-body {
-        padding: 2rem;
-    } */
 
     .form-select {
         margin-left: 0.5rem;
@@ -111,8 +97,7 @@
         margin: auto;
         background-color: #f2f2f2;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        /* Sombra */
-
+     
     }
 
     #formularioDetalle {
@@ -120,7 +105,7 @@
         margin: auto;
         background-color: #f2f2f2;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        /* Sombra */
+     
 
     }
 
@@ -129,8 +114,7 @@
         margin: auto;
         background-color: #f2f2f2;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        /* Sombra */
-
+     
     }
 
     .encabezado-inventario {
@@ -144,14 +128,15 @@
     }
 
     .encabezado-busqueda {
-        background-color: #e9ecef;
-        color: #495057;
+        background-color: rgba(173, 216, 230, 0.8) ;
+        color: #2c3e50;
         padding: 20px;
         margin-top: 10px;
         border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         border: 1px solid #dee2e6;
         transition: background-color 0.3s;
-
+     
     }
 
     .encabezado-busqueda:hover {
@@ -179,10 +164,10 @@
     /* Estilo para el modal */
     .modal-with-backdrop .modal-content {
         z-index: 1031;
-        /* Asegura que el modal esté sobre el fondo oscuro */
+       
     }
 
-    /* Estilo para el encabezado del modal */
+    
     .custom-modal-header {
         background: linear-gradient(to right, rgba(70, 130, 180, 0.8), rgba(30, 144, 255, 0.8));
         color: #fff;
@@ -190,7 +175,7 @@
 
     }
 
-    /* Estilo para el título del modal */
+    
     .custom-modal-title {
         margin: 0;
 
@@ -226,14 +211,22 @@
 
     }
 
-    /* Alinea los botones a la derecha */
+   
     .derecha-container {
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
         padding: 0 15px;
-        /* Espacio interior */
+     
     }
+
+
+    .table-responsive {
+    padding: 20px;  
+    box-shadow: 0 4px 8px rgba(0, 128, 255, 0.3), 0 6px 20px rgba(0, 0, 0, 0.1); 
+    margin-top: 10px;
+}
+
 </style>
 <div class="container bg-white border rounded mx-auto mt-2 nuevo-contenedor" id="movimiento_busqueda">
     <div class="row">
@@ -326,7 +319,7 @@
 <div class="container border rounded mt-2 bg-white tabla-contenedor" id="DatosMovimiento">
     <div class="row justify-content-center">
         <div class="col-12">
-            <h5 class="text-center mt-4 mb-1 bg-light p-3 border rounded">Ingresos realizados</h5>
+            <h5 class="text-center mt-4 mb-1 p-3 border rounded encabezado-busqueda">Ingresos realizados</h5>
             <div class="table-responsive">
                 <table id="tablaMovimientos" class="table table-striped table-bordered table-hover table-light mb-1 w-100">
                 </table>

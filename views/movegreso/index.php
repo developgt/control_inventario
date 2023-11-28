@@ -1,14 +1,5 @@
 <style>
-    .table-responsive {
-        margin: 0 auto;
-    }
-
-    .table {
-        width: 100%;
-        margin-bottom: 1rem;
-        color: #212529;
-    }
-
+  
     .table th,
     .table td {
         padding: 0.75rem;
@@ -28,12 +19,11 @@
     h5 {
         text-align: center;
         background-color: #f8f9fa;
-        /* Color de fondo claro */
         padding: 10px;
         border: 1px solid #dee2e6;
         border-radius: 0.25rem;
         margin-bottom: 20px;
-        /* Espacio entre la cabecera y la tabla */
+
     }
 
     .table-striped tbody tr:nth-of-type(odd) {
@@ -54,12 +44,14 @@
         margin-top: 10px;
         background-color: beige;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        /* Sombra */
+    
     }
 
 
     .tabla-contenedor {
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        padding: 20px;
+
     }
 
     .busqueda-contenedor {
@@ -88,7 +80,7 @@
         margin: auto;
         background-color: #f2f2f2;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        /* Sombra */
+        
 
     }
 
@@ -97,8 +89,7 @@
         margin: auto;
         background-color: #f2f2f2;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        /* Sombra */
-
+    
     }
 
     #formularioDetalle {
@@ -106,7 +97,7 @@
         margin: auto;
         background-color: #f2f2f2;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        /* Sombra */
+       
 
     }
 
@@ -117,38 +108,33 @@
         margin-top: 10px;
         border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        /* Sombra */
+     
     }
 
     .encabezado-inventario:hover {
         background-color: #0056b3;
-        /* Cambio de color al pasar el mouse */
+     
     }
 
 
     .encabezado-busqueda {
-        background-color: #e9ecef;
-        /* Un gris claro que no compite con el azul del encabezado principal */
-        color: #495057;
-        /* Un color oscuro para el texto que garantiza legibilidad */
+        background-color: rgba(173, 216, 230, 0.8) ;
+        color: #2c3e50;
         padding: 20px;
         margin-top: 10px;
         border-radius: 10px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        /* Un sombreado más suave */
         border: 1px solid #dee2e6;
-        /* Un borde sutil para definir los límites del encabezado */
         transition: background-color 0.3s;
-        /* Suaviza la transición de color al pasar el mouse */
+     
     }
 
     .encabezado-busqueda:hover {
         background-color: #dde1e6;
-        /* Un tono ligeramente más oscuro para el hover, manteniéndolo suave */
-        /* No es necesario un cambio drástico de color al pasar el mouse, solo un toque sutil */
+    
     }
 
-    /* Estilo para el fondo oscuro del modal */
+  
     .modal-with-backdrop:before {
         content: "";
         position: fixed;
@@ -161,13 +147,13 @@
         opacity: 0.5;
     }
 
-    /* Estilo para el modal */
+   
     .modal-with-backdrop .modal-content {
         z-index: 1031;
-        /* Asegura que el modal esté sobre el fondo oscuro */
+      
     }
 
-    /* Estilo para el encabezado del modal */
+   
     .custom-modal-header {
         background: linear-gradient(to right, rgba(70, 130, 180, 0.8), rgba(30, 144, 255, 0.8));
         color: #fff;
@@ -175,7 +161,7 @@
 
     }
 
-    /* Estilo para el título del modal */
+
     .custom-modal-title {
         margin: 0;
 
@@ -200,11 +186,11 @@
 
     }
 
-        /* Estilos adicionales */
+        
 #btnRealizarIngreso, #btnVerExistenciasPorAlmacenModal {
     width: 100%;
     height: 80px;
-    margin-bottom: 10px; /* Espacio entre botones */
+    margin-bottom: 10px; 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 
 }
@@ -214,7 +200,7 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    padding: 0 15px; /* Espacio interior */
+    padding: 0 15px;
 }
 
 #formularioBusqueda {
@@ -222,9 +208,14 @@
         margin: auto;
         background-color: #f2f2f2;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        /* Sombra */
-
+   
     }
+
+.table-responsive {
+    padding: 20px;  
+    box-shadow: 0 4px 8px rgba(0, 128, 255, 0.3), 0 6px 20px rgba(0, 0, 0, 0.1); 
+    margin-top: 10px;
+}
 
 
 </style>
@@ -316,7 +307,7 @@
 <div class="container border rounded mt-2 bg-white tabla-contenedor" id="DatosMovimiento">
     <div class="row justify-content-center">
         <div class="col-12">
-            <h5 class="text-center mt-4 mb-1 bg-light p-3 border rounded">Egresos realizados</h5>
+            <h5 class="text-center mt-4 mb-1 p-3 border rounded encabezado-busqueda">Egresos realizados</h5>
             <div class="table-responsive">
                 <table id="tablaMovimientos" class="table table-striped table-bordered table-hover table-light mb-1 w-100">
                 </table>

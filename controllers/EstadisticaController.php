@@ -133,7 +133,7 @@ INNER JOIN (
 WHERE 
     m.mov_alma_id = $inventario
     AND dm.det_situacion = 1
-    AND m.mov_situacion = 1
+    AND m.mov_situacion = 2
     AND p.pro_situacion = 1
     AND um.uni_situacion = 1
 ORDER BY 
@@ -171,7 +171,7 @@ ORDER BY
     WHERE 
         m.mov_tipo_mov = 'I'
         AND m.mov_alma_id = $inventario
-        AND m.mov_situacion = 1
+        AND m.mov_situacion = 2
         AND dm.det_situacion = 1
     GROUP BY 
         p.pro_nom_articulo
@@ -214,7 +214,7 @@ ORDER BY
     GROUP BY 
         p.pro_nom_articulo
     ORDER BY 
-        TotalEgresos DESC;";
+        TotalEgresos DESC";
 
         try {
 
