@@ -14,8 +14,11 @@
 </head>
 <style>
 
-body {zoom: 90%;}
+body {
+        font-size: 90%;
+        zoom: 80%;
 
+    }
     .carousel-inner img {
       width: 100%;
       height: 100%;
@@ -104,7 +107,6 @@ body {zoom: 90%;}
   </div>
 </div>
 
-<!-- Modal para seleccionar el almacén -->
 <div class="modal fade" id="modalSeleccionarAlmacen" tabindex="-1" aria-labelledby="modalSeleccionarAlmacenLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -119,7 +121,7 @@ body {zoom: 90%;}
                     <div class="form-group">
                         <label for="selectAlmacenes">Seleccione el almacén:</label>
                         <select class="form-control" id="selectAlmacenes" name="almacen">
-                            <!-- Opciones del select se llenarán con JavaScript -->
+                            
                         </select>
                     </div>
                     <button type="submit" class="btn btn-primary btn-block">Ingresar al Almacen Seleccionado</button>

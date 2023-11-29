@@ -1,34 +1,130 @@
-let data; // Declarar data como variable global
+// Constante para almacenar la información de seleccionarAlmacen
+let seleccionarAlmacenData;
 
-// Función para buscar almacenes
-const buscar = async () => {
-  const url = `/control_inventario/API/kardex/buscar`;
+// Constante para almacenar la información de buscarProducto
+let buscarProductoData;
+
+// Constante para almacenar la información de buscarUnidadesMedida
+let buscarUnidadesMedidaData;
+
+// Conjunto para almacenar IDs únicos de unidades de medida
+const idUnidadMedidaSet = new Set();
+
+// Función para buscar productos
+const buscarProducto = async () => {
+  const url = `/control_inventario/API/kardex/buscarProducto?almaSeleccionadoId=${almaSeleccionadoId}`;
   const config = {
     method: 'GET',
   };
 
-  // Utilizar conjuntos separados para productos y unidades de medida
-  const idProductoSet = new Set();
-  const idMedidaSet = new Set();
-
   try {
     const respuesta = await fetch(url, config);
-    data = await respuesta.json(); // Asignar el resultado a la variable global data
+    buscarProductoData = await respuesta.json();
 
-    const selectAlmacen = document.getElementById('kardex_almacen');
     const selectProducto = document.getElementById('kardex_producto');
     const selectMedida = document.getElementById('kardex_medida');
 
-    // Limpiar selectores anteriores
-    selectAlmacen.innerHTML = '<option value="">Seleccione el Inventario</option>';
     selectProducto.innerHTML = '<option value="">Seleccione el Producto</option>';
     selectMedida.innerHTML = '<option value="">Seleccione la Unidad de Medida</option>';
 
-    if (data.almacenes && data.almacenes.length > 0) {
+    if (buscarProductoData && buscarProductoData.length > 0) {
       // Utilizar un conjunto para almacenar IDs únicos
       const idSet = new Set();
 
-      data.almacenes.forEach((almacen) => {
+      buscarProductoData.forEach((producto) => {
+        const idProducto = producto.pro_id;
+
+        // Verificar si el ID del producto ya existe en el conjunto
+        if (!idSet.has(idProducto)) {
+          idSet.add(idProducto);
+
+          const optionProducto = document.createElement('option');
+          optionProducto.value = idProducto;
+          optionProducto.text = producto.pro_nom_articulo.toUpperCase();
+          selectProducto.appendChild(optionProducto);
+        }
+      });
+
+      // Llamar a buscarUnidadesMedida al cambiar de producto
+      selectProducto.addEventListener('change', () => {
+        const productoSeleccionado = selectProducto.value;
+
+        // Limpiar conjunto al cambiar de producto
+        idUnidadMedidaSet.clear();
+
+        if (productoSeleccionado) {
+          // Filtrar unidades de medida por producto
+          const unidadesMedidaPorProducto = buscarProductoData.filter(
+            (producto) => producto.pro_id === productoSeleccionado
+          );
+
+          // Llenar el select de unidades de medida
+          buscarUnidadesMedida(unidadesMedidaPorProducto);
+        } else {
+          // Limpiar select de unidades de medida si no hay producto seleccionado
+          selectMedida.innerHTML = '<option value="">Seleccione la Unidad de Medida</option>';
+        }
+      });
+    } else {
+      selectProducto.innerHTML = '<option value="">No se encontraron registros</option>';
+    }
+  } catch (error) {
+    console.error('Error al cargar los productos:', error);
+  }
+};
+
+// Función para buscar unidades de medida
+const buscarUnidadesMedida = (productos) => {
+  const selectMedida = document.getElementById('kardex_medida');
+
+  // Limpiar select al cambiar de producto
+  selectMedida.innerHTML = '<option value="">Seleccione la Unidad de Medida</option>';
+
+  if (productos && productos.length > 0) {
+    productos.forEach((producto) => {
+      const idUnidadMedida = producto.det_uni_med;
+
+      // Verificar si el ID de la unidad de medida ya existe en el conjunto
+      if (!idUnidadMedidaSet.has(idUnidadMedida)) {
+        idUnidadMedidaSet.add(idUnidadMedida);
+
+        if (producto.uni_nombre) {
+          // Crea una opción para cada unidad de medida
+          const optionMedida = document.createElement('option');
+          optionMedida.value = idUnidadMedida;
+          optionMedida.text = producto.uni_nombre.toUpperCase();
+          selectMedida.appendChild(optionMedida);
+        } else {
+          console.error('La respuesta del servidor no contiene la propiedad "uni_nombre" esperada.');
+        }
+      }
+    });
+  } else {
+    // Manejar el caso en que no se encuentren unidades de medida
+    console.error('La respuesta del servidor no contiene la propiedad "unidadesMedida" esperada.');
+  }
+};
+
+// Función para seleccionar almacenes
+const seleccionarAlmacen = async () => {
+  const url = `/control_inventario/API/kardex/seleccionar`;
+  const config = {
+    method: 'GET',
+  };
+
+  try {
+    const respuesta = await fetch(url, config);
+    seleccionarAlmacenData = await respuesta.json();
+
+    const selectAlmacen = document.getElementById('kardex_almacen');
+
+    selectAlmacen.innerHTML = '<option value="">Seleccione el Inventario</option>';
+
+    if (seleccionarAlmacenData.almacenes && seleccionarAlmacenData.almacenes.length > 0) {
+      // Utilizar un conjunto para almacenar IDs únicos
+      const idSet = new Set();
+
+      seleccionarAlmacenData.almacenes.forEach((almacen) => {
         const idAlmacen = almacen.alma_id;
 
         // Verificar si el ID del almacén ya existe en el conjunto
@@ -41,27 +137,7 @@ const buscar = async () => {
           selectAlmacen.appendChild(option);
         }
       });
-
-      // Llamar a la función que carga productos cuando se selecciona un almacén
-      selectAlmacen.addEventListener('change', () => {
-        const almacenSeleccionado = selectAlmacen.value;
-
-        // Limpiar conjuntos al cambiar de almacén
-        idProductoSet.clear();
-        idMedidaSet.clear();
-
-        if (almacenSeleccionado) {
-          // Filtrar productos por almacén
-          const productosPorAlmacen = data.almacenes.filter(
-            (almacen) => almacen.alma_id === almacenSeleccionado
-          );
-
-          // Llenar el select de productos
-          cargarProductos(productosPorAlmacen);
-        }
-      });
     } else {
-      // Si no hay registros, mostrar un mensaje
       selectAlmacen.innerHTML = '<option value="">No se encontraron registros</option>';
     }
   } catch (error) {
@@ -69,61 +145,29 @@ const buscar = async () => {
   }
 };
 
-// Función para cargar productos desde la API
-function cargarProductos(productos) {
-  const selectProducto = document.getElementById('kardex_producto');
-  const selectMedida = document.getElementById('kardex_medida');
-
-  // Limpiar selectores anteriores
-  selectProducto.innerHTML = '<option value="">Seleccione el Producto</option>';
-  selectMedida.innerHTML = '<option value="">Seleccione la Unidad de Medida</option>';
-
-  // Utilizar conjuntos separados para productos y unidades de medida
-  const idProductoSet = new Set();
-  const idMedidaSet = new Set();
-
-  if (productos && productos.length > 0) {
-    productos.forEach((almacen) => {
-      const idProducto = almacen.id_producto;
-      const idMedida = almacen.det_uni_med;
-
-      // Verificar si el ID del producto ya existe en el conjunto
-      if (!idProductoSet.has(idProducto)) {
-        idProductoSet.add(idProducto);
-
-        if (almacen.nombre_producto) {
-          // Crea una opción para cada producto
-          const optionProducto = document.createElement('option');
-          optionProducto.value = idProducto;
-          optionProducto.text = almacen.nombre_producto;
-          selectProducto.appendChild(optionProducto);
-        } else {
-          console.error('La respuesta del servidor no contiene la propiedad "nombre_producto" esperada.');
-        }
-      }
-
-      // Verificar si el ID de la unidad de medida ya existe en el conjunto
-      if (!idMedidaSet.has(idMedida)) {
-        idMedidaSet.add(idMedida);
-
-        // Crea una opción para cada unidad de medida
-        const optionMedida = document.createElement('option');
-        optionMedida.value = idMedida;
-        optionMedida.text = almacen.nombre_unidad_medida || 'Sin Unidad';
-        selectMedida.appendChild(optionMedida);
-      }
-    });
-  } else {
-    // Manejar el caso en que no se encuentren productos
-    console.error('La respuesta del servidor no contiene la propiedad "almacenes" esperada.');
-  }
-}
-
 // Llamar a la función al cargar la página
-document.addEventListener('DOMContentLoaded', buscar);
+document.addEventListener('DOMContentLoaded', seleccionarAlmacen);
+
+// Obtener referencia al select "kardex_almacen"
+const selectAlmacen = document.getElementById('kardex_almacen');
+
+// Añadir un evento de cambio al select "kardex_almacen"
+selectAlmacen.addEventListener('change', function () {
+  // Obtener el ID del almacén seleccionado
+  almaSeleccionadoId = this.value;
+
+  // Imprimir el valor en la consola para verificar
+  console.log('Alma ID seleccionado:', almaSeleccionadoId);
+
+  // Llamar a buscarProducto pasando el ID del almacén
+  buscarProducto();
+});
 
 // Obtener referencia al botón "Buscar"
 const btnBuscar = document.getElementById('btnBuscar');
+
+// Obtener referencia al div de resultados
+const divMostrarResultados = document.getElementById('mostrarResultados');
 
 // Añadir un evento de clic al botón
 btnBuscar.addEventListener('click', () => {
@@ -135,114 +179,114 @@ btnBuscar.addEventListener('click', () => {
   // Verificar si se han seleccionado todos los campos
   if (almacenSeleccionado && productoSeleccionado && medidaSeleccionada) {
     // Filtrar la información según los valores seleccionados
-    const informacionFiltrada = data.almacenes.filter((almacen) => (
-      almacen.alma_id === almacenSeleccionado &&
-      almacen.id_producto === productoSeleccionado &&
-      almacen.det_uni_med === medidaSeleccionada
+    const informacionFiltrada = buscarProductoData.filter((producto) => (
+      producto.alma_id === almacenSeleccionado &&
+      producto.pro_id === productoSeleccionado &&
+      producto.det_uni_med === medidaSeleccionada
     ));
 
-    // Crear y mostrar el modal con la tabla
-    mostrarModal(informacionFiltrada);
+    // Realizar las acciones necesarias con la información filtrada
+    console.log('Información Filtrada:', informacionFiltrada);
+
+
+    // Llamar a mostrarResultados con los datos filtrados
+    mostrarResultados(informacionFiltrada);
+
   } else {
-    // Mostrar un mensaje indicando que se deben seleccionar todos los campos
-    alert('Por favor, seleccione todos los campos antes de buscar.');
+
+    console.warn('Por favor, seleccione todos los campos.');
   }
 });
 
-// Función para mostrar el modal con la tabla
-function mostrarModal(data) {
-  // Limpiar el contenido del modal anterior si existe
-  const modalExistente = document.getElementById('resultadoModal');
-  if (modalExistente) {
-    modalExistente.remove();
+// Función para mostrar resultados en la tabla
+function mostrarResultados(data) {
+  // Limpiar contenido anterior si existe
+  divMostrarResultados.innerHTML = '';
+
+  // Verificar si hay datos para mostrar
+  if (data && data.length > 0) {
+
+    const tablaContenido = data
+      .map(
+        (almacen) => `
+        <tr>
+           
+           <td>${almacen.mov_id}</td>
+           <td>${almacen.mov_tipo_mov === 'I' ? 'Ingreso' : (almacen.mov_tipo_mov === 'E' ? 'Egreso' : 'Invalido')}</td>
+           <td>${almacen.mov_fecha}</td>
+           <td>${almacen.mov_descrip}</td>
+           <td>${almacen.dep_desc_md}</td>
+           <td>${almacen.det_cantidad}</td>
+           <td>${almacen.uni_nombre}</td>
+           <td>${almacen.pro_nom_articulo}</td>
+           <td>${almacen.det_lote}</td>
+           <td>${almacen.est_descripcion}</td>
+           <td>${almacen.det_cantidad_existente}</td>
+         </tr>
+      `
+      )
+      .join('');
+
+    // Crear la tabla en el div "mostrarResultados"
+    const tablaHTML = `
+      <table class="table table-striped">
+        <thead class="thead-dark">
+          <tr>
+            <th>No. de Gestion</th>
+            <th>Tipo del Movimiento</th>
+            <th>Fecha</th>
+            <th>Descripcion del Movimiento</th>
+            <th>Procedencia/Destino</th>
+            <th>Cantidad</th>
+            <th>Unidad de Medida</th>
+            <th>Articulo</th>
+            <th>No. Serie/Lote</th>
+            <th>Estado</th>
+            <th>Nueva Cantidad Existente</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${tablaContenido}
+        </tbody>
+      </table>
+    `;
+
+    // Adjuntar la tabla al div "mostrarResultados"
+    divMostrarResultados.innerHTML = tablaHTML;
+
+
+    const btnImprimir = document.createElement('button');
+    btnImprimir.id = 'btnImprimir';
+    btnImprimir.className = 'btn btn-primary mt-3 w-100';
+    btnImprimir.innerText = 'Imprimir';
+
+
+    btnImprimir.addEventListener('click', () => {
+      console.log('Se hizo clic en el botón Imprimir');
+
+      buscarRecibo();
+
+      
+
+    });
+
+
+    // Adjuntar el botón al div "mostrarResultados"
+    divMostrarResultados.appendChild(btnImprimir);
+
+
+    console.log('Tabla creada y mostrada correctamente.');
+  } else {
+    console.warn('No hay datos para mostrar.');
   }
 
-// Crear el contenido de la tabla
-const tablaContenido = data.map((almacen) => (
-  `<tr>
-     <td>${almacen.mov_fecha}</td>
-     <td>${almacen.mov_tipo_mov === 'I' ? 'Ingreso' : (almacen.mov_tipo_mov === 'E' ? 'Egreso' : 'Invalido')}</td>
-     <td>${almacen.mov_id}</td>
-     <td>${almacen.mov_descrip}</td>
-     <td>${almacen.descripcion_proce_destino}</td>
-     <td>${almacen.det_cantidad}</td>
-     <td>${almacen.nombre_unidad_medida}</td>
-     <td>${almacen.nombre_producto}</td>
-     <td>${almacen.det_lote}</td>
-     <td>${almacen.descripcion_estado}</td>
-     <td>${almacen.det_cantidad_existente}</td>
-   </tr>`
-)).join('');
-
-// Crear el modal con la tabla
-const modalHTML = `
-  <div class="modal" id="resultadoModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-xl" style="width: 80%;" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-        <div class="row">
-            <div class="col-12 modal-info">
-              <h5 class="modal-title" style="font-size: 1.5rem;">Nombre del Almacen: ${data.length > 0 ? data[0].alma_nombre : ''} - ${data.length > 0 ? data[0].descripcion_clase: ''}</h5>
-            </div>
-        </div>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Fecha</th>
-                <th>Tipo del Movimiento</th>
-                <th>No. de Gestion</th>
-                <th>Descripcion del Movimiento</th>
-                <th>Procedencia/Destino</th>
-                <th>Cantidad</th>
-                <th>Unidad de Medida</th>
-                <th>Articulo</th>
-                <th>No. Serie/Lote</th>
-                <th>Estado</th>
-                <th>Nueva Cantidad Existente</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${tablaContenido}
-            </tbody>
-          </table>
-        </div>
-        <div class="modal-footer">
-        <button type="button" class="btn btn-danger btn-block  bi bi-x-lg" data-dismiss="modal" style="width: 49%;">   Cerrar</button>
-        <button type="button" id="btnImprimir" class="btn btn-primary btn-block bi bi-printer-fill" style="width: 49%;">Imprimir</button>
-        </div>
-      </div>
-    </div>
-  </div>
-`;
-
-  // Adjuntar el modal al cuerpo del documento
-  document.body.insertAdjacentHTML('beforeend', modalHTML);
-
-  // Obtener referencia al modal
-  const resultadoModal = document.getElementById('resultadoModal');
-
-  // Inicializar el modal con Bootstrap
-  const modal = new bootstrap.Modal(resultadoModal);
-
-  // Mostrar el modal
-  modal.show();
-
   // Obtener referencia al botón de imprimir
-  const btnImprimir = document.getElementById('btnImprimir');
+const btnImprimir = document.getElementById('btnImprimir');
 
-  // Añadir un evento de clic al botón de imprimir
-  btnImprimir.addEventListener('click', buscarRecibo);
 }
 
 // Obtener referencia al botón de imprimir
 const btnImprimir = document.getElementById('btnImprimir');
-
-/////////////////////////////////////////////////////////
 
 const buscarRecibo = async () => {
   let alma_id = document.getElementById('kardex_almacen').value;
@@ -281,6 +325,25 @@ const buscarRecibo = async () => {
 const generarPDF = async (datos) => {
   const url = `/control_inventario/reportekardex/generarPDF`;
 
+  let timerInterval;
+  Swal.fire({
+      title: 'Generando PDF...',
+      html: 'Por favor espera <b></b> milisegundos.',
+      timer: 4000,
+      timerProgressBar: true,
+      didOpen: () => {
+          Swal.showLoading();
+          const b = Swal.getHtmlContainer().querySelector('b');
+          timerInterval = setInterval(() => {
+              b.textContent = Swal.getTimerLeft();
+          }, 100);
+      },
+      willClose: () => {
+          clearInterval(timerInterval);
+      }
+  });
+
+
   const formData = new FormData();
   formData.append('almacenes', JSON.stringify(datos));
 
@@ -291,22 +354,23 @@ const generarPDF = async (datos) => {
 
   try {
     const respuesta = await fetch(url, config);
-
+    Swal.close();
     if (respuesta.ok) {
       const blob = await respuesta.blob();
 
       if (blob) {
         const urlBlob = window.URL.createObjectURL(blob);
 
-        // Abre el PDF en una nueva ventana o pestaña
         window.open(urlBlob, '_blank');
       } else {
         console.error('No se pudo obtener el blob del PDF.');
+        Swal.close();
       }
     } else {
       console.error('Error al generar el PDF.');
     }
   } catch (error) {
     console.error(error);
+    Swal.close();
   }
 };

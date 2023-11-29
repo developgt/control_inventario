@@ -12,7 +12,7 @@
 <Style>
     body {
         font-size: 90%;
-        zoom: 90%;
+        zoom: 80%;
 
     }
 </Style>
@@ -45,22 +45,25 @@
                         <a class="nav-link" aria-current="page" href="/control_inventario/almacen"><i class="bi bi bi-building-fill-check me-2"></i>Inventario</a>
                     </li>
                     <li>
-                        <a class="nav-link" aria-current="page" href="/control_inventario/movimiento"><i class="bi bi-box-arrow-in-down me-2""></i>Gestión de Ingreso</a>
+                        <a class="nav-link" aria-current="page" href="/control_inventario/movimiento"><i class="bi bi-box-arrow-in-down me-2"></i>Ingresos</a>
                     </li>
                     <li>
-                        <a class="nav-link" aria-current="page" href="/control_inventario/movegreso"><i class="bi bi-box-arrow-up me-2""></i>Gestión de Egreso</a>
+                        <a class="nav-link" aria-current="page" href="/control_inventario/movegreso"><i class="bi bi-box-arrow-up me-2"></i>Egresos</a>
                     </li>
                     <li>
                         <a class="nav-link" aria-current="page" href="/control_inventario/kardex"><i class="bi bi-archive-fill me-2"></i>Kardex</a>
                     </li>          
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="/control_inventario/guarda"><i class="bi bi bi-building-fill-check me-2"></i>Realizar Entrega de Inventario</a>
+                        <a class="nav-link" aria-current="page" href="/control_inventario/guarda"><i class="bi bi bi-building-fill-check me-2"></i>Entrega de Inventario</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="/control_inventario/estadisticas/estadistica"><i class="bi bi-bar-chart me-2""></i>Estadística Cantidad de Productos</a>
+                        <a class="nav-link" aria-current="page" href="/control_inventario/estadisticas/estadistica"><i class="bi bi-bar-chart me-2"></i>Cantidad de Productos</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="/control_inventario/estadisticas/cantidadestadistica"><i class="bi bi-bar-chart me-2""></i>Estadísticas de Ingresos y Egresos</a>
+                        <a class="nav-link" aria-current="page" href="/control_inventario/estadisticas/cantidadestadistica"><i class="bi bi-bar-chart me-2"></i>Estadísticas Movimientos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/control_inventario/control"><i class="bi bi bi-printer me-2"></i>Imprimir</a>
                     </li>
                     <!-- GESTION DE INVENTARIOS -->
                     <!-- <div class="nav-item dropdown ">
@@ -77,7 +80,7 @@
                         </ul>
                     </div> -->
                 </ul>
-                <ul class="navbar-nav me-0 mb-2 mb-lg-0">
+                <ul class="navbar-nav me-0 mb-2 mb-lg-0" >
                     <li class="nav-item">
                         <a href="/login/logout" class="btn btn-danger"><i class="bi bi-x-lg me-2"></i>Cerrar Sesión</a>
                     </li>
