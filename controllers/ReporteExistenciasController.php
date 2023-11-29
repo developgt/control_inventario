@@ -105,10 +105,9 @@ class ReporteExistenciasController
             $mpdf->SetMargins(30, 35, 25);
 
             $html = $router->load('existenciasreporte/pdf', ['datos' => $datos]);
-            $htmlHeader = $router->load('existenciasreporte/header',['datos' => $datos]);
             $htmlFooter = $router->load('existenciasreporte/footer', ['datos' => $datos]);
 
-            $mpdf->SetHTMLHeader($htmlHeader);
+       
             $mpdf->SetHTMLFooter($htmlFooter);
             $mpdf->WriteHTML($html);
             $mpdf->Output();

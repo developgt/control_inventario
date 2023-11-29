@@ -107,6 +107,20 @@
             width: 40%;
 
         }
+
+        header {
+            border-bottom: 2px solid #000;
+            bottom: 25px;
+           
+        }
+
+        .report-footer {
+            border-top: 2px solid #000;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+        }
     </style>
 </head>
 

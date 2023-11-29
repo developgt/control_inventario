@@ -5,34 +5,34 @@
     <meta charset="UTF-8">
     <title>Reporte de Insumos</title>
     <style>
-         body {
+        body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
         }
 
-        .report-header {
+        header {
             text-align: center;
-            margin-top: 20px;
-            padding-bottom: 10px;
         }
 
-        .report-footer {
-            border-top: 5px solid #007bff; /* Línea azul en el pie de página */
-            padding-top: 10px;
-            color: #6c757d;
+        header span {
+            font-size: 22px;
+            font-weight: bold;
+            color: #000;
+    
+        }
+
+        .report-header {
             text-align: center;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background-color: #e3f2fd; /* Fondo celeste metálico en el pie de página */
+            margin: 20px 0;
         }
 
         .report-title {
             font-size: 24px;
+            color: #000;
             margin: 20px 0;
-            color: #000; /* Título en negro */
+            text-align: center;
         }
 
         .styled-table {
@@ -41,52 +41,63 @@
             font-size: 0.9em;
             margin-bottom: 30px;
             background-color: #fff;
-            border: 2px solid #000; /* Bordes más definidos para la tabla */
-        }
+            border: 2px solid #000;
 
-        .styled-table th {
-            background-color: #e3f2fd; /* Encabezados en celeste metálico */
-            color: #000; /* Texto oscuro para contraste */
-        }
-
-        .styled-table td {
-            color: #000000;
         }
 
         .styled-table th,
         .styled-table td {
             padding: 12px 15px;
-            border: 1px solid #000; /* Bordes negros para cada celda */
+            border: 1px solid #000;
+            text-align: left;
+        }
+
+        .styled-table thead th {
+            background-color: #f2f2f2;
+            color: #000;
         }
 
         .styled-table tbody tr:nth-child(even) {
-            background-color: #f2f2f2; /* Filas alternas en gris claro */
+            background-color: #f2f2f2;
+           
         }
 
         .fecha {
-            margin-top: 5px;
-            color: #6c757d;
-            font-size: 0.8em;
+            font-size: 0.9em;
+            color: #333;
+            margin-bottom: 20px;
         }
 
-  
+ 
+        header {
+            border-bottom: 2px solid #000;
+            bottom: 25px;
+           
+        }
+
+        .report-footer {
+            border-top: 2px solid #000;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+        }
     </style>
 </head>
 
 <body>
-    <header>
-  
-    <div style="position: relative; text-align: center;">
-    <span>Ejército de Guatemala</span>
-        <div style="position: absolute; top: -50px; left: 50%; transform: translateX(-50%);">
-            <img src="./images/min.png" alt="Descripción de la imagen" style="width: 80px; height: auto;">
-        </div>
-    </div>
+<header>
+  <div style="text-align: center;">
+  <span>Ejército de Guatemala</span>
+      <div style="position: absolute; top: -50px; left: 50%; transform: translateX(-50%);">
+          <img src="./images/min.png" alt="Descripción de la imagen" style="width: 80px; height: auto;">
+      </div>
+  </div>
+</header>
 
 
-    </header>
-    <div class="report-header">
-        <h1 class="report-title">Reporte de Existencias de Insumos del inventario "<?= htmlspecialchars($datos[0]->alma_nombre) ?>"</h1>
+    <div class="report">
+        <h1 class="report-title text-align: center; ">Reporte de Existencias de Insumos del inventario "<?= htmlspecialchars($datos[0]->alma_nombre) ?>"</h1>
         <div class="fecha">
             <span class="right">Fecha del Reporte: <?= date("d/m/Y") ?></span>
         </div>
@@ -121,9 +132,6 @@
     </table>
 
 
-
-    <div class="report-footer">
-        <span>Sistema de Gestión de Control de Inventarios - Reporte generado automáticamente</span>
-    </div>
 </body>
+
 </html>
