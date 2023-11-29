@@ -16,15 +16,6 @@ use Model\Usuario;
 class ProductoController
 {
 
-    // public static function index(Router $router)
-    // {
-    //     //$almacen = static::buscarAlmacen();
-
-    //     $router->render('producto/index', [
-    //         //'almacen' => $almacen
-    //     ]);
-    // }
-
     public static function index(Router $router){
         isAuth();
         try {
@@ -75,13 +66,11 @@ class ProductoController
         try {
             $almacen = Almacen::fetchArray($sql);
 
-            // Establece el tipo de contenido de la respuesta a JSON
             header('Content-Type: application/json');
 
-            // Convierte el array a JSON 
             echo json_encode($almacen);
         } catch (Exception $e) {
-            // En caso de error, envía una respuesta vacía
+        
             echo json_encode([]);
         }
     }
@@ -99,13 +88,13 @@ class ProductoController
         try {
             $medida = Medida::fetchArray($sql);
 
-            // Establece el tipo de contenido de la respuesta a JSON
+        
             header('Content-Type: application/json');
 
-            // Convierte el array a JSON 
+         
             echo json_encode($medida);
         } catch (Exception $e) {
-            // En caso de error, envía una respuesta vacía
+          
             echo json_encode([]);
         }
     }
@@ -118,7 +107,7 @@ class ProductoController
     {
         try {
 
-            // Convertir datos a mayúsculas
+     
             foreach ($_POST as $key => $value) {
                 $_POST[$key] = strtoupper($value);
             }

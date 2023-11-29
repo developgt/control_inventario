@@ -59,11 +59,9 @@ class GestionController {
             WHERE mper.per_catalogo = user";
     
         try {
-          
-            // Ejecutar la consulta SQL para obtener nombres de almacenes para el usuario.
+        
             $almacenes = Almacen::fetchArray($sql);
             
-            // Devolver la respuesta como un array asociativo
             echo json_encode(['almacenes' => $almacenes]);
         } catch (Exception $e) {
             echo json_encode([
