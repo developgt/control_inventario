@@ -597,6 +597,7 @@ const colocarDatosFinalizacion = (dataset) => {
     almaSeleccionadoId = dataset.mov_alma_id;
     buscarProducto();
     buscarUnidades();
+    buscarDetalleMovimiento();
 };
 
 

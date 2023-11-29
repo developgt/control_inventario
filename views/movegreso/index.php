@@ -270,7 +270,7 @@
                                         <div class="row mb-3">
                                             <div class="col">
                                                 <div class="form-group">
-                                                    <label for="mov_almacen">Seleccione el almacén</label>
+                                                    <label for="mov_almacen">Seleccione el inventario</label>
                                                     <div class="d-flex align-items-center">
                                                         <span class="input-group-text"><i class="bi bi-arrow-right-circle"></i></span>
                                                         <select name="mov_almacen" id="mov_almacen" class="form-select" required>
@@ -393,7 +393,7 @@
                         </div>
                         <div class="col">
                             <div class="form-group">
-                                <label for="mov_alma_id">Seleccione el almacén del cual egresará</label>
+                                <label for="mov_alma_id">Seleccione el inventario del cual egresará</label>
                                 <div class="d-flex align-items-center">
                                     <span class="input-group-text"><i class="bi bi-arrow-right-circle"></i></span>
                                     <select name="mov_alma_id" id="mov_alma_id" class="form-select" required>
