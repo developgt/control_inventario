@@ -53,7 +53,7 @@ class ReporteControlController
         inv_deta_movimientos.det_fecha_vence AS fecha_vencimiento,
         inv_deta_movimientos.det_lote AS lote_serie,
         inv_producto.pro_descripcion AS descripcion_producto,
-        MAX(inv_deta_movimientos.det_cantidad_existente) AS cantidad_existente
+        MAX(inv_deta_movimientos.det_cantidad_lote) AS cantidad_existente
     FROM
         inv_almacenes
     JOIN
