@@ -125,7 +125,7 @@
                     <td><?= htmlspecialchars($movimiento->est_descripcion) ?></td>
                     <td><?= htmlspecialchars($movimiento->uni_nombre) ?></td>
                     <td><?= htmlspecialchars($movimiento->det_fecha_vence) == '1999-05-07' ? 'Sin fecha de vencimiento' : htmlspecialchars($movimiento->det_fecha_vence) ?></td>
-                    <td><?= htmlspecialchars($movimiento->det_cantidad) ?></td>
+                    <td><?= htmlspecialchars($movimiento->det_cantidad_lote) ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>

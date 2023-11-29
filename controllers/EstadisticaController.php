@@ -161,7 +161,7 @@ ORDER BY
 
         $sql = "SELECT 
         p.pro_nom_articulo AS Producto,
-        SUM(dm.det_cantidad) AS totalingresos
+        dm.det_cantidad_existente AS totalingresos
     FROM 
         inv_movimientos m
     INNER JOIN 
@@ -173,10 +173,18 @@ ORDER BY
         AND m.mov_alma_id = $inventario
         AND m.mov_situacion = 2
         AND dm.det_situacion = 1
-    GROUP BY 
-        p.pro_nom_articulo
+        AND dm.det_id = (
+            SELECT 
+                MAX(det_id)
+            FROM 
+                inv_deta_movimientos sub_dm
+            WHERE 
+                sub_dm.det_pro_id = dm.det_pro_id
+                AND sub_dm.det_mov_id = dm.det_mov_id
+        )
     ORDER BY 
-        TotalIngresos DESC";
+        totalingresos DESC;
+    ";
 
         try {
 

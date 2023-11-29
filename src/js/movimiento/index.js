@@ -1698,7 +1698,7 @@ const modificar = async () => {
             }
             Swal.fire({
                 title: '¡Proceso Completado!',
-                text: 'Finalizó con éxito el proceso de ingreso al inventario. Su PDF se generará en un momento.',
+                text: 'Finalizó con éxito el proceso de ingreso al inventario',
                 icon: 'success',
                 confirmButtonText: 'Entendido',
                 confirmButtonColor: '#3085d6',
