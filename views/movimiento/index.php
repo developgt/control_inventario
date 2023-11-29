@@ -395,7 +395,7 @@
                         </div>
                         <div class="col">
                             <div class="form-group">
-                                <label for="mov_alma_id">Seleccione el almacén al que ingresará</label>
+                                <label for="mov_alma_id">Seleccione el inventario al que ingresará</label>
                                 <div class="d-flex align-items-center">
                                     <span class="input-group-text"><i class="bi bi-arrow-right-circle"></i></span>
                                     <select name="mov_alma_id" id="mov_alma_id" class="form-select" required>
