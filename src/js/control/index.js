@@ -109,12 +109,13 @@ function mostrarResultados(data) {
       .map(
         (producto) => `
         <tr>
-          <td>${producto.nombre_producto}</td>
-          <td>${producto.descripcion_estado}</td>
-          <td>${producto.fecha_vencimiento === '1999-05-07' ? 'SIN FECHA DE VENCIMIENTO' : producto.fecha_vencimiento}</td>
-          <td>${producto.lote_serie}</td>
-          <td>${producto.descripcion_producto}</td>
-          <td>${producto.cantidad_existente}</td>
+          <td>${producto.pro_nom_articulo}</td>
+          <td>${producto.est_descripcion}</td>
+          <td>${producto.det_fecha_vence === '1999-05-07' ? 'SIN FECHA DE VENCIMIENTO' : producto.det_fecha_vence}</td>
+          <td>${producto.uni_nombre}</td>
+          <td>${producto.det_lote}</td>
+          <td>${producto.det_cantidad_lote}</td>
+          <td>${producto.det_cantidad_existente}</td>
         </tr>
       `
       )
@@ -128,8 +129,8 @@ function mostrarResultados(data) {
             <th>Nombre Producto</th>
             <th>Descripción Estado</th>
             <th>Fecha Vencimiento</th>
-            <th>Lote/Serie</th>
-            <th>Descripción Producto</th>
+            <th>Unidad</th>
+            <th>Lote</th>
             <th>Cantidad Existente</th>
           </tr>
         </thead>
