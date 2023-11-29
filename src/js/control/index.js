@@ -131,6 +131,7 @@ function mostrarResultados(data) {
             <th>Fecha Vencimiento</th>
             <th>Unidad</th>
             <th>Lote</th>
+            <th>Cantidad Existente por lote</th>
             <th>Cantidad Existente</th>
           </tr>
         </thead>
