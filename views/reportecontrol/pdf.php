@@ -44,10 +44,10 @@
 </head>
 <body>
 
-<h4>Nombre  del Inventario</h4>
-<h1 style="font-size: 24px; font-weight: bold;"><?= $almacenes[0]['nombre_almacen'] ?></h1>
+
+
 <br><br>
-<h4>Contenido Neto del Almacén</h4>
+<h4>Contenido Neto del Inventario</h4>
 
     
     <table>
@@ -57,19 +57,19 @@
                 <th>Descripción Estado</th>
                 <th>Fecha Vencimiento</th>
                 <th>Lote/Serie</th>
-                <th>Descripción Producto</th>
-                <th>Cantidad Existente</th>
+                <th>Cantidad por Lote</th>
+            
             </tr>
         </thead>
         <tbody>
             <?php foreach ($almacenes as $almacen) : ?>
                 <tr>
-                    <td><?= $almacen['nombre_producto'] ?></td>
-                    <td><?= $almacen['descripcion_estado'] ?></td>
-                    <td><?= ($almacen['fecha_vencimiento'] == '1999-05-07') ? 'SIN FECHA DE VENCIMIENTO' : $almacen['fecha_vencimiento'] ?></td>
-                    <td><?= $almacen['lote_serie'] ?></td>
-                    <td><?= $almacen['descripcion_producto'] ?></td>
-                    <td><?= $almacen['cantidad_existente'] ?></td>
+                    <td><?= $almacen['pro_nom_articulo'] ?></td>
+                    <td><?= $almacen['est_descripcion'] ?></td>
+                    <td><?= ($almacen['det_fecha_vence'] == '1999-05-07') ? 'SIN FECHA DE VENCIMIENTO' : $almacen['det_fecha_vence'] ?></td>
+                    <td><?= $almacen['det_lote'] ?></td>
+                    <td><?= $almacen['det_cantidad_lote'] ?></td>
+            
                 </tr>
             <?php endforeach; ?>
         </tbody>
