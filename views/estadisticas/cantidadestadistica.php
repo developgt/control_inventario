@@ -94,7 +94,7 @@
 
 }
 
-    /* Additional styles for responsive layout */
+   
     @media (min-width: 150px) {
         .grafica-container {
            gap: 30px;
