@@ -623,6 +623,8 @@ const colocarDatosFinalizacion = (dataset) => {
     buscarProducto();
     buscarUnidades();
     buscarProductoDetalle();
+    buscarDetalleMovimiento();
+
 };
 
 

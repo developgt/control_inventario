@@ -159,9 +159,9 @@ ORDER BY
         $inventario = $_GET['mov_alma_id'] ?? '';
       
 
-        $sql = "SELECT 
+        $sql = "   SELECT 
         p.pro_nom_articulo AS Producto,
-        dm.det_cantidad_existente AS totalingresos
+        SUM(dm.det_cantidad) AS totalingresos
     FROM 
         inv_movimientos m
     INNER JOIN 
@@ -170,21 +170,13 @@ ORDER BY
         inv_producto p ON dm.det_pro_id = p.pro_id
     WHERE 
         m.mov_tipo_mov = 'I'
-        AND m.mov_alma_id = $inventario
+          AND m.mov_alma_id = $inventario
         AND m.mov_situacion = 2
         AND dm.det_situacion = 1
-        AND dm.det_id = (
-            SELECT 
-                MAX(det_id)
-            FROM 
-                inv_deta_movimientos sub_dm
-            WHERE 
-                sub_dm.det_pro_id = dm.det_pro_id
-                AND sub_dm.det_mov_id = dm.det_mov_id
-        )
+    GROUP BY 
+        p.pro_nom_articulo
     ORDER BY 
-        totalingresos DESC;
-    ";
+        Totalingresos DESC";
 
         try {
 
