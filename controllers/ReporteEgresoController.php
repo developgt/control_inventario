@@ -37,7 +37,7 @@ class ReporteEgresoController
     {
         $det_mov_id = $_GET['det_mov_id'] ?? '';
 
-        // Aquí debes poner tu consulta SQL
+     
         $sql = "SELECT 
         m.*, 
         d.*, 
@@ -45,7 +45,7 @@ class ReporteEgresoController
         u.uni_nombre, 
         p.pro_nom_articulo,
         a.alma_nombre, 
-        dep.dep_desc_md,  -- Cambiado el alias de 'd' a 'dep'
+        dep.dep_desc_md, 
         -- Datos de la persona que entrega
         trim(ge.gra_desc_ct) || ' DE ' || trim(ae.arm_desc_md) || ' ' || 
         trim(pe.per_ape1) || ' ' || trim(pe.per_ape2) || ', ' || 
@@ -71,7 +71,7 @@ class ReporteEgresoController
     JOIN 
         inv_almacenes AS a ON m.mov_alma_id = a.alma_id
     LEFT JOIN 
-        mdep AS dep ON a.alma_unidad = dep.dep_llave  -- Cambiado el alias aquí
+        mdep AS dep ON a.alma_unidad = dep.dep_llave  
     -- Datos de la persona que entrega
     LEFT JOIN 
         mper AS pe ON m.mov_perso_entrega = pe.per_catalogo
@@ -114,7 +114,7 @@ class ReporteEgresoController
        {
            $det_mov_id = $_GET['det_mov_id'] ?? '';
    
-           // Aquí debes poner tu consulta SQL
+          
            $sql = "SELECT 
            m.*, 
            d.*, 
@@ -122,7 +122,8 @@ class ReporteEgresoController
            u.uni_nombre, 
            p.pro_nom_articulo,
            a.alma_nombre, 
-           dep.dep_desc_md,  -- Cambiado el alias de 'd' a 'dep'
+           dep.dep_desc_md, 
+        dep.dep_desc_lg, 
            -- Datos de la persona que entrega
            trim(ge.gra_desc_ct) || ' DE ' || trim(ae.arm_desc_md) || ' ' || 
            trim(pe.per_ape1) || ' ' || trim(pe.per_ape2) || ', ' || 
@@ -148,7 +149,7 @@ class ReporteEgresoController
        JOIN 
            inv_almacenes AS a ON m.mov_alma_id = a.alma_id
        LEFT JOIN 
-           mdep AS dep ON a.alma_unidad = dep.dep_llave  -- Cambiado el alias aquí
+           mdep AS dep ON a.alma_unidad = dep.dep_llave  
        -- Datos de la persona que entrega
        LEFT JOIN 
            mper AS pe ON m.mov_perso_entrega = pe.per_catalogo
@@ -205,8 +206,8 @@ class ReporteEgresoController
             $mpdf->SetMargins(30, 35, 25);
 
             $html = $router->load('egresoreporte/pdf', ['datos' => $datos]);
-            $htmlHeader = $router->load('egresoreporte/header');
-            $htmlFooter = $router->load('egresoreporte/footer');
+            $htmlHeader = $router->load('egresoreporte/header',['datos' => $datos]);
+            $htmlFooter = $router->load('egresoreporte/footer', ['datos' => $datos]);
 
             $mpdf->SetHTMLHeader($htmlHeader);
             $mpdf->SetHTMLFooter($htmlFooter);

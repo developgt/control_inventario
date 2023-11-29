@@ -23,7 +23,6 @@ const btnGuardar = document.getElementById('btnGuardar');
 const btnBuscar = document.getElementById('btnBuscar');
 const btnModificar = document.getElementById('btnModificar');
 const btnCancelar = document.getElementById('btnCancelar');
-const btnSiguiente = document.getElementById('btnSiguiente');
 const btnAnterior = document.getElementById('btnAnterior');
 const pro_id = document.getElementById('pro_id');
 const alma_nombre = document.getElementById('alma_nombre');
@@ -84,6 +83,16 @@ const det_mov_id = document.getElementById('det_mov_id');
 const botonImprimir = document.getElementById('btnImprimir');
 const botonVolverImprimir = document.getElementById('btnVolverImprimir');
 
+//cont para el modal ver existencias de insumos por almacen 
+const btnVerExistenciasInventario = document.getElementById('btnVerExistenciasPorAlmacenModal');
+const btnBuscarInventarioExistencias = document.getElementById('btnBuscarExistenciasPorInventario');
+const modalExistenciasPorInventario = document.getElementById('ExistenciasInventario');
+const cerrarModalExistenciasPorInventario = document.getElementById('btnCerrarModalExistenciasPorInventario');
+const formularioExistenciasPorInventario = document.getElementById('formularioExistenciasInventario');
+const divImprimirExistencias = document.getElementById('divImprimirExistencias');
+const btnImprimirExistencias = document.getElementById('btnImprimirExistencias');
+
+
 
 
 //////formulario existencias//////////////////
@@ -91,13 +100,14 @@ const formularioExistencia = document.getElementById('formularioExistencia');
 const mov_alma = document.getElementById('mov_alma');
 const btnBuscarExistencias = document.getElementById('btnBuscarExistencias');
 
+
 // ////PARA MANEJAR EL CKECK BOX DE SI Y NO DE LOTE 
 
 const checkboxLoteNo = document.getElementById('tiene_lote_no');
 const checkboxLoteSi = document.getElementById('tiene_lote_si');
 
 ///////////// para el modal///////
-const botonVerIngresos = document.getElementById('btnVerIngresos');
+
 const botonRetirarMas = document.getElementById('btnRetirarMas');
 const modalVerExistencias = document.getElementById('verExistencias');
 const modalIngresoDetalle = document.getElementById('IngresoDetalle');
@@ -107,15 +117,20 @@ const formularioModal = document.getElementById('formularioExistencia');
 
 let almaSeleccionadoId;
 let IdMovimiento;
+
+// se definen como arrays vacios para utilizarlos despues 
 let producto = [];
 let medida = [];
-let estado = [];// se define estado como un array vacio...
-let almacenes = []; // se define almacenes como un array vacio...
+let estado = [];
+let almacenes = [];
 let dependencias = [];
+
 // Oculta el elemento div card formulario detalle
 movDetalleDiv.style.display = "none";
 movMovimientoDiv.style.display = "none";
 sinFecha.style.display = "none";
+divImprimirExistencias.style.display = "none";
+
 
 btnModificarDetalle.disabled = true
 btnModificarDetalle.parentElement.style.display = 'none'
@@ -199,20 +214,20 @@ const datatable = new Datatable('#tablaExistencias', {
     columnDefs: [
         {
             targets: [1, 2, 3, 4, 12],
-            visible: false, 
+            visible: false,
             width: 0,
             searchable: false,
-            
+
         }
-      
+
     ]
 });
+
 
 
 //// PARA TRAER LOS DATOS 
 const traeDatos = (e) => {
     const button = e.target;
-    //const proid = button.dataset.proid;
     const producto = button.dataset.producto;
     const lote = button.dataset.lote;
     const estado = button.dataset.estado;
@@ -220,60 +235,51 @@ const traeDatos = (e) => {
     const medida = button.dataset.medida;
 
     if (fecha === '1999-05-07') {
-        // Si la fecha de vencimiento es '1999-05-7', oculta fechaCampo y muestra sinFecha
+        // Si la fecha de vencimiento es '1999-05-7', se oculta el campo fecha y muestra sinFecha
         fechaCampo.style.display = 'none';
         sinFecha.style.display = 'block';
     } else {
-        // Si la fecha de vencimiento no es '1999-05-7', muestra fechaCampo y oculta sinFecha
+        // Si la fecha de vencimiento no es '1999-05-7', se muestra campo fecha y oculta sinFecha
         fechaCampo.style.display = 'block';
         sinFecha.style.display = 'none';
-        // Asigna la fecha al campo fechaCampo
-       }
-    
+
+    }
+
     const dataset = {
-        //pro_id: proid,
         det_pro_id: producto,
         det_lote: lote,
         det_estado: estado,
         det_fecha_vence: fecha,
         det_uni_med: medida,
-       
 
-    };  
+
+    };
     console.log('Datos en traeDatos:', dataset);
-        colocarDatos(dataset);
-        modalVerExistencias.style.display = 'none';
-        document.body.classList.remove('modal-open');
-        // Mostrar el formulario de detalle
-        movDetalleDiv.style.display = 'block';
-        // Ocultar el formulario de movimiento
-        movMovimientoDiv.style.display = 'none';
-        //buscar por cantidad y lote
-        divLote.style.display = 'none'
-        buscarCantidad();
-        buscarCantidadLote();
-       
+    colocarDatos(dataset);
+    modalVerExistencias.style.display = 'none';
+    document.body.classList.remove('modal-open');
+    // Mostrar el formulario de detalle
+    movDetalleDiv.style.display = 'block';
+    // Ocultar el formulario de movimiento
+    movMovimientoDiv.style.display = 'none';
+    //buscar por cantidad y lote
+    divLote.style.display = 'none'
+    buscarCantidad();
+    buscarCantidadLote();
+   
+
 };
 
 const colocarDatos = (dataset) => {
     console.log('Datos en colocarDatos:', dataset);
-    
 
-    //formularioDetalle.pro_id.value = dataset.pro_id;
     formularioDetalle.det_pro_id.value = dataset.det_pro_id;
     formularioDetalle.det_lote.value = dataset.det_lote;
     formularioDetalle.det_estado.value = dataset.det_estado;
     formularioDetalle.det_uni_med.value = dataset.det_uni_med;
     formularioDetalle.det_fecha_vence.value = dataset.det_fecha_vence;
 
-    // btnGuardar.disabled = true;
-    // btnGuardar.parentElement.style.display = 'none';
-    // btnBuscar.disabled = true;
-    // btnBuscar.parentElement.style.display = 'none';
-    // btnModificar.disabled = false;
-    // btnModificar.parentElement.style.display = '';
-    // btnCancelar.disabled = false;
-    // btnCancelar.parentElement.style.display = '';
+
 };
 
 const cancelarAccion = () => {
@@ -287,7 +293,6 @@ const cancelarAccion = () => {
     btnCancelar.disabled = true;
     btnCancelar.parentElement.style.display = 'none';
 };
-
 
 
 
@@ -356,30 +361,16 @@ const datatableDetalle = new Datatable('#tablaDetalles', {
         {
             title: 'Observaciones',
             data: 'det_observaciones'
-            },
-        {
-            title: 'EDITAR DETALLE',
-            data: 'det_id',
-            searchable: false,
-            orderable: false,
-            render: (data, type, row, meta) => `<button class="btn btn-warning" data-id='${row["det_id"]}'data-producto='${row["det_pro_id"]}' data-lote='${row["det_lote"]}' data-estado='${row["det_estado"]}' data-fecha='${row["det_fecha_vence"]}' data-medida='${row["det_uni_med"]}' data-cantidad='${row["det_cantidad"]}' data-observaciones='${row["det_observaciones"]}'>Editar</button>`
-        },
-        {
-            title: 'ELIMINAR',
-            data: 'det_id',
-            searchable: false,
-            orderable: false,
-            render: (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Eliminar</button>`
         }
     ],
     columnDefs: [
         {
             targets: [1, 2, 3, 4],
-            visible: false, 
+            visible: false,
             searchable: false,
-            
+
         }
-      
+
     ]
 });
 
@@ -396,25 +387,24 @@ const traeDatosDetalle = (e) => {
     const id = button.dataset.id
 
     if (lote === 'SIN/L') {
-       
+
         checkboxLoteSi.checked = false;
         checkboxLoteNo.checked = true;
-        
+
     } else {
         checkboxLoteNo.checked = false;
         checkboxLoteSi.checked = true;
-       }
+    }
 
-       if (fecha === '1999-05-07') {
+    if (fecha === '1999-05-07') {
         checkboxFechaSi.checked = false;
         checkboxFechaNo.checked = true;
     } else {
         checkboxFechaNo.checked = false;
         checkboxFechaSi.checked = true;
-       }
-       
+    }
+
     const dataset = {
-        //pro_id: proid,
         det_pro_id: producto,
         det_lote: lote,
         det_estado: estado,
@@ -423,21 +413,17 @@ const traeDatosDetalle = (e) => {
         det_observaciones: observaciones,
         det_cantidad: cantidad,
         det_id: id,
-    };  
+    };
     console.log('Datos en traeDatos:', dataset);
-    // campoLote.style.display = 'block';
-    // fechaCampo.style.display = 'block';
-        colocarDatosDetalle(dataset);
-        buscarCantidad();
-        buscarCantidadLote();
-       
+    colocarDatosDetalle(dataset);
+    buscarCantidad();
+    buscarCantidadLote();
+
 };
 
 const colocarDatosDetalle = (dataset) => {
     console.log('Datos en colocarDatos:', dataset);
 
-
-    //formularioDetalle.pro_id.value = datasetDetalle.pro_id;
     formularioDetalle.det_pro_id.value = dataset.det_pro_id;
     formularioDetalle.det_lote.value = dataset.det_lote;
     formularioDetalle.det_estado.value = dataset.det_estado;
@@ -543,13 +529,13 @@ const datatableMovimiento = new Datatable('#tablaMovimientos', {
         },
         {
             title: 'Estado del Ingreso',
-            'render': function(data, type, row) {
+            'render': function (data, type, row) {
                 if (row.mov_situacion == '1') {
                     return '<div class="estado-pendiente">EGRESO PENDIENTE</div>';
                 } else if (row.mov_situacion == '2') {
                     return '<div class="estado-ingresado">EGRESADO</div>';
                 } else {
-                    return data; 
+                    return data;
                 }
             }
         },
@@ -560,28 +546,28 @@ const datatableMovimiento = new Datatable('#tablaMovimientos', {
             orderable: false,
             render: (data, type, row, meta) => {
                 if (row.mov_situacion == '2') {
-                    return ''; 
+                    return '';
                 }
                 return `<button class="btn btn-success" data-id='${data}' data-almacen='${row["mov_alma_id"]}'>Continuar Egreso</button>`;
             }
         },
         {
-            title: 'VER DETALLES DE ESTE INGRESO',
+            title: 'VER DETALLES DE ESTE EGRESO',
             data: 'mov_id',
             searchable: false,
             orderable: false,
             render: (data, type, row, meta) => `<button class="btn btn-info" data-id='${data}'>Ver Detalles de Este Egreso</button>`
         },
-     ],
-     columnDefs: [
+    ],
+    columnDefs: [
         {
-            targets: [1, 2, 3, 4, 5, 6,7],
-            visible: false, 
+            targets: [1, 2, 3, 4, 5, 6, 7],
+            visible: false,
             searchable: false,
-            
+
         }
     ]
-   
+
 });
 
 
@@ -592,12 +578,12 @@ const traeDatosVerDetalle = (e) => {
 
     const dataset = {
         det_mov_id: id,
-    };  
+    };
     console.log('Datos en traeDatos:', dataset);
-        colocarDatosVerDetalle(dataset);
-        botonVolverImprimir.value = dataset.det_mov_id;
-        modalIngresoDetalle.classList.add('show');
-        modalIngresoDetalle.style.display = 'block';
+    colocarDatosVerDetalle(dataset);
+    botonVolverImprimir.value = dataset.det_mov_id;
+    modalIngresoDetalle.classList.add('show');
+    modalIngresoDetalle.style.display = 'block';
 
 
 };
@@ -606,7 +592,7 @@ const colocarDatosVerDetalle = (dataset) => {
     console.log('Datos en colocarDatos:', dataset);
     IdMovimiento = dataset.det_mov_id;
     buscarDetallePorIngreso();
- 
+
 };
 
 //// PARA TRAER LOS DATOS 
@@ -617,22 +603,22 @@ const traeDatosFinalizacion = (e) => {
 
     const dataset = {
         det_mov_id: id,
-        mov_alma_id: almacen, 
-    };  
+        mov_alma_id: almacen,
+    };
     console.log('Datos en traeDatos:', dataset);
-        colocarDatosFinalizacion(dataset);
-        modalVerExistencias.classList.add('show');
-        modalVerExistencias.style.display = 'block';
-        movDetalleDiv.style.display = 'block';
-        movMovimientoDiv.style.display = 'none';
-        divIngresoMovimiento.style.display = 'none';
-        datosMovimiento.style.display = 'none';
+    colocarDatosFinalizacion(dataset);
+    modalVerExistencias.classList.add('show');
+    modalVerExistencias.style.display = 'block';
+    movDetalleDiv.style.display = 'block';
+    movMovimientoDiv.style.display = 'none';
+    divIngresoMovimiento.style.display = 'none';
+    datosMovimiento.style.display = 'none';
 };
 
 const colocarDatosFinalizacion = (dataset) => {
     console.log('Datos en colocarDatos:', dataset);
     formularioDetalle.det_mov_id.value = dataset.det_mov_id;
-    formularioMovimiento.mov_alma_id.value = dataset.mov_alma_id;
+    formulario.mov_alma_id.value = dataset.mov_alma_id;
     almaSeleccionadoId = dataset.mov_alma_id;
     buscarProducto();
     buscarUnidades();
@@ -658,7 +644,7 @@ const datatableEgresoDetalle = new Datatable('#tablaEgresoDetalle', {
     columns: [
         {
             title: 'NO',
-            render: () => contador++
+            render: () => contadorEgresoDetalle++
         },
 
         {
@@ -717,14 +703,90 @@ const datatableEgresoDetalle = new Datatable('#tablaEgresoDetalle', {
     columnDefs: [
         {
             targets: [1, 2, 3],
-            visible: false, 
+            visible: false,
             width: 0,
             searchable: false,
-            
+
         }
-      
+
     ]
 });
+
+
+
+
+//////////DATATABLE PARA MOSTRAR LAS EXISTENCIAS POR INVENTARIO//////////////////////////////////////////////////////
+
+let contadorExistenciasPorInventario = 1;
+
+
+const datatableExistenciasPorInventario = new Datatable('#tablaExistenciasPorInventario', {
+    language: lenguaje,
+    data: null,
+    columns: [
+        {
+            title: 'NO',
+            render: () => contadorExistenciasPorInventario++
+        },
+        {
+            title: 'Producto',
+            data: 'pro_id'
+
+        },
+        {
+            title: 'Producto',
+            data: 'det_pro_id'
+        },
+        {
+            title: 'Estado del insumo',
+            data: 'det_estado'
+        },
+        {
+            title: 'Unidad de medida',
+            data: 'det_uni_med'
+        },
+        {
+            title: 'Producto',
+            data: 'pro_nom_articulo'
+        },
+        {
+            title: 'Medida',
+            data: 'uni_nombre'
+        },
+        {
+            title: 'Lote',
+            data: 'det_lote'
+        },
+        {
+            title: 'Estado del insumo',
+            data: 'est_descripcion'
+        },
+        {
+            title: 'Fecha de Vencimiento',
+            data: 'det_fecha_vence',
+            render: function (data) {
+                // Verifica si la fecha es '7/05/1999' y muestra 'Sin fecha de vencimiento'
+                return (data === '1999-05-07') ? 'Sin fecha de vencimiento' : data;
+            }
+        },
+        {
+            title: 'Cantidad Existente Por lote',
+            data: 'det_cantidad_lote'
+        },
+
+    ],
+    columnDefs: [
+        {
+            targets: [1, 2, 3, 4],
+            visible: false,
+            width: 0,
+            searchable: false,
+
+        }
+
+    ]
+});
+
 
 ////funcion para cambiar de situacion un detalle
 
@@ -746,7 +808,6 @@ const eliminar = async (e) => {
             body
         };
         try {
-            //await buscarDependencia();
             const respuesta = await fetch(url, config);
             const data = await respuesta.json();
             console.log(data);
@@ -761,7 +822,7 @@ const eliminar = async (e) => {
                     icon = 'error';
                     console.log(detalle);
                     break;
-                    default:
+                default:
                     break;
             }
             Toast.fire({
@@ -778,8 +839,10 @@ const eliminar = async (e) => {
 };
 
 
+/// PARA buscar el DETALLE DE INSUMOS EGRESADOS por egreso
+
 const buscarDetallePorIngreso = async () => {
-    
+
 
     const url = `/control_inventario/API/movimiento/buscarDetallePorIngreso?IdMovimiento=${IdMovimiento}`;
     const config = {
@@ -793,11 +856,11 @@ const buscarDetallePorIngreso = async () => {
 
         datatableEgresoDetalle.clear().draw();
         if (data) {
-            contadorEgresoDetalle  = 1;
+            contadorEgresoDetalle = 1;
             datatableEgresoDetalle.rows.add(data).draw();
         } else {
             Toast.fire({
-                title: 'No se encontraron registros',
+                title: 'No se encontraron registros! Asegurese de no tener un ingreso pendiente',
                 icon: 'info'
             });
         }
@@ -805,10 +868,11 @@ const buscarDetallePorIngreso = async () => {
     } catch (error) {
         console.log(error);
     }
-   
+
 };
 
-// Modifica la función buscarDetalleMovimiento para manejar la nueva estructura
+// Para buscar los detalles de los egresos 
+
 const buscarDetalleMovimiento = async () => {
     let det_mov_id = formularioDetalle.det_mov_id.value;
 
@@ -826,7 +890,7 @@ const buscarDetalleMovimiento = async () => {
         if (data && data.length > 0) {
             contadorDetalle = 1;
             datatableDetalle.rows.add(data).draw();
-       
+
         } else {
             Toast.fire({
                 title: 'No se encontraron registros',
@@ -838,6 +902,7 @@ const buscarDetalleMovimiento = async () => {
     }
 };
 
+// para buscar los movimientos de los egresos
 
 const buscarDetalleIngresado = async () => {
     let det_mov_id = formularioDetalle.det_mov_id.value;
@@ -856,7 +921,7 @@ const buscarDetalleIngresado = async () => {
         if (data) {
             contadorMovimiento = 1;
             datatableMovimiento.rows.add(data).draw();
-           
+
         } else {
             Toast.fire({
                 title: 'No se encontraron registros',
@@ -866,7 +931,7 @@ const buscarDetalleIngresado = async () => {
     } catch (error) {
         console.log(error);
     }
-// 
+    // 
 };
 
 
@@ -875,9 +940,9 @@ const buscarDetalleIngresado = async () => {
 
 const buscarOficiales = async () => {
     let mov_perso_entrega = formulario.mov_perso_entrega.value;
-    clearTimeout(typingTimeout); // Limpiar el temporizador anterior (si existe)  
+    clearTimeout(typingTimeout);
 
-    // Función que se ejecutará después del retraso
+
     const fetchData = async () => {
         const url = `/control_inventario/API/movegreso/buscarOficiales?mov_perso_entrega=${mov_perso_entrega}`;
         const config = {
@@ -911,7 +976,7 @@ const buscarOficiales = async () => {
             });
         }
     };
-    // Establecer un retraso de 500 ms antes de realizar la solicitud a la API
+
     typingTimeout = setTimeout(fetchData, 1200);
 
 };
@@ -921,9 +986,8 @@ const buscarOficiales = async () => {
 
 const buscarOficialesRecibe = async () => {
     let mov_perso_recibe = formulario.mov_perso_recibe.value;
-    clearTimeout(typingTimeout); // Limpiar el temporizador anterior (si existe)  
+    clearTimeout(typingTimeout);
 
-    // Función que se ejecutará después del retraso
     const fetchData = async () => {
         const url = `/control_inventario/API/movegreso/buscarOficialesRecibe?mov_perso_recibe=${mov_perso_recibe}`;
         const config = {
@@ -957,7 +1021,6 @@ const buscarOficialesRecibe = async () => {
             });
         }
     };
-    // Establecer un retraso de 500 ms antes de realizar la solicitud a la API
     typingTimeout = setTimeout(fetchData, 1200);
 
 };
@@ -1012,7 +1075,6 @@ const buscarOficialesResponsable = async () => {
 
 
 const buscarAlmacenes = async () => {
-    // Verificar si los elementos del formulario existen antes de acceder a sus propiedades
     if (formulario.alma_nombre && formulario.alma_id) {
         let alma_nombre = formulario.alma_nombre.value;
         let alma_id = formulario.alma_id.value;
@@ -1028,15 +1090,15 @@ const buscarAlmacenes = async () => {
         console.log('data de almacenes', data); // Imprimir datos en la consola
 
         almacenes = data;
-        // Limpiar el contenido del select
+
         formulario.mov_alma_id.innerHTML = '';
 
-         // Agregar opción predeterminada
-    const defaultOption = document.createElement('option');
-    defaultOption.value = '';
-    defaultOption.textContent = 'SELECCIONE...';
-    formulario.mov_alma_id.appendChild(defaultOption);
-        // Iterar sobre cada objeto en el arreglo y crear opciones para el select
+
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = 'SELECCIONE...';
+        formulario.mov_alma_id.appendChild(defaultOption);
+
         data.forEach(almacen => {
             const option = document.createElement('option');
             option.value = almacen.alma_id;
@@ -1044,20 +1106,95 @@ const buscarAlmacenes = async () => {
             formulario.mov_alma_id.appendChild(option);
         });
 
-   
 
-        //contador = 1;
-        //datatable.clear().draw();
+
     } catch (error) {
         console.log(error);
     }
-    //formulario.reset();
+
 };
 
 
 
+const buscarAlmacenesInventario = async () => {
+
+    if (formularioExistenciasPorInventario.alma_nombre && formularioExistenciasPorInventario.alma_id) {
+        let alma_nombre = formularioExistenciasPorInventario.alma_nombre.value;
+        let alma_id = formularioExistenciasPorInventario.alma_id.value;
+    }
+    const url = `/control_inventario/API/movegreso/buscarAlmacenes`;
+    const config = {
+        method: 'GET'
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+        console.log('data de almacenes', data); // Imprimir datos en la consola
+
+        almacenes = data;
+
+        formularioExistenciasPorInventario.mov_almacen.innerHTML = '';
+
+
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = 'SELECCIONE...';
+        formularioExistenciasPorInventario.mov_almacen.appendChild(defaultOption);
+
+        data.forEach(almacen => {
+            const option = document.createElement('option');
+            option.value = almacen.alma_id;
+            option.textContent = almacen.alma_nombre;
+            formularioExistenciasPorInventario.mov_almacen.appendChild(option);
+        });
+
+    } catch (error) {
+        console.log(error);
+    }
+
+};
+
+
+
+
+////////////// FUNCION PARA BUSCAR LOS ELEMENTOS GUARDADOS
+
+const buscarExistenciasPorInventario = async () => {
+
+    let mov_almacen = formularioExistenciasPorInventario.mov_almacen.value;
+
+    const url = `/control_inventario/API/movegreso/buscarExistenciasPorInventario?mov_almacen=${mov_almacen}`;
+    const config = {
+        method: 'GET'
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+
+        datatableExistenciasPorInventario.clear().draw();
+        if (data) {
+            contadorExistenciasPorInventario = 1;
+            datatableExistenciasPorInventario.rows.add(data).draw();
+            divImprimirExistencias.style.display = 'block';
+            let mov_alma_id = data[0].mov_alma_id;
+            btnImprimirExistencias.value = mov_alma_id;
+        } else {
+            Toast.fire({
+                title: 'No se encontraron registros',
+                icon: 'info'
+            });
+        }
+
+    } catch (error) {
+        console.log(error);
+    }
+
+};
+
 const buscarDependencia = async () => {
-    // Verificar si los elementos del formulario existen antes de acceder a sus propiedades
+
     if (formulario.dep_desc_md && formulario.dep_llave) {
         let dep_desc_md = formulario.dep_desc_md.value;
         let dep_llave = formulario.dep_llave.value;
@@ -1070,18 +1207,18 @@ const buscarDependencia = async () => {
     try {
         const respuesta = await fetch(url, config);
         const data = await respuesta.json();
-        console.log('data de dependencias', data); // Imprimir datos en la consola
+        console.log('data de dependencias', data);
 
         dependencias = data;
-        // Limpiar el contenido del select
+
         formulario.mov_proce_destino.innerHTML = '';
 
-         // Agregar opción predeterminada
-    const defaultOption = document.createElement('option');
-    defaultOption.value = '';
-    defaultOption.textContent = 'SELECCIONE...';
-    formulario.mov_proce_destino.appendChild(defaultOption);
-        // Iterar sobre cada objeto en el arreglo y crear opciones para el select
+
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = 'SELECCIONE...';
+        formulario.mov_proce_destino.appendChild(defaultOption);
+
         data.forEach(dependencias => {
             const option = document.createElement('option');
             option.value = dependencias.dep_llave;
@@ -1089,18 +1226,17 @@ const buscarDependencia = async () => {
             formulario.mov_proce_destino.appendChild(option);
         });
 
-        //contador = 1;
-        //datatable.clear().draw();
+
     } catch (error) {
         console.log(error);
     }
-    //formularioMovimie.reset();
+
 };
 
 
 
 const buscarEstados = async () => {
-    // Verificar si los elementos del formulario existen antes de acceder a sus propiedades
+
     if (formularioDetalle.est_descripcion && formularioDetalle.est_id) {
         let est_descripcion = formularioDetalle.est_descripcion.value;
         let est_id = formularioDetalle.est_id.value;
@@ -1113,103 +1249,40 @@ const buscarEstados = async () => {
     try {
         const respuesta = await fetch(url, config);
         const data = await respuesta.json();
-        console.log('data de estados', data); // Imprimir datos en la consola
+        console.log('data de estados', data);
 
         estado = data;
-        // Limpiar el contenido del select
+
         formularioDetalle.det_estado.innerHTML = '';
 
-        // Agregar opción predeterminada
+
         const defaultOption = document.createElement('option');
         defaultOption.value = '';
         defaultOption.textContent = 'SELECCIONE...';
         formularioDetalle.det_estado.appendChild(defaultOption);
-        // Iterar sobre cada objeto en el arreglo y crear opciones para el select
+
         data.forEach(estado => {
             const option = document.createElement('option');
             option.value = estado.est_id;
             option.textContent = estado.est_descripcion;
             formularioDetalle.det_estado.appendChild(option);
         });
-        //contador = 1;
-        //datatable.clear().draw();
+
     } catch (error) {
         console.log(error);
     }
-    //formularioDetalle.reset();
+
 };
-
-////para buscar almacenes en el formulario existencia/////////////
-
-// const buscarAlmacenesEgreso = async () => {
-//     // Verificar si los elementos del formulario existen antes de acceder a sus propiedades
-//     if (formularioExistencia.alma_nombre && formularioExistencia.alma_id) {
-//         let alma_nombre = formularioExistencia.alma_nombre.value;
-//         let alma_id = formularioExistencia.alma_id.value;
-//     }
-//     const url = `/control_inventario/API/movimiento/buscarAlmacenes`;
-//     const config = {
-//         method: 'GET'
-//     };
-
-//     try {
-//         const respuesta = await fetch(url, config);
-//         const data = await respuesta.json();
-//         console.log('data de almacenes', data); // Imprimir datos en la consola
-
-//         almacenes = data;
-//         // Limpiar el contenido del select
-//         formularioExistencia.mov_alma.innerHTML = '';
-
-//         // Agregar opción predeterminada
-//         const defaultOption = document.createElement('option');
-//         defaultOption.value = '';
-//         defaultOption.textContent = 'SELECCIONE...';
-//         formularioExistencia.mov_alma.appendChild(defaultOption);
-//         // Iterar sobre cada objeto en el arreglo y crear opciones para el select
-//         data.forEach(almacen => {
-//             const option = document.createElement('option');
-//             option.value = almacen.alma_id;
-//             option.textContent = almacen.alma_nombre;
-//             formularioExistencia.mov_alma.appendChild(option);
-//         });
-
-
-
-//         //contador = 1;
-//         //datatable.clear().draw();
-//     } catch (error) {
-//         console.log(error);
-//     }
-//     formularioExistencia.reset();
-// };
-
-/////////////////////////////almacenar el id del formulario existencia//////////////////////////////////////
-// // Agregar evento al cambio del select para almacenar el ID del almacén
-// formularioExistencia.mov_alma.addEventListener('change', function () {
-//     // Obtener el ID del almacén seleccionado
-//     almaSeleccionadoId = this.value;
-
-//     // Imprimir el valor en la consola para verificar
-//     console.log('Alma ID seleccionado:', almaSeleccionadoId);
-
-//     // Llamar a buscarProducto pasando el ID del almacén
-//     buscarProducto();
-// });
-
-
 
 
 /////////////////////////////almacenar el id//////////////////////////////////////
 // Agregar evento al cambio del select para almacenar el ID del almacén
 formulario.mov_alma_id.addEventListener('change', function () {
-    // Obtener el ID del almacén seleccionado
+
     almaSeleccionadoId = this.value;
 
-    // Imprimir el valor en la consola para verificar
     console.log('Alma ID seleccionado:', almaSeleccionadoId);
 
-    // Llamar a buscarProducto pasando el ID del almacén
     buscarProducto();
     buscarProductoDetalle();
     buscarUnidades();
@@ -1219,7 +1292,7 @@ formulario.mov_alma_id.addEventListener('change', function () {
 ////////////////buscar producto de acuerdo al id del almacen seleccionado/////////////////////////////
 
 const buscarProducto = async () => {
-    // Verificar si los elementos del formulario existen antes de acceder a sus propiedades
+
     if (formularioExistencia.pro_nom_articulo && formularioExistencia.pro_id) {
         let pro_nom_articulo = formularioExistencia.pro_nom_articulo.value;
         let pro_id = formularioExistencia.pro_id.value;
@@ -1235,18 +1308,17 @@ const buscarProducto = async () => {
     try {
         const respuesta = await fetch(url, config);
         const data = await respuesta.json();
-        console.log('data de productos', data); // Imprimir datos en la consola
+        console.log('data de productos', data);
 
         producto = data;
-        // Limpiar el contenido del select
+
         formularioExistencia.det_pro.innerHTML = '';
 
-        // Agregar opción predeterminada
         const defaultOption = document.createElement('option');
         defaultOption.value = '';
         defaultOption.textContent = 'SELECCIONE...';
         formularioExistencia.det_pro.appendChild(defaultOption);
-        // Iterar sobre cada objeto en el arreglo y crear opciones para el select
+
         data.forEach(producto => {
             const option = document.createElement('option');
             option.value = producto.pro_id;
@@ -1254,16 +1326,17 @@ const buscarProducto = async () => {
             formularioExistencia.det_pro.appendChild(option);
         });
 
-        //contador = 1;
-        //datatable.clear().draw();
+
     } catch (error) {
         console.log(error);
     }
     formularioExistencia.reset();
 };
 
+/// buscar unidades de acuerdo al id del almacen seleccionado
+
 const buscarUnidades = async () => {
-    // Verificar si los elementos del formulario existen antes de acceder a sus propiedades
+
     if (formularioDetalle.uni_nombre && formularioDetalle.uni_id) {
         let uni_nombre = formularioDetalle.uni_nombre.value;
         let uni_id = formularioDetalle.uni_id.value;
@@ -1276,18 +1349,18 @@ const buscarUnidades = async () => {
     try {
         const respuesta = await fetch(url, config);
         const data = await respuesta.json();
-        console.log('data de medidas', data); // Imprimir datos en la consola
+        console.log('data de medidas', data);
 
         medida = data;
-        // Limpiar el contenido del select
+
         formularioDetalle.det_uni_med.innerHTML = '';
 
-        // Agregar opción predeterminada
+
         const defaultOption = document.createElement('option');
         defaultOption.value = '';
         defaultOption.textContent = 'SELECCIONE...';
         formularioDetalle.det_uni_med.appendChild(defaultOption);
-        // Iterar sobre cada objeto en el arreglo y crear opciones para el select
+
         data.forEach(medida => {
             const option = document.createElement('option');
             option.value = medida.uni_id;
@@ -1295,16 +1368,14 @@ const buscarUnidades = async () => {
             formularioDetalle.det_uni_med.appendChild(option);
         });
 
-        //contador = 1;
-        //datatable.clear().draw();
     } catch (error) {
         console.log(error);
     }
-    
+
 };
 
 const buscarProductoDetalle = async () => {
-    // Verificar si los elementos del formulario existen antes de acceder a sus propiedades
+
     if (formularioDetalle.pro_nom_articulo && formularioDetalle.pro_id) {
         let pro_nom_articulo = formularioDetalle.pro_nom_articulo.value;
         let pro_id = formularioDetalle.pro_id.value;
@@ -1320,18 +1391,18 @@ const buscarProductoDetalle = async () => {
     try {
         const respuesta = await fetch(url, config);
         const data = await respuesta.json();
-        console.log('data de productos', data); // Imprimir datos en la consola
+        console.log('data de productos', data);
 
         producto = data;
-        // Limpiar el contenido del select
+
         formularioDetalle.det_pro_id.innerHTML = '';
 
-        // Agregar opción predeterminada
+
         const defaultOption = document.createElement('option');
         defaultOption.value = '';
         defaultOption.textContent = 'SELECCIONE...';
         formularioDetalle.det_pro_id.appendChild(defaultOption);
-        // Iterar sobre cada objeto en el arreglo y crear opciones para el select
+
         data.forEach(producto => {
             const option = document.createElement('option');
             option.value = producto.pro_id;
@@ -1339,12 +1410,11 @@ const buscarProductoDetalle = async () => {
             formularioDetalle.det_pro_id.appendChild(option);
         });
 
-        //contador = 1;
-        //datatable.clear().draw();
+
     } catch (error) {
         console.log(error);
     }
-    //formularioExistenc.reset();
+
 };
 
 
@@ -1352,9 +1422,7 @@ const buscarProductoDetalle = async () => {
 ////////////// FUNCION PARA BUSCAR LOS ELEMENTOS GUARDADOS
 
 const buscarExistencias = async () => {
-    
-   
-   
+
     let det_pro = formularioExistencia.det_pro.value;
 
     const url = `/control_inventario/API/movegreso/buscarExistencias?det_pro=${det_pro}`;
@@ -1380,25 +1448,26 @@ const buscarExistencias = async () => {
     } catch (error) {
         console.log(error);
     }
-    //formularioExistencia.reset();
 
-    //actualizarDependencia();
 };
 
 
-///////////////////////////
 
 ////// GUARDAR CAMPOS DEL FORMULARIO MOVIMIENTO
 
 const guardar = async (evento) => {
     evento.preventDefault();
 
+    btnGuardar.disabled = true;
+
     if (!validarFormulario(formulario, ['mov_id', 'mov_tipo_mov'])) {
         Toast.fire({
             icon: 'info',
             text: 'Debe llenar todos los datos'
-        })
-        return
+        });
+        btnGuardar.disabled = false;
+
+        return;
     }
     const body = new FormData(formulario)
     body.delete('mov_id')
@@ -1449,6 +1518,9 @@ const guardar = async (evento) => {
         console.log(error);
     }
     buscarDetalleIngresado();
+    btnGuardar.disabled = false;
+    establecerFechaActual();
+
 
 }
 
@@ -1469,13 +1541,6 @@ const buscarCantidadLote = async () => {
     let det_fecha_vence = detFechaInput.value;
 
 
-    //if (det_pro_id && det_lote && det_estado) {
-    //     if (det_pro_id && det_estado) {
-    //         // Comprobar si el campo de lote está lleno (ignorar si es nulo)
-    //         if (det_lote !== null && det_lote.trim() === '') {
-    //             //return;
-    //         }
-
     const url = `/control_inventario/API/movimiento/buscarCantidadLote?det_pro_id=${det_pro_id}&det_uni_med=${det_uni_med}&det_lote=${det_lote}&det_estado=${det_estado}&det_fecha_vence=${det_fecha_vence}`;
 
 
@@ -1488,23 +1553,17 @@ const buscarCantidadLote = async () => {
         const data = await respuesta.json();
         console.log(data);
 
-        // Verificar si se encontraron registros
+
         if (data && data.length > 0) {
-            // Asignar los valores a los inputs
-            //formularioDetalle.det_cantidad_existente.value = data[0].det_cantidad_existente;
+
             formularioDetalle.det_cantidad_lote.value = data[0].det_cantidad_lote;
 
-            // Actualizar los valores iniciales después de la búsqueda
-            //valorInicialCantidadExistente = parseFloat(data[0].det_cantidad_existente) || 0;
             valorInicialCantidadLote = parseFloat(data[0].det_cantidad_lote) || 0;
 
         } else {
-            // Si no se encontraron registros, establecer los inputs en 0
-            //formularioDetalle.det_cantidad_existente.value = 0;
+
             formularioDetalle.det_cantidad_lote.value = 0;
 
-            // Si no se encontraron registros, los valores iniciales serán 0
-            //valorInicialCantidadExistente = 0;
             valorInicialCantidadLote = 0;
 
         }
@@ -1512,13 +1571,10 @@ const buscarCantidadLote = async () => {
     } catch (error) {
         console.log(error);
     }
-    //   } else {
-
-    //   }
 
 };
 
-
+/// funcion para buscar la cantidad existente 
 
 const buscarCantidad = async () => {
 
@@ -1539,31 +1595,20 @@ const buscarCantidad = async () => {
         const data = await respuesta.json();
         console.log(data);
 
-        // Verificar si se encontraron registros
-        if (data && data.length > 0) {
-            // Asignar los valores a los inputs
-            formularioDetalle.det_cantidad_existente.value = data[0].det_cantidad_existente;
-            //formularioDetalle.det_cantidad_lote.value = data[0].det_cantidad_lote;
 
-            // Actualizar los valores iniciales después de la búsqueda
+        if (data && data.length > 0) {
+            // se asignan los valores a los inputs
+            formularioDetalle.det_cantidad_existente.value = data[0].det_cantidad_existente;
+
             valorInicialCantidadExistente = parseFloat(data[0].det_cantidad_existente) || 0;
-            //valorInicialCantidadLote = parseFloat(data[0].det_cantidad_lote) || 0;
+
 
         } else {
-            // Si no se encontraron registros, establecer los inputs en 0
+
             formularioDetalle.det_cantidad_existente.value = 0;
-            //formularioDetalle.det_cantidad_lote.value = 0;
 
-            // Si no se encontraron registros, los valores iniciales serán 0
             valorInicialCantidadExistente = 0;
-            //valorInicialCantidadLote = 0;
 
-
-
-            // Toast.fire({
-            //     title: 'No se encontraron registros',
-            //     icon: 'info'
-            // });
         }
 
     } catch (error) {
@@ -1573,22 +1618,26 @@ const buscarCantidad = async () => {
 
 };
 
+/// funcion para guardar el detalle del egreso
 
 const guardarDetalle = async (evento) => {
     evento.preventDefault();
+    btnGuardarDetalle.disabled = true;
+
 
     if (!validarFormulario(formularioDetalle, ['det_id', 'det_lote', 'sin_fecha'])) {
         Toast.fire({
             icon: 'info',
             text: 'Debe llenar todos los datos'
-        })
-        return
+        });
+        btnGuardarDetalle.disabled = false;
+        return;
     }
-      //  // Guarda el valor actual del campo det_mov_id
-      const detMovIdValue = document.getElementById('det_mov_id').value;
+
+    const detMovIdValue = document.getElementById('det_mov_id').value;
     const body = new FormData(formularioDetalle)
     body.delete('det_id')
-    //  const url = '/control_inventario/API/movimiento/guardarDetalle';
+
     const url = '/control_inventario/API/movimiento/guardarDetalle';
 
     const config = {
@@ -1601,7 +1650,6 @@ const guardarDetalle = async (evento) => {
         const data = await respuesta.json();
 
         console.log(data);
-        // return
 
         const { codigo, mensaje, detalle } = data;
         let icon = 'info'
@@ -1609,8 +1657,8 @@ const guardarDetalle = async (evento) => {
             case 1:
                 formularioDetalle.reset();
                 icon = 'success'
-                  // Restaura el valor del campo det_mov_id
-                  document.getElementById('det_mov_id').value = detMovIdValue;
+                // Restaura el valor del campo det_mov_id
+                document.getElementById('det_mov_id').value = detMovIdValue;
                 buscarDetalleMovimiento();
                 break;
 
@@ -1639,13 +1687,16 @@ const guardarDetalle = async (evento) => {
         console.log('Respuesta completa:', await error.text());
     }
     buscarDetalleMovimiento();
-  
+    btnGuardarDetalle.disabled = false;
+    buscarExistencias();
+
+
 };
 
-
+//funcion para buscar si seleccionan egreso interno
 
 const buscarDependenciaInterna = async () => {
-    // Verificar si los elementos del formulario existen antes de acceder a sus propiedades
+
     if (formulario.dep_desc_md && formulario.dep_llave) {
         let dep_desc_md = formulario.dep_desc_md.value;
         let dep_llave = formulario.dep_llave.value;
@@ -1662,34 +1713,33 @@ const buscarDependenciaInterna = async () => {
 
         dependencias = data;
         // Limpiar el contenido del select
-        formularioMovimiento.mov_proce_destino.innerHTML = '';
+        formulario.mov_proce_destino.innerHTML = '';
 
         // Iterar sobre cada objeto en el arreglo y crear opciones para el select
         data.forEach(dependencias => {
             const option = document.createElement('option');
             option.value = dependencias.dep_llave;
             option.textContent = dependencias.dep_desc_md;
-            formularioMovimiento.mov_proce_destino.appendChild(option);
+            formulario.mov_proce_destino.appendChild(option);
         });
-        //contador = 1;
-        //datatable.clear().draw();
+
     } catch (error) {
         console.log(error);
     }
-    
-    //formularioMovimiento.reset();
+
 };
 
+/// para llamar a las funciones de acuerdo a si seleccionan Egreso Interno y Egreso Externo
 
 function mostrarDependencia() {
     if (select.value === "I") {
-      
+
         buscarDependenciaInterna();
     } else if (select.value === "E") {
-    
+
         buscarDependencia();
     } else {
-       
+
     }
 }
 
@@ -1710,16 +1760,17 @@ const buscarRecibo = async () => {
 
         if (data && data.length > 0) {
             generarPDF(data);
-            modificar();              
+            modificar();
             divIngresoMovimiento.style.display = 'block';
             movMovimientoDiv.style.display = 'none';
             datosMovimiento.style.display = 'block';
             movDetalleDiv.style.display = 'none';
             datatableMovimiento.clear().draw();
             formularioDetalle.reset();
-            formularioMovimiento.reset();
+            formulario.reset();
             datatableDetalle.clear().draw();
-        
+            establecerFechaActual();
+
 
         } else {
             Toast.fire({
@@ -1732,10 +1783,12 @@ const buscarRecibo = async () => {
     }
 };
 
+//funcion para volver imprimir el recibo desde la dt detalle por ingreso
+
 const buscarRecibo2 = async () => {
     let det_mov_id = botonVolverImprimir.value;
     console.log('Valor del botón al iniciar buscarRecibo2:', det_mov_id);
- 
+
 
     const url = `/control_inventario/API/egresoreporte/buscarRecibo2?det_mov_id=${det_mov_id}`;
     const config = {
@@ -1748,12 +1801,12 @@ const buscarRecibo2 = async () => {
         console.log(data);
 
         if (data && data.length > 0) {
-            generarPDF(data);     
-          
-        
+            generarPDF(data);
+
+
         } else {
             Toast.fire({
-                title: 'No se encontraron registros ',
+                title: 'No se encontraron registros o este Egreso a un esta pendiente',
                 icon: 'info',
             });
         }
@@ -1762,9 +1815,59 @@ const buscarRecibo2 = async () => {
     }
 };
 
+const buscarExistenciasPorInventarioImprimir = async () => {
+
+    let inventarioId = btnImprimirExistencias.value;
+
+    const url = `/control_inventario/API/existenciasreporte/buscarExistenciasPorInventarioImprimir?inventarioId=${inventarioId}`;
+    const config = {
+        method: 'GET',
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+        console.log(data);
+
+        if (data && data.length > 0) {
+            generarExistenciasPDF(data);
+
+        } else {
+            Toast.fire({
+                title: 'No se encontrararon registros',
+                icon: 'info',
+            });
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+
+
+
 ////////////////generar pdf para entregar hoja de responsabilidad/////////////
 
 const generarPDF = async (datos) => {
+
+    let timerInterval;
+    Swal.fire({
+        title: 'Generando PDF...',
+        html: 'Por favor espera <b></b> milisegundos.',
+        timer: 4000,
+        timerProgressBar: true,
+        didOpen: () => {
+            Swal.showLoading();
+            const b = Swal.getHtmlContainer().querySelector('b');
+            timerInterval = setInterval(() => {
+                b.textContent = Swal.getTimerLeft();
+            }, 100);
+        },
+        willClose: () => {
+            clearInterval(timerInterval);
+        }
+    });
+
     const url = `/control_inventario/egresoreporte/generarPDF`;
 
     const config = {
@@ -1777,7 +1880,66 @@ const generarPDF = async (datos) => {
 
     try {
         const respuesta = await fetch(url, config);
+        Swal.close();
 
+        if (respuesta.ok) {
+            const blob = await respuesta.blob();
+
+            if (blob) {
+                const urlBlob = window.URL.createObjectURL(blob);
+
+                // Abre el PDF en una nueva  pestaña
+                window.open(urlBlob, '_blank');
+            } else {
+                console.error('No se pudo obtener el blob del PDF.');
+            }
+        } else {
+            console.error('Error al generar el PDF.');
+            Swal.close();
+
+        }
+    } catch (error) {
+        console.error(error);
+        Swal.close();
+
+    }
+};
+
+
+
+const generarExistenciasPDF = async (datos) => {
+
+    let timerInterval;
+    Swal.fire({
+        title: 'Generando PDF...',
+        html: 'Por favor espera <b></b> milisegundos.',
+        timer: 4000,
+        timerProgressBar: true,
+        didOpen: () => {
+            Swal.showLoading();
+            const b = Swal.getHtmlContainer().querySelector('b');
+            timerInterval = setInterval(() => {
+                b.textContent = Swal.getTimerLeft();
+            }, 100);
+        },
+        willClose: () => {
+            clearInterval(timerInterval);
+        }
+    });
+
+    const url = `/control_inventario/existenciasreporte/generarExistenciasPDF`;
+
+    const config = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(datos),
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        Swal.close();
         if (respuesta.ok) {
             const blob = await respuesta.blob();
 
@@ -1791,13 +1953,14 @@ const generarPDF = async (datos) => {
             }
         } else {
             console.error('Error al generar el PDF.');
+            Swal.close();
+
         }
     } catch (error) {
         console.error(error);
+        Swal.close();
     }
 };
-
-
 
 
 ///////////funciones para el formulario de busqueda de ingresos
@@ -1805,7 +1968,7 @@ const generarPDF = async (datos) => {
 ////para buscar almacenes en el modal/////////////
 
 const buscarAlmacenesMovimientos = async () => {
-    // Verificar si los elementos del formulario existen antes de acceder a sus propiedades
+
     if (formularioBusqueda.alma_nombre && formularioBusqueda.alma_id) {
         let alma_nombre = formularioBusqueda.alma_nombre.value;
         let alma_id = formularioBusqueda.alma_id.value;
@@ -1821,10 +1984,10 @@ const buscarAlmacenesMovimientos = async () => {
         console.log('data de almacenes', data); // Imprimir datos en la consola
 
         almacenes = data;
-        // Limpiar el contenido del select
+
         formularioBusqueda.mov_alma.innerHTML = '';
 
-        // Agregar opción predeterminada
+
         const defaultOption = document.createElement('option');
         defaultOption.value = '';
         defaultOption.textContent = 'SELECCIONE...';
@@ -1838,13 +2001,10 @@ const buscarAlmacenesMovimientos = async () => {
         });
 
 
-
-        //contador = 1;
-        //datatable.clear().draw();
     } catch (error) {
         console.log(error);
     }
-    //formularioModal.reset();
+
 };
 
 //////////////función buscar para imprimir recibo
@@ -1883,63 +2043,124 @@ const buscarMovimientos = async () => {
 // funcion para modificar un estado
 
 const modificar = async () => {
-  
+
     let det_mov_id = formularioDetalle.det_mov_id.value;
 
     const body = new FormData();
     body.append('mov_id', det_mov_id);
-        const url = '/control_inventario/API/movimiento/modificar';
-        const config = {
-            method: 'POST',
-            body
-        };
-        try {
-            //await buscarDependencia();
-            const respuesta = await fetch(url, config);
-            const data = await respuesta.json();
-            console.log(data)
-            let icon = 'info'
-
-            const { codigo, mensaje, detalle } = data;
-           
-            switch (codigo) {
-                case 1:
-                   
-                    break;
-                case 0:
-                    icon = 'error';
-                    console.log(detalle);
-                    break;
-                default:
-                    break;
-            }
-            Swal.fire({
-                title: '¡Proceso Completado!',
-                text: 'Finalizó con éxito el proceso de ingreso al inventario. Su PDF se generará en un momento.',
-                icon: 'success',
-                confirmButtonText: 'Entendido',
-                confirmButtonColor: '#3085d6',
-                timer: 8000, 
-                timerProgressBar: true, 
-              });
-        } catch (error) {
-            console.log(error);
-        }
-  
+    const url = '/control_inventario/API/movimiento/modificar';
+    const config = {
+        method: 'POST',
+        body
     };
-    
-botonImprimir.addEventListener('click', buscarRecibo);
-botonVolverImprimir.addEventListener('click', buscarRecibo2);
+    try {
+
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+        console.log(data)
+        let icon = 'info'
+
+        const { codigo, mensaje, detalle } = data;
+
+        switch (codigo) {
+            case 1:
+
+                break;
+            case 0:
+                icon = 'error';
+                console.log(detalle);
+                break;
+            default:
+                break;
+        }
+        Swal.fire({
+            title: '¡Proceso Completado!',
+            text: 'Finalizó con éxito el proceso de ingreso al inventario',
+            icon: 'success',
+            confirmButtonText: 'Entendido',
+            confirmButtonColor: '#3085d6',
+            timer: 8000,
+            timerProgressBar: true,
+        });
+    } catch (error) {
+        console.log(error);
+    }
+
+};
+
+
+const manejarConfirmacionImpresion = async () => {
+    try {
+        await buscarRecibo2();
+    } catch (error) {
+        console.error('Error al ejecutar la impresión:', error);
+    }
+};
+
+
+const manejarConfirmacionImpresionExistencias = async () => {
+    try {
+        await buscarExistenciasPorInventarioImprimir();
+    } catch (error) {
+        console.error('Error al ejecutar la impresión:', error);
+    }
+};
+
+
 
 buscarAlmacenes();
 buscarAlmacenesMovimientos();
-//buscarDependencia();
+buscarAlmacenesInventario();
 buscarEstados();
 establecerFechaActual();
 
 
 
 ////////eventos/////////////////////////////////////
+//imprimir
+botonImprimir.addEventListener('click', buscarRecibo);
+botonVolverImprimir.addEventListener('click', (e) => {
+    e.preventDefault();
+    Swal.fire({
+        title: "¿Desea imprimir este detalle?",
+        text: "Si acepta, se procederá a imprimir el detalle del recibo.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, Imprimir',
+        cancelButtonText: 'Cancelar acción'
+
+    }).then((result) => {
+        if (result.isConfirmed) {
+          manejarConfirmacionImpresion();
+        }
+    });
+});
+
+btnImprimirExistencias.addEventListener('click', (e) => {
+    e.preventDefault();
+    Swal.fire({
+        title: "¿Desea imprimir las Existencias de este Inventario?",
+        text: "Si acepta, se procederá a imprimir el detalle de las existencias.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, Imprimir',
+        cancelButtonText: 'Cancelar acción'
+
+    }).then((result) => {
+        if (result.isConfirmed) {
+          manejarConfirmacionImpresionExistencias();
+        }
+    });
+});
+
+
+
+
+//formulario movimiento
 mov_perso_entrega.addEventListener('input', buscarOficiales);
 mov_perso_recibe.addEventListener('input', buscarOficialesRecibe);
 mov_perso_respon.addEventListener('input', buscarOficialesResponsable);
@@ -1947,17 +2168,17 @@ btnBuscarExistencias.addEventListener('click', buscarExistencias);
 btnMovimiento.addEventListener('click', buscarMovimientos);
 formulario.addEventListener('submit', guardar);
 formularioDetalle.addEventListener('submit', guardarDetalle);
-///evento para detectar el cambio del select 
 select.addEventListener('change', mostrarDependencia);
 datatableMovimiento.on('click', '.btn-success', traeDatosFinalizacion);
 datatableMovimiento.on('click', '.btn-info', traeDatosVerDetalle);
+btnBuscarInventarioExistencias.addEventListener('click', buscarExistenciasPorInventario);
 
 
 
 det_mov_id.addEventListener('input', buscarDetalleMovimiento);
 
 
-btnIngreso.addEventListener('click', function() {
+btnIngreso.addEventListener('click', function () {
     divIngresoMovimiento.style.display = 'none';
     datosMovimiento.style.display = 'none';
     movMovimientoDiv.style.display = 'block';
@@ -1965,38 +2186,28 @@ btnIngreso.addEventListener('click', function() {
 
 
 
-btnRegresarGestion.addEventListener('click', function() {
+btnRegresarGestion.addEventListener('click', function () {
     divIngresoMovimiento.style.display = 'block';
     movMovimientoDiv.style.display = 'none';
     datosMovimiento.style.display = 'block';
+    formulario.reset();
+    establecerFechaActual();
 
 })
 
-    btnSiguiente.addEventListener('click', function(event) {
-        // Prevenir el envío normal del formulario
-        event.preventDefault();
 
+// Agrega un oyente de eventos al botón "Anterior" del formulario de detalle
+btnAnterior.addEventListener('click', function () {
+    divIngresoMovimiento.style.display = 'block';
+    movMovimientoDiv.style.display = 'none';
+    datosMovimiento.style.display = 'block';
+    movDetalleDiv.style.display = 'none';
+    formularioDetalle.reset();
+    formulario.reset();
+    establecerFechaActual();
+    datatableDetalle.clear().draw();
 
-        // Ocultar el formulario de movimiento
-        movMovimientoDiv.style.display = 'none';
-
-        // Mostrar el formulario de detalle
-        movDetalleDiv.style.display = 'block';
-    });
-
-    // Agrega un oyente de eventos al botón "Anterior" del formulario de detalle
-    btnAnterior.addEventListener('click', function(event) {
-        // Prevenir el envío normal del formulario
-        event.preventDefault();
-
-
-
-        // Ocultar el formulario de detalle
-        movDetalleDiv.style.display = 'none';
-
-        // Mostrar el formulario de movimiento
-        movMovimientoDiv.style.display = 'block';
-    });
+});
 
 
 //EVENTOS PARA BUSCAR LA CANTIDAD EXISTENTE
@@ -2007,7 +2218,7 @@ detProIdSelect.addEventListener('input', buscarCantidadLote);
 detUniSelect.addEventListener('input', buscarCantidadLote);
 detLoteInput.addEventListener('input', buscarCantidadLote);
 detEstadoSelect.addEventListener('input', buscarCantidadLote);
-datatable.on('click', '.btn-warning', traeDatos );
+datatable.on('click', '.btn-warning', traeDatos);
 
 //////para realizar la resta en los campos det_cantidad.///////////////
 
@@ -2021,19 +2232,19 @@ const actualizarSumatoria = () => {
     const cantidad = parseFloat(detCantidadInput.value) || 0;
 
     // Validar que la cantidad ingresada no sea mayor que la cantidad existente y la cantidad por lote
-if (cantidad > valorInicialCantidadExistente || cantidad > valorInicialCantidadLote) {
-    
-    Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'La cantidad ingresada no puede ser mayor que la cantidad existente o la cantidad por lote.'
-       
-    });
-      // se coloca el campo detcantidad igual a vacio
-      detCantidadInput.value = '';
-   
-    } else{
-      
+    if (cantidad > valorInicialCantidadExistente || cantidad > valorInicialCantidadLote) {
+
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'La cantidad ingresada no puede ser mayor que la cantidad existente o la cantidad por lote.'
+
+        });
+        // se coloca el campo detcantidad igual a vacio
+        detCantidadInput.value = '';
+
+    } else {
+
         const nuevaCantidadLote = valorInicialCantidadLote - cantidad;
         const nuevaCantidadExistente = valorInicialCantidadExistente - cantidad;
 
@@ -2041,7 +2252,7 @@ if (cantidad > valorInicialCantidadExistente || cantidad > valorInicialCantidadL
         detCantidadLoteInput.value = nuevaCantidadLote.toFixed(2);
         detCantidadExistenteInput.value = nuevaCantidadExistente.toFixed(2);
     };
- }
+}
 
 // eventos 'input' al campo det_cantidad
 detCantidadInput.addEventListener('change', actualizarSumatoria);
@@ -2057,7 +2268,7 @@ detCantidadInput.addEventListener('change', () => {
 actualizarSumatoria();
 
 
-checkboxLoteNo.addEventListener('change', function() {
+checkboxLoteNo.addEventListener('change', function () {
     if (this.checked) {
         checkboxLoteSi.checked = false;
         detLoteInput.value = 'SIN/L';
@@ -2066,37 +2277,67 @@ checkboxLoteNo.addEventListener('change', function() {
     }
 });
 
-checkboxLoteSi.addEventListener('change', function() {
+checkboxLoteSi.addEventListener('change', function () {
     if (this.checked) {
-        checkboxLoteNo.checked = false; 
+        checkboxLoteNo.checked = false;
         detLoteInput.value = '';
 
     }
 });
 
 
-// Agrega un evento de clic al botón
-botonVerIngresos.addEventListener('click', () => {
-    // Abre el modal al hacer clic en el botón
-    modalVerExistencias.classList.add('show');
-    modalVerExistencias.style.display = 'block';
-  
-});
+
 
 // Agrega un evento de clic al botón
 botonRetirarMas.addEventListener('click', () => {
-    // Abre el modal al hacer clic en el botón
     modalVerExistencias.classList.add('show');
     modalVerExistencias.style.display = 'block';
-  
+
 });
+
+btnVerExistenciasInventario.addEventListener('click', () => {
+
+    modalExistenciasPorInventario.classList.add('show');
+    modalExistenciasPorInventario.style.display = 'block';
+
+});
+
+////cerrar el modal cuando se hace clic fuera del modal...
+modalExistenciasPorInventario.addEventListener('click', function (event) {
+    if (event.target === modalExistenciasPorInventario) {
+        modalExistenciasPorInventario.style.display = 'none';
+        document.body.classList.remove('modal-open');
+        datatableExistenciasPorInventario.clear().draw();
+        divImprimirExistencias.style.display = 'none';
+        formularioExistenciasPorInventario.reset();
+
+
+    }
+
+});
+
+
+// cerrar modal con el boton ...
+cerrarModalExistenciasPorInventario.addEventListener('click', function () {
+
+    modalExistenciasPorInventario.style.display = 'none';
+    document.body.classList.remove('modal-open');
+    datatableExistenciasPorInventario.clear().draw();
+    divImprimirExistencias.style.display = 'none';
+    formularioExistenciasPorInventario.reset();
+
+
+});
+
 //////////evento para cerrar el modal haciendo clic
 
 botonCerrarModal.addEventListener('click', function () {
-    // Cierra el modal
+
     modalVerExistencias.style.display = 'none';
     document.body.classList.remove('modal-open');
-    //formularioGuarda.reset();
+    datatable.clear().draw();
+
+
 
 });
 
@@ -2105,16 +2346,21 @@ modalVerExistencias.addEventListener('click', function (event) {
     if (event.target === modalVerExistencias) {
         modalVerExistencias.style.display = 'none';
         document.body.classList.remove('modal-open');
+        datatable.clear().draw();
+
 
     }
 
 });
 
+// cerrar modal con el boton
 botonCerrarModalIngresoDetalle.addEventListener('click', function () {
     modalIngresoDetalle.style.display = 'none';
     document.body.classList.remove('modal-open');
 });
 
+
+// cerral el modal cuando se da clic fuera de ...
 modalIngresoDetalle.addEventListener('click', function (event) {
     if (event.target === modalIngresoDetalle) {
         modalIngresoDetalle.style.display = 'none';

@@ -1,13 +1,31 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Reporte de Movimientos</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
-        .report-header { text-align: center; margin-top: 20px; }
-        .report-details { text-align: center; margin-top: 5px; }
-        .report-title { font-size: 24px; margin: 20px 0; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .report-header {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .report-details {
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        .report-title {
+            font-size: 24px;
+            margin: 20px 0;
+        }
+
         .styled-table {
             width: 100%;
             border-collapse: collapse;
@@ -16,84 +34,104 @@
         }
 
         .report-title {
-    font-size: 24px;
-    margin: 20px 0;
-    color: #333; /* Un color oscuro pero no puro negro */
-}
+            font-size: 24px;
+            margin: 20px 0;
+            color: #333;
+        }
 
-.styled-table th {
-    background-color: #f2f2f2; /* Un ligero gris para los encabezados de la tabla */
-    color: #000000;
-}
+        .styled-table th {
+            background-color: #f2f2f2;
+            color: #000000;
+        }
 
-.styled-table td {
-    color: #000000; /* Un gris oscuro para el texto */
-}
-        .styled-table th, .styled-table td {
+        .styled-table td {
+            color: #000000;
+        }
+
+        .styled-table th,
+        .styled-table td {
             padding: 12px 15px;
             border: 1px solid #050505;
         }
+
         .signature-section {
-    text-align: center;
-    margin-top: 60px;
-}
+            text-align: center;
+            margin-top: 60px;
+        }
 
-.signature-recibi-entregue {
-    float: left;
-    width: 30%; /* Ancho fijo para mantenerlos en la misma línea y espaciados */
-/* Añade un poco de espacio entre las firmas */
-   
-}
-.signature-entregue {
-    float: right; /* Esto empujará 'ENTREGUÉ' a la derecha */
-    width: 30%; /* Ancho igual al de los otros bloques de firma para alineación */
-}
-
-.signature-line {
-    border-top: 2px solid #000;
-    margin: 10px;
-    width: 80%; /* Ancho en porcentaje para mantenerlo dentro del div correspondiente */
-}
-
-.signature-name {
-    font-size: 0.7em;
-    text-align: center;
-    margin-top: 5px;
-  
-}
-
-.firma {
-    font-size: 0.9em;
-    text-align: center;
-    margin-top: 5px;
-    margin-bottom: 50px;
-    font-weight: bold; /* Hacerlo negrita */
-    color: #333;
-}
-
-.signature-responsable {
-    display: block;
-    margin: 150px auto;
-    width: 30%; /* Ancho igual al de los otros bloques de firma para alineación */
-}
-
-.fecha {
-    float: right;
-    width: 40%;
-}
-
-.ingreso {
-    float: left;
-    width: 40%;
-
-}
+        .signature-recibi-entregue {
+            float: left;
+            width: 30%;
 
 
+        }
+
+        .signature-entregue {
+            float: right;
+            width: 30%;
+        }
+
+        .signature-line {
+            border-top: 2px solid #000;
+            margin: 10px;
+            width: 80%;
+        }
+
+        .signature-name {
+            font-size: 0.7em;
+            text-align: center;
+            margin-top: 5px;
+
+        }
+
+        .firma {
+            font-size: 0.9em;
+            text-align: center;
+            margin-top: 5px;
+            margin-bottom: 50px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .signature-responsable {
+            display: block;
+            margin: 150px auto;
+            width: 30%;
+        }
+
+        .fecha {
+            float: right;
+            width: 40%;
+        }
+
+        .ingreso {
+            float: left;
+            width: 40%;
+
+        }
+
+
+        header {
+            border-bottom: 2px solid #fff;
+            bottom: 25px;
+           
+        }
+
+        .report-footer {
+            border-top: 2px solid #fff;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+        }
     </style>
 </head>
+
 <body>
+    
+
     <div class="report-header">
-        <h1 class="report-title">Reporte de Movimientos</h1>
+        <h1 class="report-title">Reporte de Ingresos al inventario "<?= htmlspecialchars($datos[0]->alma_nombre) ?>"</h1>
         <div class="ingreso">
             <span class="left">No. de ingreso: <?= htmlspecialchars($datos[0]->mov_id) ?></span>
         </div>
@@ -103,7 +141,7 @@
     </div>
 
     <table class="styled-table">
-    <thead>
+        <thead>
             <tr>
                 <th>No.</th>
                 <th>Inventario al que Ingreso</th>
@@ -138,30 +176,31 @@
     </table>
 
 
-<div class="signature-section">
-    <div class="signature-recibi-entregue">
-    <p class="firma">RECIBÍ</p>
-        <div class="signature-line"></div>
-        <div class="signature-name"><?= htmlspecialchars($datos[0]->mov_perso_recibe_nom) ?></div>
-    </div>
-    
-    <div class="signature-entregue">
-       <p class="firma">ENTREGUÉ</p>
-        <div class="signature-line"></div>
-        <div class="signature-name"><?= htmlspecialchars($datos[0]->mov_perso_entrega_nom) ?></div>
-    </div>
-    
-    <div class="signature-responsable">
-    <p class="firma">RESPONSABLE</p>
-        <div class="signature-line"></div>
-        <div class="signature-name"><?= htmlspecialchars($datos[0]->mov_perso_respon_nom) ?></div>
-    </div>
+    <div class="signature-section">
+        <div class="signature-recibi-entregue">
+            <p class="firma">RECIBÍ</p>
+            <div class="signature-line"></div>
+            <div class="signature-name"><?= htmlspecialchars($datos[0]->mov_perso_recibe_nom) ?></div>
+        </div>
 
-</div>
+        <div class="signature-entregue">
+            <p class="firma">ENTREGUÉ</p>
+            <div class="signature-line"></div>
+            <div class="signature-name"><?= htmlspecialchars($datos[0]->mov_perso_entrega_nom) ?></div>
+        </div>
+
+        <div class="signature-responsable">
+            <p class="firma">RESPONSABLE</p>
+            <div class="signature-line"></div>
+            <div class="signature-name"><?= htmlspecialchars($datos[0]->mov_perso_respon_nom) ?></div>
+        </div>
+
+    </div>
 
 
 
 
 
 </body>
+
 </html>

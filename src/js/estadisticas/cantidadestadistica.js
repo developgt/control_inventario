@@ -49,7 +49,7 @@ const buscarAlmacenes = async () => {
             icon: 'error',
             title: 'Error al buscar almacenes'
         });
-        console.error('Error al buscar almacenes:', error);
+        console.error('Error al buscar inventarios:', error);
     }
 };
 

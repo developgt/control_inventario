@@ -1,14 +1,4 @@
 <style>
-    .table-responsive {
-        margin: 0 auto;
-    }
-
-    .table {
-        width: 100%;
-        margin-bottom: 1rem;
-        color: #212529;
-    }
-
     .table th,
     .table td {
         padding: 0.75rem;
@@ -50,25 +40,27 @@
         background-color: rgba(173, 216, 230, 0.5);
     }
 
+
+
     .nuevo-contenedor {
         padding: 20px;
-        margin-top: 5px;
-        background-color: beige;
+        margin-top: 10px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        display: flex;
-        align-items: center;
-        min-height: 100vh;
-        justify-content: center;
+
     }
+
 
     .contenedor-modal {
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+
 
     }
 
 
     .tabla-contenedor {
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        padding: 20px;
+
     }
 
     .busqueda-contenedor {
@@ -85,36 +77,12 @@
     }
 
 
-    .card {
-        border: none;
-        border-radius: 10px;
-    }
 
-    .card-body {
-        padding: 2rem;
-    }
 
     .form-select {
         margin-left: 0.5rem;
     }
 
-    /* .btn-success {
-        background-color: #28a745;
-        border-color: #28a745;
-    }
-    .btn-success:hover {
-        background-color: #218838;
-        border-color: #1e7e34;
-    } */
-    .btn-ingreso {
-        position: absolute;
-        right: 25px;
-        /* Ajustar según necesidad */
-        top: 120px;
-        /* Ajustar según necesidad */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-
-    }
 
     #formularioMovimiento {
         padding: 20px;
@@ -129,7 +97,6 @@
         margin: auto;
         background-color: #f2f2f2;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        /* Sombra */
 
     }
 
@@ -138,7 +105,15 @@
         margin: auto;
         background-color: #f2f2f2;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        /* Sombra */
+
+
+    }
+
+    #formularioBusqueda {
+        padding: 20px;
+        margin: auto;
+        background-color: #f2f2f2;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 
     }
 
@@ -153,25 +128,19 @@
     }
 
     .encabezado-busqueda {
-        background-color: #e9ecef;
-        /* Un gris claro que no compite con el azul del encabezado principal */
-        color: #495057;
-        /* Un color oscuro para el texto que garantiza legibilidad */
+        background-color: rgba(173, 216, 230, 0.8);
+        color: #2c3e50;
         padding: 20px;
         margin-top: 10px;
         border-radius: 10px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        /* Un sombreado más suave */
         border: 1px solid #dee2e6;
-        /* Un borde sutil para definir los límites del encabezado */
         transition: background-color 0.3s;
-        /* Suaviza la transición de color al pasar el mouse */
+
     }
 
     .encabezado-busqueda:hover {
         background-color: #dde1e6;
-        /* Un tono ligeramente más oscuro para el hover, manteniéndolo suave */
-        /* No es necesario un cambio drástico de color al pasar el mouse, solo un toque sutil */
     }
 
     .encabezado-inventario:hover {
@@ -195,10 +164,10 @@
     /* Estilo para el modal */
     .modal-with-backdrop .modal-content {
         z-index: 1031;
-        /* Asegura que el modal esté sobre el fondo oscuro */
+
     }
 
-    /* Estilo para el encabezado del modal */
+
     .custom-modal-header {
         background: linear-gradient(to right, rgba(70, 130, 180, 0.8), rgba(30, 144, 255, 0.8));
         color: #fff;
@@ -206,14 +175,14 @@
 
     }
 
-    /* Estilo para el título del modal */
+
     .custom-modal-title {
         margin: 0;
 
     }
 
     .mi-tabla {
-        width: 100%;
+        width: auto;
         border-collapse: collapse;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         margin-left: auto;
@@ -230,31 +199,125 @@
         color: green;
 
     }
+
+    /* Estilos adicionales */
+    #btnRealizarIngreso,
+    #btnVerExistenciasPorAlmacenModal {
+        width: 100%;
+        height: 80px;
+        margin-bottom: 10px;
+        /* Espacio entre botones */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+
+    }
+
+
+    .derecha-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        padding: 0 15px;
+
+    }
+
+
+    .table-responsive {
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 128, 255, 0.3), 0 6px 20px rgba(0, 0, 0, 0.1);
+        margin-top: 10px;
+    }
 </style>
-<div class="container bg-light border rounded mx-auto mt-2 busqueda-contenedor" id="movimiento_busqueda">
-    <div class="row justify-content-center">
-        <div class="col-12 mb-4">
-            <div class="card mb-4 mt-4">
-                <h2 class="card-title text-center p-3 encabezado-inventario">Gestione su inventario</h2>
-                <div class="card-body">
-                    <div class="row g-3 align-items-end">
-                        <div class="col-lg-9">
-                            <form class="border rounded bg-light p-3" id="formularioBusqueda">
-                                <h5 class="card-title text-center p-3 encabezado-busqueda">Ver Ingresos</h5>
-                                <div class="mb-3">
-                                    <label for="mov_alma" class="form-label">Seleccione el inventario</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="bi bi-arrow-right-circle"></i></span>
-                                        <select name="mov_alma" id="mov_alma" class="form-select">
-                                            <option value="">SELECCIONE...</option>
-                                        </select>
+<div class="container bg-white border rounded mx-auto mt-2 nuevo-contenedor" id="movimiento_busqueda">
+    <div class="row">
+        <div class="col-md-8 mb-4">
+            <h2 class="card-title text-center p-3 encabezado-inventario">Gestione su inventario</h2>
+            <form class="border rounded bg-white p-3" id="formularioBusqueda">
+                <h5 class="card-title text-center p-3 encabezado-busqueda">Ver Ingresos</h5>
+                <div class="mb-3">
+                    <label for="mov_alma" class="form-label">Seleccione el inventario</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-arrow-right-circle"></i></span>
+                        <select name="mov_alma" id="mov_alma" class="form-select">
+                            <option value="">SELECCIONE...</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="button" id="btnMovimientos" class="btn btn-info w-100">VER INGRESOS</button>
+            </form>
+        </div>
+        <div class="col-md-4 derecha-container">
+            <button type="button" id="btnRealizarIngreso" class="btn btn-success">
+                <i class="bi bi-plus-circle me-2"></i>REALIZAR INGRESO
+            </button>
+            <button type="button" id="btnVerExistenciasPorAlmacenModal" class="btn btn-secondary">
+                <i class="bi bi-eye me-2"></i>Ver Existencias de Insumos por Inventario
+            </button>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- <-- modal para mostrar la vista de existencias de productos por inventario-->
+<div class="modal fade  modal-with-backdrop" id="ExistenciasInventario" name="ExistenciasInventario" tabindex="-1" role="dialog" aria-labelledby="ExistenciasInventarioLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header custom-modal-header">
+                <h6 class="modal-title" id="ExistenciasInventarioLabel">Ver existencias</h6>
+                <button type="button" id="btnCerrarModalExistenciasPorInventario" class="close btn btn-danger" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Salir de esta ventana</span>
+                </button>
+            </div>
+            <div class="modal-body" id="ExistenciasInventarioBody">
+                <div class="container bg-light border rounded mx-auto mt-2 nuevo-contenedor">
+                    <div class="row">
+                        <div class="col-lg-4 mb-4">
+                            <div class="card mt-3 mb-3" id="ExistenciasInventarioBody">
+                                <h4 class="text-center mt-4 mb-4 p-3 border rounded encabezado-inventario">Busqueda de Insumos por Inventario</h4>
+                                <div class="row justify-content-center mb-5">
+                                    <form class="col-lg-11 border rounded bg-light p-3" id="formularioExistenciasInventario">
+                                        <div class="row mb-3">
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <label for="mov_almacen">Seleccione el inventario</label>
+                                                    <div class="d-flex align-items-center">
+                                                        <span class="input-group-text"><i class="bi bi-arrow-right-circle"></i></span>
+                                                        <select name="mov_almacen" id="mov_almacen" class="form-select" required>
+                                                            <option value="">SELECCIONE...</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col">
+                                                <button type="button" id="btnBuscarExistenciasPorInventario" class="btn btn-info w-100">Buscar</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="row justify-content-center mb-4" id="divImprimirExistencias">
+                                    <div class="col-lg-12 text-center mb-3 justify-content-center">
+                                        <h4 class="card-title text-center p-3 encabezado-busqueda">Impresión de Registro</h4>
+                                        <p class="text-center">Si desea imprimir el registro de este inventario, haga clic en el botón "Imprimir".</p>
+                                    </div>
+                                    <div class="col-lg-12 text-center justify-content-center">
+                                        <button type="button" id="btnImprimirExistencias" class="btn btn-primary w-100">
+                                            <i class="bi bi-printer"></i> Imprimir el registro de insumos
+                                        </button>
                                     </div>
                                 </div>
-                                <button type="button" id="btnMovimientos" class="btn btn-info w-100">VER INGRESOS</button>
-                            </form>
+                            </div>
                         </div>
-                        <div class="col-lg-3 d-flex justify-content-end">
-                            <button type="button" id="btnRealizarIngreso" class="btn btn-success btn-ingreso">REALIZAR INGRESO</button>
+                        <div class="col-lg-8 mb-3">
+                            <div class="card mt-2 mb-2" id="ExistenciasInventarioBody">
+                                <h4 class="text-center mt-4 mb-4 p-3 border rounded encabezado-inventario">Existencias de Productos de acuerdo al almacén seleccionado</h4>
+                                <div class="col table-responsive">
+                                    <table id="tablaExistenciasPorInventario" class="table table-striped table-bordered table-hover table-light mi-tabla">
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -266,7 +329,7 @@
 <div class="container border rounded mt-2 bg-white tabla-contenedor" id="DatosMovimiento">
     <div class="row justify-content-center">
         <div class="col-12">
-            <h5 class="text-center mt-4 mb-1 bg-light p-3 border rounded">Ingresos realizados</h5>
+            <h5 class="text-center mt-4 mb-1 p-3 border rounded encabezado-busqueda">Ingresos realizados</h5>
             <div class="table-responsive">
                 <table id="tablaMovimientos" class="table table-striped table-bordered table-hover table-light mb-1 w-100">
                 </table>
@@ -279,7 +342,7 @@
         <div class="modal-content">
             <div class="modal-header custom-modal-header">
                 <h4 class="modal-title custom-modal-title" id="verExistenciasLabel">Ver Ingresos</h4>
-                <button type="button" class="close btn btn-danger" data-dismiss="modal" aria-label="Close">
+                <button type="button" id="cerrarModalExistencias" class="close btn btn-danger" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                     <span class="sr-only">Salir de esta ventana</span>
                 </button>
@@ -438,9 +501,6 @@
                         <button type="button" id="btnModificar" class="btn btn-warning w-100">Modificar</button>
                     </div>
                     <div class="col">
-                        <button type="button" id="btnSiguiente" class="btn btn-success w-100">Siguiente</button>
-                    </div>
-                    <div class="col">
                         <button type="button" id="btnCancelar" class="btn btn-danger w-100">Cancelar</button>
                     </div>
                     <div class="col">
@@ -451,19 +511,10 @@
             </div>
         </div>
     </div>
-    <!-- <div class="col-lg-4">
-        <div class="card" style="background-color: rgba(0, 0, 255, 0.2);">
-            <div class="card-body">
-                <h5 class="card-title">Detalle de Ingresos</h5>
-                <p class="card-text">Haz clic en el botón para ver el detalle de ingresos.</p>
-                <button type="button" id="btnVerIngresos" class="btn btn-success w-100">VER INGRESOS</button>
-            </div>
-        </div> 
-    </div> -->
 </div>
 </div>
 <div class="container bg-light border rounded mx-auto mt-2" id="mov_detalle">
-    <div class="row justify-content-center"> <!-- aqui empieza la siguiente div para el formulario de detalle -->
+    <div class="row justify-content-center">
         <div class="col-lg-9">
             <div class="card mb-4 mt-4"">
             <h2 class=" card-header text-center p-3 rounded encabezado-inventario">Detalle del Ingreso del Almacén</h2>
@@ -541,13 +592,6 @@
                         </div>
                         <div class="row mb-3">
                             <div class="col">
-                                <label for="det_cantidad_existente">Ingrese la Cantidad</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-card-text"></i></span>
-                                    <input type="number" name="det_cantidad" id="det_cantidad" class="form-control" placeholder="Cantidad" required>
-                                </div>
-                            </div>
-                            <div class="col">
                                 <label for="det_cantidad_existente">Cantidad Existente</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-card-text"></i></span>
@@ -559,6 +603,13 @@
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-card-text"></i></span>
                                     <input type="number" name="det_cantidad_lote" id="det_cantidad_lote" class="form-control" placeholder="Cantidad" readonly>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <label for="det_cantidad_existente">Ingrese la Cantidad</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-card-text"></i></span>
+                                    <input type="number" name="det_cantidad" id="det_cantidad" class="form-control" placeholder="Cantidad" required>
                                 </div>
                             </div>
                             <div class="row mb-3">
@@ -580,7 +631,7 @@
                                     <button type="button" id="btnModificarDetalle" class="btn btn-warning w-100">Modificar</button>
                                 </div>
                                 <div class="col">
-                                    <button type="button" id="btnAnterior" class="btn btn-warning w-100">Anterior</button>
+                                    <button type="button" id="btnAnterior" class="btn btn-danger w-100">Cancelar Ingreso</button>
                                 </div>
                                 <div class="col">
                                     <button type="button" id="btnCancelarDetalle" class="btn btn-danger w-100">Cancelar</button>
@@ -607,7 +658,7 @@
     <div class="row justify-content-center">
         <div class="col-lg-3">
             <button type="button" id="btnImprimir" class="btn btn-primary w-100">
-                <i class="bi bi-printer"></i> Imprimir
+                <i class="bi bi-printer"></i> Finalizar Ingreso
             </button>
         </div>
     </div>

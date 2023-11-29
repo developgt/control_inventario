@@ -16,14 +16,6 @@ use Model\Medida;
 class MedidaController
 {
 
-    // public static function index(Router $router){
-    //     //$almacen = static::buscarAlmacen();
-
-    //     $router->render('medida/index', [
-    //         //'almacen' => $almacen
-    //     ]);
-    // }
-
     public static function index(Router $router){
         isAuth();
         try {
@@ -86,13 +78,13 @@ class MedidaController
         try {
             $almacen = Almacen::fetchArray($sql);
     
-            // Establece el tipo de contenido de la respuesta a JSON
+          
             header('Content-Type: application/json');
     
-            // Convierte el array a JSON y envíalo como respuesta
+         
             echo json_encode($almacen);
         } catch (Exception $e) {
-            // En caso de error, envía una respuesta vacía
+           
             echo json_encode([]);
         }
     }
@@ -186,8 +178,6 @@ public static function modificarAPI() {
 
       
 
-        // echo json_encode($_POST);
-        // exit;
         $medida = new Medida([
             'uni_id' => $uni_id, 
             'uni_nombre' => $uni_nombre,

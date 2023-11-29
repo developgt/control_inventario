@@ -35,15 +35,14 @@ const buscarAlmacenes = async () => {
     } catch (error) {
         Toast.fire({
             icon: 'error',
-            title: 'Error al buscar almacenes'
+            title: 'Error al buscar inventarios'
         });
         console.error('Error al buscar almacenes:', error);
     }
 };
 const options = {
-    maintainAspectRatio: false, // No mantener la relación de aspecto
-    responsive: true, // Permitir que la gráfica sea responsiva
-
+    maintainAspectRatio: false, 
+    responsive: true, 
 };
 const buscar = async () => {
     if (!movAlmaIdSelect.value) {
@@ -64,7 +63,7 @@ const buscar = async () => {
             });
             return;
         }
-        // Si hay datos, se crea o actualiza la gráfica
+    
         if (chartEstadisticas) {
             chartEstadisticas.destroy();
         }

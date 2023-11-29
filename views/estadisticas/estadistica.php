@@ -16,16 +16,16 @@
     .contenedor-principal {
         padding: 20px;
         margin-top: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 4px 8px rgba(0, 128, 255, 0.3), 0 6px 20px rgba(0, 0, 0, 0.2); 
     }
 
     .formulario-busqueda {
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         margin-bottom: 30px;
     }
 
     .grafica {
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     }
 
     .formulario-busqueda, .grafica {

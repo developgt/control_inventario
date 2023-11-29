@@ -7,7 +7,7 @@
         padding: 20px;
         margin-top: 10px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        /* Sombra */
+    
     }
 
     #formularioAlmacen {
@@ -15,7 +15,7 @@
         margin: 10px;
         background-color: #f2f2f2;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        /* Sombra */
+    
 
     }
 
@@ -26,15 +26,15 @@
         margin-top: 10px;
         border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        /* Sombra */
+    
     }
 
     .encabezado-inventario:hover {
         background-color: #0056b3;
-        /* Cambio de color al pasar el mouse */
+       
     }
 
-    /* Estilo para el fondo oscuro del modal */
+   
     .modal-with-backdrop:before {
         content: "";
         position: fixed;
@@ -47,13 +47,13 @@
         opacity: 0.5;
     }
 
-    /* Estilo para el modal */
+    
     .modal-with-backdrop .modal-content {
         z-index: 1031;
-        /* Asegura que el modal esté sobre el fondo oscuro */
+     
     }
 
-    /* Estilo para el encabezado del modal */
+    
     .custom-modal-header {
         background: linear-gradient(to right, rgba(70, 130, 180, 0.8), rgba(30, 144, 255, 0.8));
         color: #fff;
@@ -61,14 +61,14 @@
 
     }
 
-    /* Estilo para el título del modal */
+   
     .custom-modal-title {
         margin: 0;
 
     }
 
     .mi-tabla {
-        width: 110%;
+        width: auto;
         border-collapse: collapse;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         margin-left: auto;
@@ -76,10 +76,13 @@
 
     }
 
-    /* Estilo para ocultar el desplegable DEL SELECT */
-    #alma_clase {
-        pointer-events: none;
-    }
+    .table-responsive {
+    padding: 20px;  
+    box-shadow: 0 4px 8px rgba(0, 128, 255, 0.3), 0 6px 20px rgba(0, 0, 0, 0.1); 
+    margin-top: 10px;
+}
+
+    
 
 </style>
 <div class="container border rounded bg-white nuevo-contenedor">
@@ -159,7 +162,7 @@
                         <h1 class="text-center mt-4 mb-4 encabezado-inventario">Inventarios Registrados</h1>
                         <div class="row justify-content-center">
                             <div class="col-lg-10">
-                                <div class="table">
+                                <div class="col table-responsive">
                                     <table id="tablaAlmacen" class="table table-striped table-bordered table-light mi-tabla">
                                     </table>
                                 </div>

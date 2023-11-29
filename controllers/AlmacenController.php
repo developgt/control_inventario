@@ -13,16 +13,6 @@ use Model\Usuario;
 class AlmacenController
 {
 
-    // public static function index(Router $router)
-    // {
-
-    //     //$almacen = static::buscarDependencia();
-
-    //     $router->render('almacen/index', [
-    //         //'almacen' => $almacen,
-    //     ]);
-    // }
-
 
     public static function index(Router $router)
     {
@@ -69,79 +59,19 @@ class AlmacenController
         try {
             $almacen = Mdep::fetchArray($sql);
 
-            // Establece el tipo de contenido de la respuesta a JSON
+          
             header('Content-Type: application/json');
 
-            // Convierte el array a JSON y envíalo como respuesta
+         
             echo json_encode($almacen);
         } catch (Exception $e) {
-            // En caso de error, envía una respuesta vacía
+      
             echo json_encode([]);
         }
     }
 
 
 
-
-    // //funcion para guardar almacen
-
-    //     public static function guardarAPI()
-    //     {
-    //         try {
-
-    //             $almacen = new Almacen($_POST);
-    //             $resultado = $almacen->crear();
-
-    //             if ($resultado['resultado'] == 1) {
-    //                 echo json_encode([
-    //                     'mensaje' => 'Registro guardado correctamente',
-    //                     'codigo' => 1,
-    //                     'id' => $resultado['id'] // Devuelve el ID del registro recién insertado
-    //                 ]);
-    //             } else {
-    //                 echo json_encode([
-    //                     'mensaje' => 'Ocurrió un error',
-    //                     'codigo' => 0
-    //                 ]);
-    //             }
-
-    //         } catch (Exception $e) {
-    //             echo json_encode([
-    //                 'detalle' => $e->getMessage(),
-    //                 'mensaje' => 'Ocurrió un error',
-    //                 'codigo' => 0
-    //             ]);
-    //         }
-    //     }
-
-
-
-    //     public static function guardarAsignarAPI()
-    //     {
-    //         try {
-
-    //             $guarda = new Guarda($_POST);
-    //             $resultado = $guarda->crear();
-
-    //             if ($resultado['resultado'] == 1) {
-    //                 echo json_encode([
-    //                     'mensaje' => 'Registro guardado correctamente',
-    //                     'codigo' => 1
-    //                 ]);
-    //             } else {
-    //                 echo json_encode([
-    //                     'mensaje' => 'Ocurrió un error',
-    //                     'codigo' => 0
-    //                 ]);
-    //             }
-    //         } catch (Exception $e) {
-    //             echo json_encode([
-    //                 'detalle' => $e->getMessage(),
-    //                 'mensaje' => 'Ocurrió un error',
-    //                 'codigo' => 0
-    //             ]);
-    //         }
-    //     }
 
 
 
@@ -173,14 +103,14 @@ class AlmacenController
                         'idAsignar' => $resultadoAsignar['id']
                     ]);
                 } else {
-                    // Error al asignar
+                
                     echo json_encode([
                         'mensaje' => 'Ocurrió un error al asignar',
                         'codigo' => 0
                     ]);
                 }
             } else {
-                // Error al guardar el almacén
+            
                 echo json_encode([
                     'mensaje' => 'Ocurrió un error al guardar el almacén',
                     'codigo' => 0
@@ -230,9 +160,7 @@ class AlmacenController
                 $sql .= " AND alma_descripcion LIKE '%$alma_descripcion%'";
             }
 
-            // if ($alma_unidad != '') {
-            //  $sql .= " AND alma_unidad LIKE '%$alma_unidad%'";
-            //}
+       
 
         }
 
@@ -265,8 +193,6 @@ class AlmacenController
             $alma_descripcion = $_POST['alma_descripcion'];
 
 
-            // echo json_encode($_POST);
-            // exit;
             $almacen = new Almacen([
                 'alma_id' => $alma_id,
                 'alma_nombre' => $alma_nombre,
@@ -301,7 +227,7 @@ class AlmacenController
     {
         try {
 
-            //\Log::info('Consulta SQL para eliminar registro con ID: ' . $alma_id);
+          
 
             $alma_id = $_POST['alma_id'];
             $almacen = Almacen::find($alma_id);
@@ -310,7 +236,7 @@ class AlmacenController
 
             if ($resultado['resultado'] == 1) {
                 echo json_encode([
-                    //'sql' => $almacen->toSql(),
+               
                     'mensaje' => "Se ha eliminado el registro con éxito.",
                     'codigo' => 1
                 ]);
@@ -341,7 +267,7 @@ class AlmacenController
         $alma_id = $_GET['alma_id'] ?? '';
 
         $almacen = []; // Definir $almacen como un arreglo vacío
-        //$alma_nombre = [];
+    
 
         $sql = "SELECT alma_id, alma_nombre FROM inv_almacenes WHERE alma_id = $alma_id AND alma_situacion = 1";
 
@@ -392,7 +318,7 @@ class AlmacenController
 
     public static function buscarOficialesAPI()
     {
-        // $guarda_catalogo = $_GET['guarda_catalogo'] ?? '';
+        
 
         $sql = "SELECT  trim(gra_desc_ct) || ' DE ' || trim(arm_desc_md)  || ' ' || trim(per_ape1) || ' ' || trim(per_ape2) || ', ' || trim(per_nom1)  || ', ' || trim(per_nom2) as guarda_nombre, per_catalogo
             FROM mper inner join grados on per_grado = gra_codigo
@@ -402,14 +328,14 @@ class AlmacenController
         try {
             $oficial = Mper::fetchArray($sql);
 
-            // Establece el tipo de contenido de la respuesta a JSON
+       
             header('Content-Type: application/json');
 
-            // Convierte el array a JSON 
+         
             echo json_encode($oficial);
             return;
         } catch (Exception $e) {
-            // En caso de error, envía una respuesta vacía
+          
             echo json_encode([]);
         }
     }
@@ -418,8 +344,7 @@ class AlmacenController
 
     public static function buscarAsignarAPI()
     {
-        // $guarda_catalogo = $_GET['guarda_catalogo'] ?? null;
-        // $guarda_almacen = $_GET['guarda_almacen'] ?? null;
+       
 
         $sql = "SELECT 
             a.alma_nombre AS guarda_almacen_nombre, 
@@ -470,10 +395,7 @@ class AlmacenController
             $guarda_id = $_POST['guarda_id'];
             $guarda_catalogo = $_POST['guarda_catalogo'];
             $guarda_almacen = $_POST['guarda_almacen'];
-            //$alma_unidad = $_POST['alma_unidad'];
-
-            //echo json_encode($_POST);
-            // exit;
+       
             $guarda = new Guarda([
                 'guarda_id' => $guarda_id,
                 'guarda_catalogo' => $guarda_catalogo,

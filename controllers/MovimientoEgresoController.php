@@ -19,14 +19,6 @@ use Model\Usuario;
 class MovimientoEgresoController
 {
 
-    // public static function index(Router $router)
-    // {
-
-
-    //     $router->render('movegreso/index', []);
-    // }
-
-
 
     public static function index(Router $router)
     {
@@ -75,13 +67,10 @@ class MovimientoEgresoController
         try {
             $dependencias = Mdep::fetchArray($sql);
 
-            // Establece el tipo de contenido de la respuesta a JSON
             header('Content-Type: application/json');
 
-            // Convierte el array a JSON y envíalo como respuesta
             echo json_encode($dependencias);
         } catch (Exception $e) {
-            // En caso de error, envía una respuesta vacía
             echo json_encode([]);
         }
     }
@@ -92,13 +81,10 @@ class MovimientoEgresoController
         try {
             $almacen = Almacen::fetchArray($sql);
 
-            // Establece el tipo de contenido de la respuesta a JSON
             header('Content-Type: application/json');
 
-            // Convierte el array a JSON y envíalo como respuesta
             echo json_encode($almacen);
         } catch (Exception $e) {
-            // En caso de error, envía una respuesta vacía
             echo json_encode([]);
         }
     }
@@ -117,14 +103,11 @@ class MovimientoEgresoController
         try {
             $oficial = Mper::fetchArray($sql);
 
-            // Establece el tipo de contenido de la respuesta a JSON
             header('Content-Type: application/json');
 
-            // Convierte el array a JSON 
             echo json_encode($oficial);
             return;
         } catch (Exception $e) {
-            // En caso de error, envía una respuesta vacía
             echo json_encode([]);
         }
     }
@@ -145,14 +128,12 @@ class MovimientoEgresoController
         try {
             $oficial = Mper::fetchArray($sql);
 
-            // Establece el tipo de contenido de la respuesta a JSON
             header('Content-Type: application/json');
 
-            // Convierte el array a JSON 
             echo json_encode($oficial);
             return;
         } catch (Exception $e) {
-            // En caso de error, envía una respuesta vacía
+           
             echo json_encode([]);
         }
     }
@@ -173,14 +154,12 @@ class MovimientoEgresoController
         try {
             $oficial = Mper::fetchArray($sql);
 
-            // Establece el tipo de contenido de la respuesta a JSON
             header('Content-Type: application/json');
 
-            // Convierte el array a JSON 
             echo json_encode($oficial);
             return;
         } catch (Exception $e) {
-            // En caso de error, envía una respuesta vacía
+            
             echo json_encode([]);
         }
     }
@@ -193,23 +172,35 @@ class MovimientoEgresoController
         $producto = $_GET['det_pro'] ?? '';
 
 
-        $sql = "SELECT d.*,
+                $sql = "SELECT 
+        d.*,
         p.pro_id,
         e.est_descripcion,
         p.pro_nom_articulo,
-        u.uni_nombre 
- FROM inv_deta_movimientos d
- INNER JOIN (
-     SELECT MAX(DET_ID) AS max_det_id
-     FROM inv_deta_movimientos
-     WHERE det_pro_id = $producto AND det_situacion = 1
-     GROUP BY det_pro_id, det_lote, det_estado, det_fecha_vence
- ) max_det ON d.DET_ID = max_det.max_det_id
- LEFT JOIN inv_producto p ON d.det_pro_id = p.pro_id
- LEFT JOIN inv_uni_med u ON d.det_uni_med = u.uni_id
- LEFT JOIN inv_estado e ON d.det_estado = e.est_id
- ORDER BY d.det_id ASC";
-
+        u.uni_nombre
+        FROM 
+        inv_deta_movimientos d
+        INNER JOIN (
+        SELECT 
+            MAX(DET_ID) AS max_det_id
+        FROM 
+            inv_deta_movimientos
+        WHERE 
+            det_pro_id = $producto AND det_situacion = 1
+        GROUP BY 
+            det_pro_id, det_lote, det_estado, det_fecha_vence
+        ) max_det ON d.DET_ID = max_det.max_det_id
+        LEFT JOIN inv_producto p ON d.det_pro_id = p.pro_id
+        LEFT JOIN inv_uni_med u ON d.det_uni_med = u.uni_id
+        LEFT JOIN inv_estado e ON d.det_estado = e.est_id
+        INNER JOIN inv_movimientos m ON d.det_mov_id = m.mov_id
+        INNER JOIN inv_almacenes a ON m.mov_alma_id = a.alma_id
+        INNER JOIN inv_guarda_almacen ga ON a.alma_id = ga.guarda_almacen
+        WHERE 
+        ga.guarda_catalogo = user 
+        AND ga.guarda_situacion = 1
+        ORDER BY 
+        d.det_id ASC;";
 
 
         try {
@@ -225,6 +216,63 @@ class MovimientoEgresoController
             ]);
         }
     }
+
+
+
+    public static function buscarExistenciasPorInventarioAPI()
+    {
+
+        $inventario = $_GET['mov_almacen'] ?? '';
+
+
+        $sql = "SELECT 
+                d.*,
+                p.pro_id,
+                e.est_descripcion,
+                p.pro_nom_articulo,
+                u.uni_nombre,
+                m.mov_alma_id
+                FROM 
+                inv_deta_movimientos d
+                INNER JOIN (
+                SELECT 
+                    MAX(d2.det_id) AS max_det_id
+                FROM 
+                    inv_deta_movimientos d2
+                INNER JOIN 
+                    inv_movimientos m2 ON d2.det_mov_id = m2.mov_id
+                WHERE 
+                    m2.mov_alma_id = $inventario AND d2.det_situacion = 1
+                GROUP BY 
+                    d2.det_pro_id, d2.det_lote, d2.det_estado, d2.det_fecha_vence
+                ) max_det ON d.DET_ID = max_det.max_det_id
+                LEFT JOIN inv_producto p ON d.det_pro_id = p.pro_id
+                LEFT JOIN inv_uni_med u ON d.det_uni_med = u.uni_id
+                LEFT JOIN inv_estado e ON d.det_estado = e.est_id
+                INNER JOIN inv_movimientos m ON d.det_mov_id = m.mov_id
+                INNER JOIN inv_almacenes a ON m.mov_alma_id = a.alma_id
+                INNER JOIN inv_guarda_almacen ga ON a.alma_id = ga.guarda_almacen
+                WHERE 
+                ga.guarda_catalogo = user 
+                AND ga.guarda_situacion = 1
+                ORDER BY 
+                d.det_id ASC;
+                ";
+
+        try {
+
+            $estado = Detalle::fetchArray($sql);
+
+            echo json_encode($estado);
+        } catch (Exception $e) {
+            echo json_encode([
+                'detalle' => $e->getMessage(),
+                'mensaje' => 'Ocurrió un error',
+                'codigo' => 0
+            ]);
+        }
+    }
+
 
     public static function buscarMovimientosAPI()
     {

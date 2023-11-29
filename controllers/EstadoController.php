@@ -99,12 +99,7 @@ public static function modificarAPI() {
 
         $est_id = $_POST['est_id'];
         $est_descripcion = strtoupper($_POST['est_descripcion']);
-
-
-      
-
-        // echo json_encode($_POST);
-        // exit;
+    
         $estado = new Estado([
             'est_id' => $est_id, 
             'est_descripcion' => $est_descripcion,

@@ -136,12 +136,12 @@ document.addEventListener('DOMContentLoaded', async function() {
         buscar();
     } catch (error) {
         console.error(error);
-        // Manejar el error, si es necesario.
+        
     }
 });
 
 const buscarAlmacenes = async () => {
-    // Verificar si los elementos del formulario existen antes de acceder a sus propiedades
+    
     if (formulario.alma_nombre && formulario.alma_id) {
         let alma_nombre = formulario.alma_nombre.value;
         let alma_id = formulario.alma_id.value;
@@ -154,18 +154,18 @@ const buscarAlmacenes = async () => {
     try {
         const respuesta = await fetch(url, config);
         const data = await respuesta.json();
-        console.log('data de almacenes', data); // Imprimir datos en la consola
+        console.log('data de almacenes', data); 
 
         almacenes = data;
-        // Limpiar el contenido del select
+        
         formulario.uni_almacen.innerHTML = '';
 
-         // Agregar opción predeterminada
+         
     const defaultOption = document.createElement('option');
     defaultOption.value = '';
     defaultOption.textContent = 'SELECCIONE...';
     formulario.uni_almacen.appendChild(defaultOption);
-        // Iterar sobre cada objeto en el arreglo y crear opciones para el select
+        
         data.forEach(almacen => {
             const option = document.createElement('option');
             option.value = almacen.alma_id;
