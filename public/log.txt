@@ -1,0 +1,132 @@
+Array
+(
+    [0] => Array
+        (
+            [nombre_almacen] => ALMACEN EJEMPLO 1
+            [nombre_producto] => Jabón de Baño
+            [id_producto] => 9
+            [det_id] => 1
+            [det_mov_id] => 11
+            [det_pro_id] => 9
+            [det_uni_med] => 3
+            [det_lote] => SIN/L
+            [det_fecha_vence] => 1999-05-07
+            [det_estado] => 2
+            [det_cantidad] => 150.00
+            [det_cantidad_existente] => 150.00
+            [det_cantidad_lote] => 150.00
+            [det_observaciones] => prueba de guardado
+            [det_situacion] => 1
+            [mov_id] => 11
+            [mov_tipo_mov] => I
+            [mov_tipo_trans] => I
+            [mov_alma_id] => 19
+            [mov_perso_entrega] => 657585
+            [mov_perso_recibe] => 665133
+            [mov_perso_respon] => 665133
+            [mov_fecha] => 2023-11-22
+            [mov_proce_destino] => 2160
+            [mov_descrip] => prueba de guardado
+            [mov_situacion] => 1
+            [alma_id] => 19
+            [alma_nombre] => ALMACEN EJEMPLO 1
+            [alma_clase] => 1
+            [alma_descripcion] => PRIEMR EJEMPLO FINAL
+            [alma_unidad] => 2160
+            [alma_situacion] => 1
+            [nombre_unidad_medida] => Unidad
+            [descripcion_clase] => SUBSTANCIAS (ALIMENTOS- COMESTIBLES)
+            [descripcion_estado] => BUEN ESTADO
+            [descripcion_proce_destino] => ESTADO MAYOR DE LA DEF.NAC.        
+            [nombre_entrega] => ALFEREZ DE FRAG BRIAN           DANIEL          MARIN           ARANA
+            [nombre_recibe] => ALFEREZ DE FRAG EDGAR           BENJAMIN        RAMIREZ         DEL VALLE
+            [nombre_respon] => ALFEREZ DE FRAG EDGAR           BENJAMIN        RAMIREZ         DEL VALLE
+        )
+
+    [1] => Array
+        (
+            [nombre_almacen] => ALMACEN EJEMPLO 1
+            [nombre_producto] => Jabón de Baño
+            [id_producto] => 9
+            [det_id] => 3
+            [det_mov_id] => 11
+            [det_pro_id] => 9
+            [det_uni_med] => 3
+            [det_lote] => SIN/L
+            [det_fecha_vence] => 1999-05-07
+            [det_estado] => 2
+            [det_cantidad] => 150.00
+            [det_cantidad_existente] => 300.00
+            [det_cantidad_lote] => 300.00
+            [det_observaciones] => prueba de guardado
+            [det_situacion] => 1
+            [mov_id] => 11
+            [mov_tipo_mov] => I
+            [mov_tipo_trans] => I
+            [mov_alma_id] => 19
+            [mov_perso_entrega] => 657585
+            [mov_perso_recibe] => 665133
+            [mov_perso_respon] => 665133
+            [mov_fecha] => 2023-11-22
+            [mov_proce_destino] => 2160
+            [mov_descrip] => prueba de guardado
+            [mov_situacion] => 1
+            [alma_id] => 19
+            [alma_nombre] => ALMACEN EJEMPLO 1
+            [alma_clase] => 1
+            [alma_descripcion] => PRIEMR EJEMPLO FINAL
+            [alma_unidad] => 2160
+            [alma_situacion] => 1
+            [nombre_unidad_medida] => Unidad
+            [descripcion_clase] => SUBSTANCIAS (ALIMENTOS- COMESTIBLES)
+            [descripcion_estado] => BUEN ESTADO
+            [descripcion_proce_destino] => ESTADO MAYOR DE LA DEF.NAC.        
+            [nombre_entrega] => ALFEREZ DE FRAG BRIAN           DANIEL          MARIN           ARANA
+            [nombre_recibe] => ALFEREZ DE FRAG EDGAR           BENJAMIN        RAMIREZ         DEL VALLE
+            [nombre_respon] => ALFEREZ DE FRAG EDGAR           BENJAMIN        RAMIREZ         DEL VALLE
+        )
+
+    [2] => Array
+        (
+            [nombre_almacen] => ALMACEN EJEMPLO 1
+            [nombre_producto] => Jabón de Baño
+            [id_producto] => 9
+            [det_id] => 4
+            [det_mov_id] => 11
+            [det_pro_id] => 9
+            [det_uni_med] => 3
+            [det_lote] => SIN/L
+            [det_fecha_vence] => 1999-05-07
+            [det_estado] => 2
+            [det_cantidad] => 150.00
+            [det_cantidad_existente] => 450.00
+            [det_cantidad_lote] => 450.00
+            [det_observaciones] => prueba
+            [det_situacion] => 1
+            [mov_id] => 11
+            [mov_tipo_mov] => I
+            [mov_tipo_trans] => I
+            [mov_alma_id] => 19
+            [mov_perso_entrega] => 657585
+            [mov_perso_recibe] => 665133
+            [mov_perso_respon] => 665133
+            [mov_fecha] => 2023-11-22
+            [mov_proce_destino] => 2160
+            [mov_descrip] => prueba de guardado
+            [mov_situacion] => 1
+            [alma_id] => 19
+            [alma_nombre] => ALMACEN EJEMPLO 1
+            [alma_clase] => 1
+            [alma_descripcion] => PRIEMR EJEMPLO FINAL
+            [alma_unidad] => 2160
+            [alma_situacion] => 1
+            [nombre_unidad_medida] => Unidad
+            [descripcion_clase] => SUBSTANCIAS (ALIMENTOS- COMESTIBLES)
+            [descripcion_estado] => BUEN ESTADO
+            [descripcion_proce_destino] => ESTADO MAYOR DE LA DEF.NAC.        
+            [nombre_entrega] => ALFEREZ DE FRAG BRIAN           DANIEL          MARIN           ARANA
+            [nombre_recibe] => ALFEREZ DE FRAG EDGAR           BENJAMIN        RAMIREZ         DEL VALLE
+            [nombre_respon] => ALFEREZ DE FRAG EDGAR           BENJAMIN        RAMIREZ         DEL VALLE
+        )
+
+)
