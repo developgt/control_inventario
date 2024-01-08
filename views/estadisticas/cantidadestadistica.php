@@ -36,8 +36,8 @@
         padding: 20px;
         background: #fff;
         border-radius: 10px;
-        height: 600px;
-        width: 500;
+        height: 700px;
+        width: 600;
         position: relative;
       
     }
@@ -57,7 +57,7 @@
         bottom: 0;
     }
 
-    #chartEgreso {
+    #chartIngresoEgreso {
         padding-top: 100px;
         position: absolute;
         top: 10px;
@@ -94,6 +94,32 @@
 
 }
 
+.canvas-container {
+    position: relative; 
+    height: 500px; 
+    justify-content: center;
+}
+
+#chartInventario {
+    padding-top: 100px;
+    position: absolute;
+    top: 10px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.grafica-inventario {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    height: 500px;
+    width: 700px;
+}
+
+
    
     @media (min-width: 150px) {
         .grafica-container {
@@ -103,7 +129,7 @@
 </style>
 
 <div class="container contenedor-principal">
-    <h1 class="titulo-estadisticas">Estadísticas de Ingresos y Egresos de Productos por Inventario</h1>
+    <h1 class="titulo-estadisticas">Estadísticas por Inventario</h1>
     <div class="row justify-content-center">
         <div class="col-lg-8">
             <div class="formulario-busqueda">
@@ -122,21 +148,29 @@
     </div>
 
 
-        <div class="grafica-container">
+    <div class="row justify-content-center">
+        <!-- Columna para la gráfica de ingreso y egreso -->
+        <div class="col-lg-6">
             <div class="grafica">
-                <h6 class="chart-title">Cantidad de Productos Ingresados por Inventario</h6>
-                <canvas id="chartIngreso"></canvas>
-                <h6 id="mensajeIngreso" class="mensaje-grafica text-center" style="display: none;">No se han realizado ingresos</h6>
+                <h6 class="chart-title">Cantidad de Ingresos y Egresos de Insumos</h6>
+                <canvas id="chartIngresoEgreso"></canvas>
+                <h6 id="mensajeGrafica" class="mensaje-grafica text-center" style="display: none;">No se han realizado movimientos</h6>
             </div>
+        </div>
 
+        <!-- Columna para la gráfica de inventario -->
+        <div class="col-lg-6">
             <div class="grafica">
-                <h6 class="chart-title">Cantidad de Productos Egresados por Inventario</h6>
-                <canvas id="chartEgreso"></canvas>
-                <h6 id="mensajeEgreso" class="mensaje-grafica text-center" style="display: none;">No se han realizado egresos</h6>
+            <h6 class="chart-title">Cantidad de Productos existentes</h6>
+                <canvas id="chartInventario"></canvas>
             </div>
         </div>
     </div>
 </div>
+
+
+
+
 
 
 

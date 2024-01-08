@@ -56,11 +56,11 @@
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="/control_inventario/guarda"><i class="bi bi bi-building-fill-check me-2"></i>Entrega de Inventario</a>
                     </li>
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="/control_inventario/estadisticas/estadistica"><i class="bi bi-bar-chart me-2"></i>Cantidad de Productos</a>
-                    </li>
+                    </li> -->
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="/control_inventario/estadisticas/cantidadestadistica"><i class="bi bi-bar-chart me-2"></i>Estadísticas Movimientos</a>
+                        <a class="nav-link" aria-current="page" href="/control_inventario/estadisticas/cantidadestadistica"><i class="bi bi-bar-chart me-2"></i>Estadísticas</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="/control_inventario/control"><i class="bi bi bi-printer me-2"></i>Imprimir</a>

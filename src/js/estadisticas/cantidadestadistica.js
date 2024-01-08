@@ -9,20 +9,24 @@ import { data } from "jquery";
 const formulario = document.getElementById('formularioBusqueda');
 const btnBuscar = document.getElementById('btnBuscar');
 const movAlmaIdSelect = document.getElementById('mov_alma_id');
-const chartIngresoContext = document.getElementById('chartIngreso').getContext('2d');
-const chartEgresoContext = document.getElementById('chartEgreso').getContext('2d');
+const chartInventario = document.getElementById('chartInventario').getContext('2d');
 
-let chartIngresos, chartEgresos;
+
+const chartContext = document.getElementById('chartIngresoEgreso').getContext('2d');
+let chartIngresoEgreso;
+let chartEstadisticas;
+
 
 const limpiarGraficas = () => {
-    if (chartIngresos) {
-        chartIngresos.destroy();
-        chartIngresos = null;
+    if (chartIngresoEgreso) {
+        chartIngresoEgreso.destroy();
+        chartIngresoEgreso = null;
     }
-    if (chartEgresos) {
-        chartEgresos.destroy();
-        chartEgresos = null;
+    if (chartEstadisticas) {
+        chartEstadisticas.destroy();
+        chartEstadisticas = null;
     }
+
 };
 // Generar un color RGB aleatorio
 const getRandomColor = () => {
@@ -84,8 +88,8 @@ const chartOptions = {
     }
 };
 
-// Función para buscar y cargar la gráfica de ingresos
-const buscarIngreso = async () => {
+
+const buscarMovimientos = async () => {
     if (!movAlmaIdSelect.value) {
         Toast.fire({
             icon: 'info',
@@ -94,50 +98,69 @@ const buscarIngreso = async () => {
         return;
     }
 
-    const url = `/control_inventario/API/estadisticas/buscarIngreso?mov_alma_id=${movAlmaIdSelect.value}`;
+    const urlIngresos = `/control_inventario/API/estadisticas/buscarIngreso?mov_alma_id=${movAlmaIdSelect.value}`;
+    const urlEgresos = `/control_inventario/API/estadisticas/buscarEgreso?mov_alma_id=${movAlmaIdSelect.value}`;
+    
     try {
-        const respuesta = await fetch(url);
-        const resultado = await respuesta.json();
-        if (!Array.isArray(resultado) || !resultado.length) {
+        // Obtener datos de ingresos y egresos (podrías usar Promise.all para realizar ambas peticiones simultáneamente)
+        const [respuestaIngresos, respuestaEgresos] = await Promise.all([
+            fetch(urlIngresos),
+            fetch(urlEgresos)
+        ]);
+        const [ingresos, egresos] = await Promise.all([
+            respuestaIngresos.json(),
+            respuestaEgresos.json()
+        ]);
+
+        // Verificar si hay datos
+        if ((!Array.isArray(ingresos) || !ingresos.length) && (!Array.isArray(egresos) || !egresos.length)) {
             Toast.fire({
                 icon: 'info',
-                title: 'No se encontraron registros de ingreso'
+                title: 'No se encontraron registros'
             });
-            document.getElementById('mensajeIngreso').style.display = 'block';
-            if (chartIngresos) {
-                chartIngresos.destroy();
-                chartIngresos = null;
+            document.getElementById('mensajeGrafica').style.display = 'block';
+            if (chartIngresoEgreso) {
+                chartIngresoEgreso.destroy();
+                chartIngresoEgreso = null;
             }
             return;
         } else {
-            document.getElementById('mensajeIngreso').style.display = 'none';
+            document.getElementById('mensajeGrafica').style.display = 'none';
         }
 
-        chartIngresos = new Chart(chartIngresoContext, {
+        // Crear la gráfica con los datos de ingresos y egresos
+        chartIngresoEgreso = new Chart(chartContext, {
             type: 'bar',
             data: {
-                labels: resultado.map(item => `${item.producto}`),
+                labels: ingresos.map(item => item.producto),
                 datasets: [{
-                    label: 'Cantidad de Ingresos',
-                    data: resultado.map(item => item.totalingresos),
-                    backgroundColor: resultado.map(() => getRandomColor()),
-                    borderColor: resultado.map(() => getRandomColor()),
+                    label: 'Ingresos',
+                    data: ingresos.map(item => item.totalingresos),
+                    backgroundColor: 'rgba(0, 123, 255, 0.7)', // Color para ingresos
+                    borderColor: 'rgba(0, 123, 255, 1)',
+                    borderWidth: 1
+                }, {
+                    label: 'Egresos',
+                    data: egresos.map(item => item.totalegresos),
+                    backgroundColor: 'rgba(255, 193, 7, 0.7)', // Color para egresos
+                    borderColor: 'rgba(255, 193, 7, 1)',
                     borderWidth: 1
                 }]
             },
             options: chartOptions
         });
+
     } catch (error) {
-        console.error('Error al buscar ingresos:', error);
+        console.error('Error al buscar movimientos:', error);
         Toast.fire({
             icon: 'error',
-            title: 'Error al procesar la búsqueda de ingresos'
+            title: 'Error al procesar la búsqueda'
         });
     }
 };
 
-// Función para buscar y cargar la gráfica de egresos
-const buscarEgreso = async () => {
+
+const buscar = async () => {
     if (!movAlmaIdSelect.value) {
         Toast.fire({
             icon: 'info',
@@ -145,33 +168,28 @@ const buscarEgreso = async () => {
         });
         return;
     }
-
-    const url = `/control_inventario/API/estadisticas/buscarEgreso?mov_alma_id=${movAlmaIdSelect.value}`;
+    const url = `/control_inventario/API/estadisticas/buscar?mov_alma_id=${movAlmaIdSelect.value}`;
     try {
         const respuesta = await fetch(url);
         const resultado = await respuesta.json();
-
         if (!Array.isArray(resultado) || !resultado.length) {
             Toast.fire({
                 icon: 'info',
-                title: 'No se encontraron registros de egreso'
+                title: 'No se encontraron registros'
             });
-            document.getElementById('mensajeEgreso').style.display = 'block';
-            if (chartEgresos) {
-                chartEgresos.destroy();
-                chartEgresos = null;
-            }
             return;
-        } else {
-            document.getElementById('mensajeEgreso').style.display = 'none';
         }
-        chartEgresos = new Chart(chartEgresoContext, {
+    
+        if (chartEstadisticas) {
+            chartEstadisticas.destroy();
+        }
+        chartEstadisticas = new Chart(chartInventario, {
             type: 'bar',
             data: {
-                labels: resultado.map(item => `${item.producto}`),
+                labels: resultado.map(item => `${item.pro_nom_articulo} (${item.uni_nombre})`),
                 datasets: [{
-                    label: 'Cantidad de Egresos',
-                    data: resultado.map(item => item.totalegresos),
+                    label: 'Cantidad Existente',
+                    data: resultado.map(item => item.det_cantidad_existente),
                     backgroundColor: resultado.map(() => getRandomColor()),
                     borderColor: resultado.map(() => getRandomColor()),
                     borderWidth: 1
@@ -180,20 +198,18 @@ const buscarEgreso = async () => {
             options: chartOptions
         });
     } catch (error) {
-
-        console.error('Error al buscar egresos:', error);
+        console.error('Error al buscar:', error);
         Toast.fire({
             icon: 'error',
-            title: 'Error al procesar la búsqueda de egresos'
+            title: 'Error al procesar la búsqueda'
         });
     }
- }
-    
+};
 
 
  btnBuscar.addEventListener('click', () => {
     limpiarGraficas(); 
-    buscarIngreso();
-    buscarEgreso();
+    buscarMovimientos();
+    buscar();
     });
 buscarAlmacenes();
