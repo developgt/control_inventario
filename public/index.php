@@ -104,6 +104,9 @@ $router->post('/API/movimiento/guardar', [MovimientoController::class,'guardarAP
 $router->post('/API/movimiento/guardarDetalle', [MovimientoController::class,'guardarDetalleAPI']);
 $router->post('/API/movimiento/eliminar', [MovimientoController::class,'eliminarAPI'] );
 $router->post('/API/movimiento/modificar', [MovimientoController::class,'modificarAPI'] );
+$router->get('/API/movimiento/buscarAlmacenPorDetalleMovimiento', [MovimientoController::class,'buscarAlmacenPorDetalleMovimientoAPI'] );
+
+
 
 
 
