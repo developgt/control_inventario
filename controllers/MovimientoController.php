@@ -481,6 +481,30 @@ class MovimientoController
         }
     }
 
+        /// para buscar la cantidad del formulario detalle 
+
+        public static function buscarAlmacenPorDetalleMovimientoAPI()
+        {
+            $almacen = $_GET['det_mov_id'] ?? '';
+           
+    
+    
+            $sql ="SELECT mov_alma_id
+            FROM inv_movimientos
+            WHERE mov_id = $almacen";
+            try {
+    
+                $detalle = Detalle::fetchArray($sql);
+    
+                echo json_encode($detalle);
+            } catch (Exception $e) {
+                echo json_encode([
+                    'detalle' => $e->getMessage(),
+                    'mensaje' => 'Ocurrió un error',
+                    'codigo' => 0
+                ]);
+            }
+        }
 
     /// para buscar la cantidad del formulario detalle 
 
@@ -488,6 +512,7 @@ class MovimientoController
     {
         $det_pro_id = $_GET['det_pro_id'] ?? '';
         $det_uni_med = $_GET['det_uni_med'] ?? '';
+        $alma_id = $_GET['alma_id'] ?? '';
 
 
         $sql ="SELECT 
@@ -506,6 +531,7 @@ class MovimientoController
         AND dm.det_uni_med = $det_uni_med
         AND ga.guarda_catalogo = user
         AND ga.guarda_situacion = 1
+        AND m.mov_alma_id = $alma_id
         AND dm.det_id = (
             SELECT 
                 MAX(det_id) 
@@ -541,12 +567,14 @@ class MovimientoController
         $det_lote = $_GET['det_lote'] ?? '';
         $det_estado = $_GET['det_estado'] ?? '';
         $det_fecha_vence = $_GET['det_fecha_vence'] ?? '';
+        $alma_id = $_GET['alma_id'] ?? '';
 
 
 
-        $sql = "SELECT det_cantidad_lote from inv_deta_movimientos where det_pro_id = $det_pro_id and det_situacion = 1 and det_uni_med = '$det_uni_med' and det_lote = '$det_lote' and det_estado = $det_estado and det_fecha_vence = '$det_fecha_vence'
-        and det_id = (select max(det_id) from  inv_deta_movimientos where det_pro_id = $det_pro_id and det_situacion = 1 and det_uni_med = '$det_uni_med' and det_lote = '$det_lote' and det_estado = $det_estado and det_fecha_vence = '$det_fecha_vence' )
-        group by det_cantidad_lote";
+
+        // $sql = "SELECT det_cantidad_lote from inv_deta_movimientos where det_pro_id = $det_pro_id and det_situacion = 1 and det_uni_med = '$det_uni_med' and det_lote = '$det_lote' and det_estado = $det_estado and det_fecha_vence = '$det_fecha_vence'
+        // and det_id = (select max(det_id) from  inv_deta_movimientos where det_pro_id = $det_pro_id and det_situacion = 1 and det_uni_med = '$det_uni_med' and det_lote = '$det_lote' and det_estado = $det_estado and det_fecha_vence = '$det_fecha_vence' )
+        // group by det_cantidad_lote";
 
 
         $sql = "SELECT 
@@ -568,6 +596,8 @@ class MovimientoController
         AND dm.det_fecha_vence = '$det_fecha_vence'
         AND ga.guarda_catalogo = user
         AND ga.guarda_situacion = 1
+        AND m.mov_alma_id = $alma_id
+
         AND dm.det_id = (
             SELECT 
                 MAX(det_id) 

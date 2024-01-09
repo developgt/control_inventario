@@ -1530,6 +1530,32 @@ const guardar = async (evento) => {
 
 
 //////////////////////////////////////////////
+const buscarIdAlmacen = async () => {
+    let det_mov_id = document.getElementById('det_mov_id').value;
+
+    const url = `/control_inventario/API/movimiento/buscarAlmacenPorDetalleMovimiento?det_mov_id=${det_mov_id}`;
+
+    try {
+        const respuesta = await fetch(url, {
+            method: 'GET'
+        });
+        const data = await respuesta.json();
+
+        if (data && data.length > 0) {
+            const mov_alma_id = data[0].mov_alma_id;
+            return mov_alma_id; // Devuelve el ID del almacén
+        } else {
+            console.log('No se encontró el ID del almacén para el det_mov_id dado');
+            return null;
+        }
+    } catch (error) {
+        console.error('Error al buscar el ID del almacén:', error);
+        return null;
+    }
+};
+
+
+
 ////buscar cantidad existentes por lotes y cantidad existentes del formulario detalle//////
 
 
@@ -1541,9 +1567,11 @@ const buscarCantidadLote = async () => {
     let det_lote = detLoteInput.value;
     let det_estado = detEstadoSelect.value;
     let det_fecha_vence = detFechaInput.value;
+    let alma_id = await buscarIdAlmacen();
 
 
-    const url = `/control_inventario/API/movimiento/buscarCantidadLote?det_pro_id=${det_pro_id}&det_uni_med=${det_uni_med}&det_lote=${det_lote}&det_estado=${det_estado}&det_fecha_vence=${det_fecha_vence}`;
+
+    const url = `/control_inventario/API/movimiento/buscarCantidadLote?det_pro_id=${det_pro_id}&det_uni_med=${det_uni_med}&det_lote=${det_lote}&det_estado=${det_estado}&det_fecha_vence=${det_fecha_vence}&alma_id=${alma_id}`;
 
 
     const config = {
@@ -1583,9 +1611,11 @@ const buscarCantidad = async () => {
 
     let det_pro_id = detProIdSelect.value;
     let det_uni_med = detUniSelect.value;
+    let alma_id = await buscarIdAlmacen();
 
 
-    const url = `/control_inventario/API/movimiento/buscarCantidad?det_pro_id=${det_pro_id}&det_uni_med=${det_uni_med}`;
+
+    const url = `/control_inventario/API/movimiento/buscarCantidad?det_pro_id=${det_pro_id}&det_uni_med=${det_uni_med}&alma_id=${alma_id}`;
 
 
     const config = {

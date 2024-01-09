@@ -521,7 +521,7 @@
                 <div class="card-body">
                     <form class="col-lg-10 border rounded bg-light p-3" id="formularioDetalle">
                         <input type="hidden" name="det_id" id="det_id">
-                        <input type="hidden" name="det_mov_id" id="det_mov_id">
+                        <input type="text" name="det_mov_id" id="det_mov_id">
                         <div class="row mb-3">
                             <div class="col-md-4">
                                 <label for="det_pro_id">Seleccione el producto</label>
